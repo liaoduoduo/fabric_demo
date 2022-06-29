@@ -15,12 +15,13 @@ token管理
 
 #### 安装教程
 
-1.  搭建并启动test-network区块链网络，创建引用通道 ./network.sh createChannel
-2.  安装好测试链码 ./network.sh deployCC -ccn basic -ccp ../asset-transfer-basic/chaincode-go -ccl go
-3.  将第一步生成的证书和私钥路径替换到 resources/crypto-config
-4.  搭建好mysql数据库
-5.  修改application.yml配置文件
-6.  启动项目
+1. 虚拟机搭建并启动test-network区块链网络，创建引用通道 ./network.sh createChannel
+2. 安装好测试链码 ./network.sh deployCC -ccn basic -ccp ../asset-transfer-basic/chaincode-go -ccl go
+3. 将第一步生成的证书和私钥路径替换到 resources/crypto-config
+4. 搭建好mysql数据库
+5. 修改application.yml配置文件
+6. 修改connection.json,将节点url的ip地址修改为自己虚拟机地址
+7. 启动项目
 
 #### 参与贡献
 
