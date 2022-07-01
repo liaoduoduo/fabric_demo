@@ -1,16 +1,16 @@
 package com.ldy.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.ldy.pojo.User;
+import com.ldy.pojo.Task;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
  * @Author ldy
- * @Date 2022/6/25 15:28
- * @ClassName UserMapper
- * @Description 用户数据访问映射
+ * @Date 2022/7/1 17:23
+ * @ClassName TaskMapper
+ * @Description 研判任务数据访问映射
  * @Version v1.0
  */
 @Mapper
-public interface UserMapper extends BaseMapper<User> {
+public interface TaskMapper extends BaseMapper<Task> {
 }

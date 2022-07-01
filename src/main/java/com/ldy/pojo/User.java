@@ -22,19 +22,29 @@ public class User implements Serializable {
 
     private Long id;
 
+    //用户名
     private String username;
 
+    //姓名
     private String name;
 
+    //密码
     private String password;
 
+    //电话
     private String phone;
 
+    //性别
     private String sex;
 
+    //身份证号
     private String idNumber;
 
+    //状态
     private Integer status;
+
+    //用户贡献度
+    //private Long contribution;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;

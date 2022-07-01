@@ -9,32 +9,34 @@ import java.time.LocalDateTime;
 
 /**
  * @Author ldy
- * @Date 2022/6/25 16:51
- * @ClassName Token
- * @Description token实体类,对应每个用户持有的token数目
+ * @Date 2022/7/1 17:08
+ * @ClassName TaskIntelligence
+ * @Description 研判任务包含的情报实体类，一个研判任务包含多个情报
  * @Version v1.0
  */
-
 @Data
-public class Token implements Serializable {
+public class TaskIntelligence implements Serializable {
 
     private Long id;
-    private Long userId;
-    private Integer amount;
-    private Integer status;
+
+    //研判任务id
+    private Long taskId;
+
+    //研判任务包含的情报id list
+    private String value;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
+
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
+
 
     @TableField(fill = FieldFill.INSERT)
     private Long createUser;
 
+
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updateUser;
-
-
-
 }

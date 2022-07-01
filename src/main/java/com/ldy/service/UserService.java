@@ -7,7 +7,7 @@ import com.ldy.pojo.User;
  * @Author ldy
  * @Date 2022/6/25 15:28
  * @ClassName UserService
- * @Description TODO
+ * @Description 用户业务层
  * @Version v1.0
  */
 public interface UserService extends IService<User> {
