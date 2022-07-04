@@ -9,7 +9,7 @@ function categoryListApi() {
 //获取菜品分类对应的菜品
 function dishListApi(data) {
     return $axios({
-        'url': '/dish/list',
+        'url': '/intelligence/list',
         'method': 'get',
         params:{...data}
     })

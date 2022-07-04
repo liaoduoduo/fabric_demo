@@ -77,7 +77,7 @@
               v-model="ruleForm.categoryId"
               placeholder="请选择情报分类"
             >
-              <el-option v-for="(item,index) in dishList" :key="index" :label="item.name" :value="item.id" />
+              <el-option v-for="(item,index) in categoryList" :key="index" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
         </div>
@@ -102,93 +102,6 @@
             />
           </el-form-item>
         </div>
- <!--       <el-form-item label="口味做法配置:">
-          <el-form-item>
-            <div class="flavorBox">
-              <span
-                v-if="dishFlavors.length == 0"
-                class="addBut"
-                @click="addFlavore"
-              > + 添加口味</span>
-              <div
-                v-if="dishFlavors.length != 0"
-                class="flavor"
-              >
-                <div class="title">
-                  <span>口味名（3个字内）</span><span>口味标签（输入标签回车添加）</span>
-                </div>
-                <div class="cont">
-                  <div
-                    v-for="(item, index) in dishFlavors"
-                    :key="index"
-                    class="items"
-                  >
-                    <div class="itTit">
-                      &lt;!&ndash; <SelectInput
-                        :dish-flavors-data="dishFlavorsData"
-                        :index="index"
-                        :value="item.name"
-                        @select="selectHandle"
-                      /> &ndash;&gt;
-                      <div class="selectInput">
-                        <div>
-                           <el-input
-                              v-model="item.name"
-                              type="text"
-                              style="width: 100%"
-                              placeholder="请输入口味"
-                              @focus="selectFlavor(true,index)"
-                              @blur="outSelect(false,index)"
-                              @input="inputHandle(index)"
-                            />
-                        </div>
-                        <div v-show="item.showOption" class="flavorSelect">
-                          <span
-                            v-for="(it, ind) in dishFlavorsData"
-                            :key="ind"
-                            class="items"
-                            @click="checkOption(it,ind,index)"
-                          >{{ it.name }}</span>
-                          <span
-                            v-if="dishFlavorsData == []"
-                            class="none"
-                          >无数据</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div
-                      class="labItems"
-                      style="display: flex"
-                    >
-                      <span
-                        v-for="(it, ind) in item.value"
-                        :key="ind"
-                      >{{ it }} <i @click="delFlavorLabel(index, ind)">X</i></span>
-                      <div
-                        class="inputBox"
-                        :style="inputStyle"
-                        contenteditable="true"
-                        @focus="flavorPosition(index)"
-                        @keydown.enter="(val)=>keyDownHandle(val,index)"
-                      ></div>
-                    </div>
-                    <span
-                      class="delFlavor delBut non"
-                      @click="delFlavor(index)"
-                    >删除</span>
-                  </div>
-                </div>
-                <div
-                  class="addBut"
-                  @click="addFlavore"
-                >
-                  添加口味
-                </div>
-              </div>
-            </div>
-          </el-form-item>
-        </el-form-item>-->
-
         <div>
           <el-form-item
             label="情报图片:"
@@ -262,7 +175,7 @@
     <script src="../../js/request.js"></script>
     <script src="../../js/validate.js"></script>
     <script src="../../js/index.js"></script>
-    <script src="../../api/food.js"></script>
+    <script src="../../api/intelligence.js"></script>
     <script>
       new Vue({
         el: '#food-add-app',
@@ -274,20 +187,18 @@
             value: '',
             imageUrl: '',
             actionType: '',
-            dishList: [],
-            dishFlavorsData: [],
-            dishFlavors: [],
+            categoryList: [],
             vueRest : '1',
             index : 0,
             inputStyle  : {'flex':1},
             ruleForm  : {
               'name': '',
               'id': '',
+              'userId': '',
               'price': '',
               'fileHash': '',
               'image': '',
               'description': '',
-              'dishFlavors': [],
               'status': true,
               categoryId: ''
             },
@@ -306,7 +217,6 @@
               'price': [
                 {
                   'required': true,
-                  // 'message': '请填写菜品价格',
                   validator: (rules, value, callback) => {
                     if (!value) {
                       callback(new Error('请填写情报价值'))
@@ -330,9 +240,7 @@
           }
         },
         created() {
-          this.getDishList()
-          // 口味临时数据
-          this.getFlavorListHand()
+          this.getIntelligenceList()
           this.id = requestUrlParam('id')
           this.actionType = this.id ? 'edit' : 'add'
           if (this.id) {
@@ -343,14 +251,16 @@
         },
         methods: {
           async init () {
-            queryDishById(this.id).then(res => {
+            queryIntelligenceById(this.id).then(res => {
               console.log(res)
               if (String(res.code) === '1') {
                 this.ruleForm = { ...res.data }
                 this.ruleForm.price = String(res.data.price/100)
                 this.ruleForm.status = res.data.status == '1'
-                this.dishFlavors = res.data.flavors && res.data.flavors.map(obj => ({ ...obj, value: JSON.parse(obj.value),showOption: false }))
-                console.log('this.dishFlavors',this.dishFlavors)
+                this.ruleForm.fileHash = res.data.fileHash
+                this.ruleForm.name = res.data.name
+                this.ruleForm.description = res.data.description
+
                 // this.ruleForm.id = res.data.data.categoryId
                 // this.imageUrl = res.data.data.image
                 this.imageUrl = `/common/download?name=${res.data.image}`
@@ -359,132 +269,51 @@
               }
             })
           },
-          // 按钮 - 添加口味
-          addFlavore () {
-            this.dishFlavors.push({'name': '', 'value': [], showOption: false}) // JSON.parse(JSON.stringify(this.dishFlavorsData))
-          },
 
-          // 按钮 - 删除口味
-          delFlavor (ind) {
-            this.dishFlavors.splice(ind, 1)
-          },
-
-          // 按钮 - 删除口味标签
-          delFlavorLabel (index, ind) {
-            this.dishFlavors[index].value.splice(ind, 1)
-          },
-
-          //口味位置记录
-          flavorPosition (index) {
-            this.index = index
-          },
-
-          // 添加口味标签
-          keyDownHandle (val,index) {
-            console.log('keyDownHandle----val',val)
-            console.log('keyDownHandle----index',index)
-            console.log('keyDownHandle----this.dishFlavors',this.dishFlavors)
-            if (event) {
-              event.cancelBubble = true
-              event.preventDefault()
-              event.stopPropagation()
-            }
-
-            if (val.target.innerText.trim() != '') {
-              this.dishFlavors[index].value.push(val.target.innerText)
-              val.target.innerText = ''
-            }
-          },
-
-          // 获取菜品分类
-          getDishList () {
-            getCategoryList({ 'type': 1 }).then(res => {
+          // 获取情报分类
+          getIntelligenceList () {
+            getCategoryList().then(res => {
               if (res.code === 1) {
-                this.dishList = res.data
+                this.categoryList = res.data
               } else {
                 this.$message.error(res.msg || '操作失败')
               }
             })
           },
 
-          // 获取口味列表
-          getFlavorListHand () {
-            // flavor flavorData
-            this.dishFlavorsData = [
-              {'name':'甜味','value':['无糖','少糖','半糖','多糖','全糖']},
-              {'name':'温度','value':['热饮','常温','去冰','少冰','多冰']},
-              {'name':'忌口','value':['不要葱','不要蒜','不要香菜','不要辣']},
-              {'name':'辣度','value':['不辣','微辣','中辣','重辣']}
-            ]
-          },
-
-          selectFlavor(st,index){
-            console.log('st',st)
-            console.log('index',index)
-            console.log('this.dishFlavors',this.dishFlavors)
-            const obj = JSON.parse(JSON.stringify(this.dishFlavors[index]))
-            obj.showOption = st
-            this.dishFlavors.splice(index,1,obj)
-            // this.dishFlavors[index].showOption = st
-          },
-
-          outSelect(st,index){
-            const _this = this
-            setTimeout(()=> {
-              const obj = JSON.parse(JSON.stringify(_this.dishFlavors[index]))
-              obj.showOption = st
-              _this.dishFlavors.splice(index,1,obj)
-            }, 200)
-          },
 
           inputHandle(val,index){
             // this.selectFlavor(false,index)
-          },
-
-          checkOption(val, ind, index){
-            this.selectHandle(val.name, index, ind)
-            this.dishFlavors[index].name = val.name
-          },
-
-          selectHandle(val, key, ind){
-            const arrDate = [...this.dishFlavors]
-            arrDate[key] = JSON.parse(JSON.stringify(this.dishFlavorsData[ind]))
-            this.dishFlavors = arrDate
           },
 
           submitForm(formName, st) {
             this.$refs[formName].validate((valid) => {
               if (valid) {
                 let params = {...this.ruleForm}
-                // params.flavors = this.dishFlavors
                 params.status = this.ruleForm ? 1 : 0
                 params.price *= 100
                 params.categoryId = this.ruleForm.categoryId
-                params.flavors = this.dishFlavors.map(obj => ({ ...obj, value: JSON.stringify(obj.value) }))
-                delete params.dishFlavors
                 if(!this.imageUrl){
                   this.$message.error('请上传情报图片')
                   return 
                 }
                 if (this.actionType == 'add') {
                   delete params.id
-                  addDish(params).then(res => {
+                  addIntelligence(params).then(res => {
                     if (res.code === 1) {
                       this.$message.success('情报添加成功！')
                       if (!st) {
                         this.goBack()
                       } else {
-                        this.dishFlavors = []
-                        // this.dishFlavorsData = []
                         this.imageUrl = ''
                         this.ruleForm = {
                           'name': '',
+                          'userId': '',
                           'id': '',
                           'price': '',
-                          'code': '',
+                          'fileHash': '',
                           'image': '',
                           'description': '',
-                          'dishFlavors': [],
                           'status': true,
                           categoryId: ''
                         }
@@ -497,7 +326,7 @@
                   })
                 } else {
                   delete params.updateTime
-                  editDish(params).then(res => {
+                  editIntelligence(params).then(res => {
                     if (res.code === 1) {
                       this.$message.success('情报修改成功！')
                       this.goBack()
@@ -544,7 +373,7 @@
           goBack(){
             window.parent.menuHandle({
               id: '4',
-              url: '/backend/page/food/list.html',
+              url: '/backend/page/intelligence/list.html',
               name: '情报管理'
             },false)
           }

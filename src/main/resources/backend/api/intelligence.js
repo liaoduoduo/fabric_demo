@@ -1,16 +1,16 @@
 // 查询列表接口
-const getDishPage = (params) => {
+const getIntelligencePage = (params) => {
   return $axios({
-    url: '/dish/page',
+    url: '/intelligence/page',
     method: 'get',
     params
   })
 }
 
 // 删除接口
-const deleteDish = (ids) => {
+const deleteIntelligence = (ids) => {
   return $axios({
-    url: '/dish',
+    url: '/intelligence',
     method: 'delete',
     // get会将请求参数拼接在url上
     params: { ids }
@@ -18,18 +18,18 @@ const deleteDish = (ids) => {
 }
 
 // 修改接口
-const editDish = (params) => {
+const editIntelligence = (params) => {
   return $axios({
-    url: '/dish',
+    url: '/intelligence',
     method: 'put',
     data: { ...params }
   })
 }
 
 // 新增接口
-const addDish = (params) => {
+const addIntelligence = (params) => {
   return $axios({
-    url: '/dish',
+    url: '/intelligence',
     method: 'post',
     // post会将请求参数放在请求体中
     data: { ...params }
@@ -37,14 +37,14 @@ const addDish = (params) => {
 }
 
 // 查询详情
-const queryDishById = (id) => {
+const queryIntelligenceById = (id) => {
   return $axios({
-    url: `/dish/${id}`,
+    url: `/intelligence/${id}`,
     method: 'get'
   })
 }
 
-// 获取菜品分类列表
+// 获取情报分类列表
 const getCategoryList = (params) => {
   return $axios({
     url: '/category/list',
@@ -53,10 +53,10 @@ const getCategoryList = (params) => {
   })
 }
 
-// 查菜品列表的接口
-const queryDishList = (params) => {
+// 查情报列表的接口
+const queryIntelligenceList = (params) => {
   return $axios({
-    url: '/dish/list',
+    url: '/intelligence/list',
     method: 'get',
     params
   })
@@ -75,9 +75,9 @@ const commonDownload = (params) => {
 }
 
 // 起售停售---批量起售停售接口
-const dishStatusByStatus = (params) => {
+const intelligenceStatusByStatus = (params) => {
   return $axios({
-    url: `/dish/status/${params.status}`,
+    url: `/intelligence/status/${params.status}`,
     method: 'post',
     params: { ids: params.id }
   })

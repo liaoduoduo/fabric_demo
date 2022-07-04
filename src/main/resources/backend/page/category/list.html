@@ -159,7 +159,7 @@
             tableData: [],
             type :'',
             classData: {
-              'title': '添加菜品分类',
+              'title': '添加情报分类',
               'dialogVisible': false,
               'categoryId': '',
               'name': '',
@@ -239,7 +239,7 @@
                 if (valid) {
                   const reg = /^\d+$/
                   if (reg.test(classData.sort)) {
-                    addCategory({'name': classData.name,'type':this.type, sort: classData.sort}).then(res => {
+                    addCategory({'name': classData.name, sort: classData.sort}).then(res => {
                       console.log(res)
                       if (res.code === 1) {
                         this.$message.success('分类添加成功！')

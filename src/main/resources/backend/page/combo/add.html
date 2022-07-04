@@ -364,7 +364,7 @@
     <script src="../../api/combo.js"></script>
     <script src="../../js/validate.js"></script>
     <script src="../../js/index.js"></script>
-    <script src="../../api/food.js"></script>
+    <script src="../../api/intelligence.js"></script>
     <script>
       new Vue({
         el: '#combo-add-app',
@@ -649,7 +649,7 @@
 
           // 通过套餐ID获取菜品列表分类
           getDishList (id) {
-            queryDishList({categoryId: id}).then(res => {
+            queryIntelligenceList({categoryId: id}).then(res => {
               if (res.code === 1) {
                 if (res.data.length == 0) {
                   this.dishAddList = []
@@ -671,7 +671,7 @@
 
           // 关键词收搜菜品列表分类
           getDishForName (name) {
-            queryDishList({name}).then(res => {
+            queryIntelligenceList({name}).then(res => {
               if (res.code === 1) {
                 let newArr = res.data
                 newArr.forEach((n) => {

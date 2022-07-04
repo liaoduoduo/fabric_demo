@@ -136,7 +136,7 @@
     <!-- 引入axios -->
     <script src="../../plugins/axios/axios.min.js"></script>
     <script src="../../js/request.js"></script>
-    <script src="../../api/food.js"></script>
+    <script src="../../api/intelligence.js"></script>
     <script>
       new Vue({
         el: '#food-app',
@@ -164,7 +164,7 @@
               pageSize: this.pageSize,
               name: this.input ? this.input : undefined
             }
-            await getDishPage(params).then(res => {
+            await getIntelligencePage(params).then(res => {
               if (String(res.code) === '1') {
                 this.tableData = res.data.records || []
                 this.counts = res.data.total
@@ -185,7 +185,7 @@
             if (st === 'add'){
               window.parent.menuHandle({
                 id: '4',
-                url: '/backend/page/food/add.html',
+                url: '/backend/page/intelligence/add.html',
                 name: '新增情报'
               },true)
             } else {
@@ -204,11 +204,11 @@
                 return this.$message.error('请选择删除对象')
               }
             }
-            this.$confirm('确认删除该菜品, 是否继续?', '确定删除', {
+            this.$confirm('确认删除该情报, 是否继续?', '确定删除', {
               'confirmButtonText': '确定',
               'cancelButtonText': '取消',
             }).then(() => {
-              deleteDish(type === '批量' ? this.checkList.join(',') : id).then(res => {
+              deleteIntelligence(type === '批量' ? this.checkList.join(',') : id).then(res => {
                 if (res.code === 1) {
                   this.$message.success('删除成功！')
                   this.handleQuery()
@@ -242,7 +242,7 @@
               'type': 'warning'
             }).then(() => {
               // 起售停售---批量起售停售接口
-              dishStatusByStatus(this.dishState).then(res => {
+              intelligenceStatusByStatus(this.dishState).then(res => {
                 if (res.code === 1) {
                   this.$message.success('菜品状态已经更改成功！')
                   this.handleQuery()
