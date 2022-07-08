@@ -1,0 +1,44 @@
+{
+  "id": "3510367",
+  "name": "1",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "5651472",
+      "name": "人防情报",
+      "font_class": "renfangqingbao",
+      "unicode": "e669",
+      "unicode_decimal": 58985
+    },
+    {
+      "icon_id": "1111351",
+      "name": "悬赏",
+      "font_class": "xuanshang",
+      "unicode": "e61a",
+      "unicode_decimal": 58906
+    },
+    {
+      "icon_id": "7874505",
+      "name": "交易所",
+      "font_class": "jiaoyisuo",
+      "unicode": "e603",
+      "unicode_decimal": 58883
+    },
+    {
+      "icon_id": "985",
+      "name": "理财",
+      "font_class": "licai",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "1305472",
+      "name": "任务",
+      "font_class": "renwu",
+      "unicode": "e63f",
+      "unicode_decimal": 58943
+    }
+  ]
+}

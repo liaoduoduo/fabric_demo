@@ -3,6 +3,7 @@
   src: url('iconfont.woff2?t=1621231825060') format('woff2'),
        url('iconfont.woff?t=1621231825060') format('woff'),
        url('iconfont.ttf?t=1621231825060') format('truetype');
+
 }
 
 .iconfont {
@@ -39,5 +40,9 @@
 
 .icon-food:before {
   content: "\e60c";
+}
+
+.icon-renwu:before {
+  content: "\e63f";
 }
 
