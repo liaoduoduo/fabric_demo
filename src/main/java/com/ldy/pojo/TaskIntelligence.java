@@ -25,6 +25,8 @@ public class TaskIntelligence implements Serializable {
     //研判任务包含的情报id list
     private String value;
 
+
+
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 

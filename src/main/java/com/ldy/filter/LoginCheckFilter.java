@@ -28,6 +28,7 @@ public class LoginCheckFilter implements Filter {
         log.info("拦截到请求：{}", requestURI);
         //定义不需要处理的请求路径
         String[] urls = new String[]{
+                "/",
                 "/employee/login",
                 "/employee/logout",
                 "/backend/**",

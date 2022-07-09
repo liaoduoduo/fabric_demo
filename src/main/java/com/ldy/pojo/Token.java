@@ -23,6 +23,7 @@ public class Token implements Serializable {
     private Integer amount;
     private Integer status;
 
+
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 

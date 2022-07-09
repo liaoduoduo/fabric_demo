@@ -65,7 +65,7 @@ public class IntelligenceController {
     }
 
     /**
-     * @param intelligence
+     * @param intelligenceDto
      * @return com.ldy.common.R<java.lang.String>
      * @description 新增情报
      * @date 2022/7/4 16:34

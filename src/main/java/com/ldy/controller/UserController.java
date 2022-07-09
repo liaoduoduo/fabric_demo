@@ -105,9 +105,9 @@ public class UserController {
         user.setPassword("123456");
         userService.save(user);
 
-/*        //存储到区块链中，调用链码：saveUser
+        //存储到区块链中，调用链码：saveUser
         byte[] invokeResult = userService.saveByBlockChain(user);
-        log.info("存储到区块的用户数据：{}",invokeResult);*/
+        log.info("存储到区块的用户数据：{}",invokeResult);
 
         return R.success("新增用户成功！");
     }
