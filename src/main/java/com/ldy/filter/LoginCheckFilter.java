@@ -28,6 +28,7 @@ public class LoginCheckFilter implements Filter {
         log.info("拦截到请求：{}", requestURI);
         //定义不需要处理的请求路径
         String[] urls = new String[]{
+                "/",
                 "/employee/login",
                 "/employee/logout",
                 "/backend/**",
@@ -62,7 +63,9 @@ public class LoginCheckFilter implements Filter {
         //5、如果未登录则返回未登录结果，通过输出流方式向客户端页面响应数据
         //request.js中定义了返回对象的属性判断逻辑
         log.info("用户未登录！");
+
         response.getWriter().write(JSON.toJSONString(R.error("NOTLOGIN")));
+        // response.sendRedirect("redirect:/backend/page/login/login.html");
 
     }
 

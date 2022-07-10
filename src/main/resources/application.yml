@@ -27,4 +27,4 @@ spring:
       username: root
       password: 123456
 picture:
-  path: D:/fabric_demo
+  path: ./fabric_demo

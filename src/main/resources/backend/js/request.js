@@ -49,6 +49,7 @@
         localStorage.removeItem('userInfo')
         window.top.location.href = '/backend/page/login/login.html'
       } else {
+        console.log('res.datadaozhele')
         return res.data
       }
     },

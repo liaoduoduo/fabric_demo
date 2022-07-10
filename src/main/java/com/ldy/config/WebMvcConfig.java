@@ -9,6 +9,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -24,6 +25,12 @@ import java.util.List;
 @EnableSwagger2
 @EnableKnife4j
 public class WebMvcConfig extends WebMvcConfigurationSupport {
+
+    @Bean
+    public InternalResourceViewResolver viewResolver(){
+        return new InternalResourceViewResolver();
+    }
+
     /**
      * 设置静态资源映射
      */
