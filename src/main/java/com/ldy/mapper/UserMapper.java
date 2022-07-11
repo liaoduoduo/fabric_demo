@@ -1,7 +1,7 @@
 package com.ldy.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.ldy.pojo.User;
+import com.ldy.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

@@ -1,4 +1,4 @@
-package com.ldy.pojo;
+package com.ldy.entity;
 
 import lombok.Data;
 

@@ -1,8 +1,9 @@
-package com.ldy.service;
+package com.ldy.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ldy.mapper.UserMapper;
-import com.ldy.pojo.User;
+import com.ldy.entity.User;
+import com.ldy.service.UserService;
 import org.hyperledger.fabric.gateway.Contract;
 import org.hyperledger.fabric.gateway.ContractException;
 import org.hyperledger.fabric.gateway.Network;

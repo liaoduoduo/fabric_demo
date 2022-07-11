@@ -1,4 +1,4 @@
-package com.ldy.pojo;
+package com.ldy.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -8,42 +8,37 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 情报分类
+ * @Author ldy
+ * @Date 2022/7/1 17:08
+ * @ClassName TaskIntelligence
+ * @Description 研判任务包含的情报实体类，一个研判任务包含多个情报
+ * @Version v1.0
  */
 @Data
-public class Category implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class TaskIntelligence implements Serializable {
 
     private Long id;
 
-    //分类名称
-    private String name;
+    //研判任务id
+    private Long taskId;
 
-    //顺序
-    private Integer sort;
+    //研判任务包含的情报id list
+    private String value;
 
 
-    //创建时间
+
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
-    //更新时间
+
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 
 
-    //创建人
     @TableField(fill = FieldFill.INSERT)
     private Long createUser;
 
 
-    //修改人
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updateUser;
-
-
-    //是否删除 逻辑删除
-    //private Integer isDeleted;
-
 }

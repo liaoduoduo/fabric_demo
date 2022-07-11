@@ -2,9 +2,8 @@ package com.ldy.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.ldy.common.BaseContext;
 import com.ldy.common.R;
-import com.ldy.pojo.User;
+import com.ldy.entity.User;
 import com.ldy.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -12,13 +11,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.hyperledger.fabric.gateway.Contract;
 import org.hyperledger.fabric.gateway.ContractException;
 import org.hyperledger.fabric.gateway.Network;
-import org.hyperledger.fabric.sdk.Peer;
-import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.EnumSet;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -93,6 +89,7 @@ public class UserController {
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.like(name != null, User::getName, name)
                 .orderByDesc(User::getUpdateTime);
+
         userService.page(userPage, queryWrapper);
         return R.success(userPage);
     }
@@ -106,8 +103,8 @@ public class UserController {
         userService.save(user);
 
         //存储到区块链中，调用链码：saveUser
-        byte[] invokeResult = userService.saveByBlockChain(user);
-        log.info("存储到区块的用户数据：{}",invokeResult);
+        /*byte[] invokeResult = userService.saveByBlockChain(user);
+        log.info("存储到区块的用户数据：{}",invokeResult);*/
 
         return R.success("新增用户成功！");
     }

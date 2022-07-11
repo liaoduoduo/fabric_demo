@@ -3,7 +3,7 @@ package com.ldy.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ldy.common.R;
-import com.ldy.pojo.Category;
+import com.ldy.entity.Category;
 import com.ldy.service.CategoryService;
 import org.springframework.web.bind.annotation.*;
 

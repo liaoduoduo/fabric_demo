@@ -67,7 +67,7 @@
               v-model="ruleForm.name"
               placeholder="请填写情报名称"
               maxlength="20"
-            />
+              disabled />
           </el-form-item>
           <el-form-item
             label="情报分类:"
@@ -76,6 +76,7 @@
             <el-select
               v-model="ruleForm.categoryId"
               placeholder="请选择情报分类"
+              disabled
             >
               <el-option v-for="(item,index) in categoryList" :key="index" :label="item.name" :value="item.id" />
             </el-select>
@@ -89,6 +90,7 @@
             <el-input
               v-model="ruleForm.price"
               placeholder="请设置情报价值"
+              disabled
             />
           </el-form-item>
 
@@ -99,6 +101,7 @@
             <el-input
                     v-model="ruleForm.fileHash"
                     placeholder="请设置情报hash值，根据hash值可获取完整情报数据"
+                    disabled
             />
           </el-form-item>
         </div>
@@ -107,15 +110,8 @@
             label="情报图片:"
             prop="region"
             class="uploadImg"
+            disabled
           >
-            <el-upload
-              class="avatar-uploader"
-              action="/common/upload"
-              :show-file-list="false"
-              :on-success="handleAvatarSuccess"
-              :on-change="onChange"
-              ref="upload"
-            >
               <img
                 v-if="imageUrl"
                 :src="imageUrl"
@@ -125,7 +121,7 @@
                 v-else
                 class="el-icon-plus avatar-uploader-icon"
               ></i>
-            </el-upload>
+
           </el-form-item>
         </div>
         <div class="address">
@@ -139,6 +135,7 @@
               :rows="3"
               placeholder="情报描述，最长200字"
               maxlength="200"
+              disabled
             />
           </el-form-item>
         </div>
@@ -151,16 +148,9 @@
               type="primary"
               @click="submitForm('ruleForm')"
             >
-              保存
+              购买
             </el-button>
-            <el-button
-              v-if="actionType == 'add'"
-              type="primary"
-              class="continue"
-              @click="submitForm('ruleForm','goAnd')"
-            >
-              保存并继续添加情报
-            </el-button>
+
           </el-form-item>
         </div>
       </el-form>
@@ -254,7 +244,6 @@
             queryIntelligenceById(this.id).then(res => {
               console.log(res)
               if (String(res.code) === '1') {
-                //...:展开语法(Spread syntax)
                 this.ruleForm = { ...res.data }
                 this.ruleForm.price = String(res.data.price/100)
                 this.ruleForm.status = res.data.status == '1'
@@ -287,57 +276,20 @@
             // this.selectFlavor(false,index)
           },
 
-          submitForm(formName, st) {
+          submitForm(formName) {
             this.$refs[formName].validate((valid) => {
               if (valid) {
-                let params = {...this.ruleForm}
-                params.status = this.ruleForm ? 1 : 0
-                params.price *= 100
-                params.categoryId = this.ruleForm.categoryId
-                if(!this.imageUrl){
-                  this.$message.error('请上传情报图片')
-                  return 
-                }
-                if (this.actionType == 'add') {
-                  delete params.id
-                  addIntelligence(params).then(res => {
-                    if (res.code === 1) {
-                      this.$message.success('情报添加成功！')
-                      if (!st) {
-                        this.goBack()
-                      } else {
-                        this.imageUrl = ''
-                        this.ruleForm = {
-                          'name': '',
-                          'userId': '',
-                          'id': '',
-                          'price': '',
-                          'fileHash': '',
-                          'image': '',
-                          'description': '',
-                          'status': true,
-                          categoryId: ''
-                        }
-                      }
-                    } else {
-                      this.$message.error(res.msg || '操作失败')
-                    }
-                  }).catch(err => {
-                    this.$message.error('请求出错了：' + err)
-                  })
-                } else {
-                  delete params.updateTime
-                  editIntelligence(params).then(res => {
-                    if (res.code === 1) {
-                      this.$message.success('情报修改成功！')
-                      this.goBack()
-                    } else {
-                      this.$message.error(res.msg || '操作失败')
-                    }
-                  }).catch(err => {
-                    this.$message.error('请求出错了：' + err)
-                  })
-                }
+                let params = this.ruleForm.id
+                buyIntelligence(params).then(res => {
+                  if (res.code === 1) {
+                    this.$message.success('情报购买成功！')
+                    this.goBack()
+                  } else {
+                    this.$message.error(res.msg || '操作失败')
+                  }
+                }).catch(err => {
+                  this.$message.error('请求出错了：' + err)
+                })
               } else {
                 return false
               }
@@ -354,28 +306,11 @@
             }
           },
 
-          onChange (file) {
-            if(file){
-              const suffix = file.name.split('.')[1]
-              const size = file.size / 1024 / 1024 < 2
-              if(['png','jpeg','jpg'].indexOf(suffix) < 0){
-                this.$message.error('上传图片只支持 png、jpeg、jpg 格式！')
-                this.$refs.upload.clearFiles()
-                return false
-              }
-              if(!size){
-                this.$message.error('上传文件大小不能超过 2MB!')
-                return false
-              }
-              return file
-            }
-          },
-          
           goBack(){
             window.parent.menuHandle({
               id: '4',
               url: '/backend/page/intelligence/list.html',
-              name: '情报管理'
+              name: '情报交易'
             },false)
           }
         }

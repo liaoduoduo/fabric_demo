@@ -1,4 +1,4 @@
-package com.ldy.pojo;
+package com.ldy.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -8,34 +8,42 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * @Author ldy
- * @Date 2022/6/25 16:51
- * @ClassName Token
- * @Description token实体类,对应每个用户持有的token数目
- * @Version v1.0
+ * 情报分类
  */
-
 @Data
-public class Token implements Serializable {
+public class Category implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long id;
-    private Long userId;
-    private Integer amount;
-    private Integer status;
+
+    //分类名称
+    private String name;
+
+    //顺序
+    private Integer sort;
 
 
+    //创建时间
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
+    //更新时间
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 
+
+    //创建人
     @TableField(fill = FieldFill.INSERT)
     private Long createUser;
 
+
+    //修改人
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updateUser;
 
 
+    //是否删除 逻辑删除
+    //private Integer isDeleted;
 
 }

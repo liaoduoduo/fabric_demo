@@ -1,8 +1,9 @@
-package com.ldy.service;
+package com.ldy.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ldy.mapper.IntelligenceMapper;
-import com.ldy.pojo.Intelligence;
+import com.ldy.entity.Intelligence;
+import com.ldy.service.IntelligenceService;
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,5 +14,5 @@ import org.springframework.stereotype.Service;
  * @Version v1.0
  */
 @Service
-public class IntelligenceServiceImpl extends ServiceImpl<IntelligenceMapper, Intelligence> implements IntelligenceService{
+public class IntelligenceServiceImpl extends ServiceImpl<IntelligenceMapper, Intelligence> implements IntelligenceService {
 }

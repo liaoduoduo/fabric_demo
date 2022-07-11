@@ -1,8 +1,9 @@
-package com.ldy.service;
+package com.ldy.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ldy.mapper.TaskMapper;
-import com.ldy.pojo.Task;
+import com.ldy.entity.Task;
+import com.ldy.service.TaskService;
 import org.springframework.stereotype.Service;
 
 /**

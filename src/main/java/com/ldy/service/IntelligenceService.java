@@ -1,7 +1,7 @@
 package com.ldy.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.ldy.pojo.Intelligence;
+import com.ldy.entity.Intelligence;
 
 /**
  * @Author ldy

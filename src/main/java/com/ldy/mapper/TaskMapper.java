@@ -1,7 +1,7 @@
 package com.ldy.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.ldy.pojo.Task;
+import com.ldy.entity.Task;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

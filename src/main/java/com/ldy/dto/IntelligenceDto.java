@@ -1,6 +1,6 @@
 package com.ldy.dto;
 
-import com.ldy.pojo.Intelligence;
+import com.ldy.entity.Intelligence;
 import lombok.Data;
 
 /**

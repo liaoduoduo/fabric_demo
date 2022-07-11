@@ -1,8 +1,8 @@
 package com.ldy.dto;
 
-import com.ldy.pojo.Task;
-import com.ldy.pojo.TaskIntelligence;
-import com.ldy.pojo.TaskUser;
+import com.ldy.entity.Task;
+import com.ldy.entity.TaskIntelligence;
+import com.ldy.entity.TaskUser;
 import lombok.Data;
 
 import java.io.Serializable;

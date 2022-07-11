@@ -1,7 +1,7 @@
 package com.ldy.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.ldy.pojo.Intelligence;
+import com.ldy.entity.Intelligence;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

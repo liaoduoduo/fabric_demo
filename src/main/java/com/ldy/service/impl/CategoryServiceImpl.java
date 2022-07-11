@@ -1,8 +1,9 @@
-package com.ldy.service;
+package com.ldy.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ldy.mapper.CategoryMapper;
-import com.ldy.pojo.Category;
+import com.ldy.entity.Category;
+import com.ldy.service.CategoryService;
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,5 +14,5 @@ import org.springframework.stereotype.Service;
  * @Version v1.0
  */
 @Service
-public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> implements CategoryService{
+public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> implements CategoryService {
 }

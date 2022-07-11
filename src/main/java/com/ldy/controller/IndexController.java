@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @Author ldy
  * @Date 2022/7/9 14:39
  * @ClassName indexController
- * @Description TODO
+ * @Description 首页跳转
  * @Version v1.0
  */
 
 @Slf4j
 @Controller
-public class indexController {
+public class IndexController {
     @RequestMapping("/")
     public String index(){
         log.info("首页");

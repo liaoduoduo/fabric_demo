@@ -34,9 +34,9 @@
           <span style="border:none;" class="span-btn delBut non" @click="statusHandle('0')">批量停用</span>
           <el-button
             type="primary"
-            @click="addFoodtype('add')"
+            @click="addIntelligencetype('add')"
           >
-            + 新建情报
+            + 发布情报
           </el-button>
         </div>
       </div>
@@ -94,7 +94,15 @@
               type="text"
               size="small"
               class="blueBug"
-              @click="addFoodtype(scope.row.id)"
+              @click="buyIntelligence(scope.row.id)"
+            >
+              购买
+            </el-button>
+            <el-button
+              type="text"
+              size="small"
+              class="blueBug"
+              @click="addIntelligencetype(scope.row.id)"
             >
               修改
             </el-button>
@@ -181,7 +189,7 @@
             this.init();
           },
           // 添加
-          addFoodtype (st) {
+          addIntelligencetype (st) {
             if (st === 'add'){
               window.parent.menuHandle({
                 id: '4',
@@ -191,10 +199,18 @@
             } else {
               window.parent.menuHandle({
                 id: '4',
-                url: '/backend/page/food/add.html?id='+st,
+                url: '/backend/page/intelligence/add.html?id='+st,
                 name: '修改情报'
               },true)
             }
+          },
+
+          buyIntelligence(st) {
+            window.parent.menuHandle({
+              id: '4',
+              url: '/backend/page/intelligence/buy.html?id='+st,
+              name: '购买情报'
+            },true)
           },
 
           // 删除

@@ -32,6 +32,15 @@ const addIntelligence = (params) => {
     url: '/intelligence',
     method: 'post',
     // post会将请求参数放在请求体中
+    //...为展开语法(浅拷贝)
+    //展开后为        'name': '',
+    //               'id': '',
+    //               'userId': '',
+    //               'price': '',
+    //               'fileHash': '',
+    //               'image': '',
+    //               'description': '',
+    //               'status': true,
     data: { ...params }
   })
 }
@@ -80,5 +89,13 @@ const intelligenceStatusByStatus = (params) => {
     url: `/intelligence/status/${params.status}`,
     method: 'post',
     params: { ids: params.id }
+  })
+}
+
+const buyIntelligence = (params) => {
+  return $axios({
+    url: `/intelligence/buy`,
+    method: 'post',
+    data: { id: params }
   })
 }

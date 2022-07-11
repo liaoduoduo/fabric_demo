@@ -1,4 +1,4 @@
-package com.ldy.pojo;
+package com.ldy.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
