@@ -41,17 +41,24 @@ public class MyIntelligenceController {
 
     @GetMapping("/page")
     public R<Page<IntelligenceDto>> page(int page, int pageSize, String name) {
+        //获取当前登录用户id
         Long userId = BaseContext.getCurrentId();
+
+        //分页查询用户发布的情报
         Page<Intelligence> intelligencePage = new Page<>(page, pageSize);
         Page<IntelligenceDto> intelligenceDtoPage = new Page<>();
         LambdaQueryWrapper<Intelligence> queryWrapper1 = new LambdaQueryWrapper<>();
         queryWrapper1.like(name != null, Intelligence::getName, name).eq(Intelligence::getUserId, userId);
         intelligenceService.page(intelligencePage, queryWrapper1);
 
+        //查询用户已购买情报表
         LambdaQueryWrapper<UserIntelligence> queryWrapper2 = new LambdaQueryWrapper<>();
         queryWrapper2.eq(UserIntelligence::getUserId, userId);
         List<UserIntelligence> UserIntelligenceList = userIntelligenceService.list(queryWrapper2);
 
+        //根据查询用户已购买情报表获得的UserIntelligenceList
+        //获取用户已购买情报的实体类
+        //将实体类追加到分页查询结果（records）中
         for (UserIntelligence userIntelligence : UserIntelligenceList) {
             Long intelligenceId = userIntelligence.getIntelligenceId();
             Intelligence intelligence = intelligenceService.getById(intelligenceId);
@@ -61,15 +68,21 @@ public class MyIntelligenceController {
             intelligencePage.setRecords(records);
         }
 
-
+        //对象拷贝，records属性除外
         BeanUtils.copyProperties(intelligencePage, intelligenceDtoPage, "records");
 
+        //创建intelligenceDto数据传输对象列表
         List<IntelligenceDto> list = new ArrayList<>();
+
+        //遍历每一条记录
         for (Intelligence record : intelligencePage.getRecords()) {
             IntelligenceDto intelligenceDto = new IntelligenceDto();
-            BeanUtils.copyProperties(record, intelligenceDto);
-            intelligenceDto.setCategoryName(categoryService.getById(record.getCategoryId()).getName());
 
+            //将该Intelligence记录拷贝到intelligenceDto中
+            BeanUtils.copyProperties(record, intelligenceDto);
+
+            //将分类名，数据来源，追加到intelligenceDto中
+            intelligenceDto.setCategoryName(categoryService.getById(record.getCategoryId()).getName());
             if (record.getUserId().equals(userId)) {
                 intelligenceDto.setOrigin("本人发布");
             } else {
