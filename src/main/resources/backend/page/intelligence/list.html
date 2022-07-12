@@ -155,7 +155,7 @@
              page: 1,
              pageSize: 10,
              tableData : [],
-             dishState : '',
+             intelligenceState : '',
              checkList: []
           }
         },
@@ -242,7 +242,7 @@
             let params = {}
             if (typeof row === 'string' ) {
               if (this.checkList.length === 0) {
-                this.$message.error('批量操作，请先勾选操作菜品！')
+                this.$message.error('批量操作，请先勾选操作情报！')
                 return false
               }
               params.id = this.checkList.join(',')
@@ -251,16 +251,16 @@
               params.id = row.id
               params.status = row.status ? '0' : '1'
             }
-            this.dishState = params
-            this.$confirm('确认更改该菜品状态?', '提示', {
+            this.intelligenceState = params
+            this.$confirm('确认更改该情报状态?', '提示', {
               'confirmButtonText': '确定',
               'cancelButtonText': '取消',
               'type': 'warning'
             }).then(() => {
               // 起售停售---批量起售停售接口
-              intelligenceStatusByStatus(this.dishState).then(res => {
+              intelligenceStatusByStatus(this.intelligenceState).then(res => {
                 if (res.code === 1) {
-                  this.$message.success('菜品状态已经更改成功！')
+                  this.$message.success('情报状态已经更改成功！')
                   this.handleQuery()
                 } else {
                   this.$message.error(res.msg || '操作失败')

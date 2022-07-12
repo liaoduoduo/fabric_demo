@@ -280,6 +280,7 @@
             this.$refs[formName].validate((valid) => {
               if (valid) {
                 let params = this.ruleForm.id
+                console.log(this.ruleForm.id)
                 buyIntelligence(params).then(res => {
                   if (res.code === 1) {
                     this.$message.success('情报购买成功！')

@@ -6,9 +6,11 @@ import com.ldy.common.BaseContext;
 import com.ldy.common.R;
 import com.ldy.dto.IntelligenceDto;
 import com.ldy.entity.Intelligence;
+import com.ldy.entity.UserIntelligence;
 import com.ldy.service.CategoryService;
 import com.ldy.service.IntelligenceService;
 import com.ldy.service.UserIntelligenceService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +25,7 @@ import java.util.List;
  * @Description 情报数据控制层
  * @Version v1.0
  */
+@Slf4j
 @RestController
 @RequestMapping("/intelligence")
 public class IntelligenceController {
@@ -63,6 +66,7 @@ public class IntelligenceController {
                 intelligenceDto.setCategoryName(categoryService.getById(categoryId).getName());
                 list.add(intelligenceDto);
             }
+
         }
         intelligenceDtoPage.setRecords(list);
         return R.success(intelligenceDtoPage);
@@ -76,9 +80,13 @@ public class IntelligenceController {
      */
     @PostMapping
     public R<String> save(@RequestBody IntelligenceDto intelligenceDto) {
-        intelligenceDto.setUserId(BaseContext.getCurrentId());
+        Long userId = BaseContext.getCurrentId();
+        intelligenceDto.setUserId(userId);
         intelligenceService.save(intelligenceDto);
-        //保存到区块链中，key：id
+        //保存到区块链中，key：id(未完成）
+        Intelligence intelligence = intelligenceService.queryLatestIntelligence(userId);
+        Long intelligenceId = intelligence.getId();
+
         return R.success("新增情报成功");
     }
 
@@ -102,26 +110,76 @@ public class IntelligenceController {
      * @date 2022/7/11 16:57
      */
     @PutMapping
-    public R<String> update(Intelligence intelligence) {
-        intelligenceService.updateById(intelligence);
-        /*Long intelligenceId = intelligence.getId();
+    public R<String> update(@RequestBody Intelligence intelligence) {
+        Long intelligenceId = intelligence.getId();
         LambdaQueryWrapper<UserIntelligence> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(UserIntelligence::getIntelligenceId, intelligenceId);
         int count = userIntelligenceService.count(queryWrapper);
         if (count > 1) {
             //说明除了情报发布者，还有其他用户购买了该情报，此时不允许修改情报了
-            return R.error("该情报已经有人获取过，无法修改情报！")
-        }*/
+            return R.error("该情报已经有人获取过，无法修改情报！");
+        }
+        intelligenceService.updateById(intelligence);
+        //在区块链中更新（未完成）
         return R.success("修改情报成功");
     }
 
+    /**
+     * @description 购买情报
+     * @date 2022/7/12 16:50
+     * @param id
+     * @return com.ldy.common.R<java.lang.String>
+     */
     @PostMapping("/buy")
     public R<String> buy(Long id) {
-/*        UserIntelligence userIntelligence = new UserIntelligence();
-        userIntelligence.setUserId(BaseContext.getCurrentId());
+        //判断用户token余额（未完成）
+        //根据该情报价格，扣除token，并存到区块链（未完成）
+        log.info(id.toString());
+        //获取该情报实体
+        Intelligence intelligence = intelligenceService.getById(id);
+
+        //获取当前登录用户id
+        Long userId = BaseContext.getCurrentId();
+
+        //判断该情报是否停售
+        if (intelligence.getStatus()!=1) {
+            return R.error("该情报已停售，无法购买！");
+        }
+
+        //判断该用户买的是不是自己发布的情报
+        if (intelligence.getUserId().equals(userId)) {
+            return R.error("不能购买自己发布的情报！");
+        }
+        //判断该用户是不是已拥有该情报了
+        LambdaQueryWrapper<UserIntelligence> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(UserIntelligence::getIntelligenceId, intelligence.getId())
+                .eq(UserIntelligence::getUserId, userId);
+
+        if (userIntelligenceService.count(queryWrapper) > 0) {
+            return R.error("该情报你已拥有！");
+        }
+
+        UserIntelligence userIntelligence = new UserIntelligence();
+        userIntelligence.setUserId(userId);
         userIntelligence.setIntelligenceId(id);
-        userIntelligenceService.save(userIntelligence);*/
+        String fileHash = intelligence.getFileHash();
+        userIntelligence.setFileHash(fileHash);
+
+        //购买成功，保存到数据库中
+        userIntelligenceService.save(userIntelligence);
+
+        //与此同时保存到区块链（未完成）
+        UserIntelligence newUserIntelligence = userIntelligenceService.queryLatestUserIntelligence(userId);
+        //newUserIntelligence为刚刚保存的用户购买情报的一条记录，由mybatis自动装填了主键id
+        //根据这个id将newUserIntelligence的剩余字段保存到区块链中
+        log.info("刚刚保存的用户拥有的情报记录数据id为：{}", newUserIntelligence.getId());
         return R.success("购买成功");
+    }
+
+    @PostMapping("/status/{status}")
+    public R<String> editStatus(@PathVariable Integer status, @RequestParam List<Long> ids) {
+        intelligenceService.batchStatus(status, ids);
+        return R.success("修改状态成功！");
     }
 
 

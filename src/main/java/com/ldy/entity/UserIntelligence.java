@@ -18,6 +18,7 @@ public class UserIntelligence {
     private Long id;
     private Long userId;
     private Long intelligenceId;
+    private String fileHash;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;

@@ -3,6 +3,8 @@ package com.ldy.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ldy.entity.Intelligence;
 
+import java.util.List;
+
 /**
  * @Author ldy
  * @Date 2022/7/1 17:20
@@ -11,4 +13,7 @@ import com.ldy.entity.Intelligence;
  * @Version v1.0
  */
 public interface IntelligenceService extends IService<Intelligence> {
+    Intelligence queryLatestIntelligence(Long userId);
+
+    void batchStatus(Integer status, List<Long> ids);
 }

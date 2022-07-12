@@ -11,4 +11,5 @@ import com.ldy.entity.UserIntelligence;
  * @Version v1.0
  */
 public interface UserIntelligenceService extends IService<UserIntelligence> {
+    UserIntelligence queryLatestUserIntelligence(Long userId);
 }

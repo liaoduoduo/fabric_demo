@@ -24,6 +24,7 @@ import java.util.List;
 @Configuration
 @EnableSwagger2
 @EnableKnife4j
+
 public class WebMvcConfig extends WebMvcConfigurationSupport {
 
     @Bean
@@ -41,7 +42,7 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
         registry.addResourceHandler("/front/**").addResourceLocations("classpath:/front/");
 
         //swagger接口文档页面
-        registry.addResourceHandler("doc.html").addResourceLocations("classpath:/META-INF/resources/");
+        registry.addResourceHandler("/doc.html").addResourceLocations("classpath:/META-INF/resources/");
         registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
 

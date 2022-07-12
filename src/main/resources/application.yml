@@ -37,3 +37,4 @@ mybatis-plus:
     db-config:
       #雪花算法
       id-type: ASSIGN_ID
+  mapper-locations: classpath:/mapping/*.xml
