@@ -15,18 +15,14 @@ token管理
 
 #### 安装教程
 
-1. 虚拟机搭建并启动test-network区块链网络，创建引用通道 ./network.sh createChannel
-2. 安装好测试链码 ./network.sh deployCC -ccn basic -ccp ../asset-transfer-basic/chaincode-go -ccl go
-3. 将第一步生成的证书和私钥路径替换到 resources/crypto-config
-4. 搭建好mysql数据库
-5. 修改application.yml配置文件
-6. 修改connection.json,将节点url的ip地址修改为自己虚拟机地址
-7. 启动项目
+1. 虚拟机搭建并启动test-network区块链网络，进入fabric目录/scripts/fabric-samples/test-network
+2. 创建通道 ./network.sh createChannel
+3. 安装好测试链码 ./network.sh deployCC -ccn basic -ccp ../asset-transfer-basic/chaincode-go -ccl go
+4. 将第一步生成的证书和私钥文件夹 ./organizations/ordererOrganizations 和./organizations/peerOrganizations  拷贝到本项目resources/crypto-config/目录下
+5. 搭建好mysql数据库
+6. 修改application.yml配置文件中mysql数据库的配置
+7. 修改connection.json,将节点url的ip地址修改为自己虚拟机地址
+8. 启动项目
 
-#### 参与贡献
 
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
 

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -119,6 +120,12 @@ public class UserController {
         one.setStatus(user.getStatus());
         userService.saveByBlockChain(one);*/
         return R.success("修改用户信息成功");
+    }
+
+    @GetMapping("/list")
+    public R<List<User>> list() {
+        List<User> list = userService.list();
+        return R.success(list);
     }
 
 
