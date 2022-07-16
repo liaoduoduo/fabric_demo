@@ -214,6 +214,9 @@
               'categoryId': [
                 {'required': true, 'message': '请选择情报分类', 'trigger': 'change'}
               ],
+              'fileHash': [
+                {'required': true, 'message': '请填写情报hash', 'trigger': 'blur'}
+              ],
               'price': [
                 {
                   'required': true,
@@ -255,7 +258,6 @@
               console.log(res)
               if (String(res.code) === '1') {
                 this.ruleForm = { ...res.data }
-                this.ruleForm.price = String(res.data.price/100)
                 this.ruleForm.status = res.data.status == '1'
                 this.ruleForm.fileHash = res.data.fileHash
                 this.ruleForm.name = res.data.name
@@ -281,7 +283,6 @@
             })
           },
 
-
           inputHandle(val,index){
             // this.selectFlavor(false,index)
           },
@@ -291,7 +292,6 @@
               if (valid) {
                 let params = {...this.ruleForm}
                 params.status = this.ruleForm ? 1 : 0
-                params.price *= 100
                 params.categoryId = this.ruleForm.categoryId
                 if(!this.imageUrl){
                   this.$message.error('请上传情报图片')
@@ -373,8 +373,8 @@
           goBack(){
             window.parent.menuHandle({
               id: '4',
-              url: '/backend/page/intelligence/list.html',
-              name: '情报交易'
+              url: '/backend/page/token/list.html',
+              name: 'token账户'
             },false)
           }
         }
