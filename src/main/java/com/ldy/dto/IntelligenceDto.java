@@ -14,4 +14,5 @@ import lombok.Data;
 public class IntelligenceDto extends Intelligence {
     private String categoryName;
     private String origin;
+    private String userName;
 }

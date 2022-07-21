@@ -51,12 +51,19 @@
           width="25"
         ></el-table-column>
         <el-table-column
+          width="200"
           prop="name"
           label="情报名称"
         ></el-table-column>
+        <el-table-column
+          align="center"
+          width="100"
+          prop="userName"
+          label="发布人"
+        ></el-table-column>
         <el-table-column prop="image" label="图片" align="center">
           <template slot-scope="{ row }">
-            <el-image style="width: auto; height: 40px; border:none;cursor: pointer;" 
+            <el-image style="width: 100px; height: 40px; border:none;cursor: pointer;"
             :src="getImage(row.image)" 
             :preview-src-list="[ `/common/download?name=${row.image}` ]" >
             <div slot="error" class="image-slot">
@@ -80,13 +87,14 @@
           </template>
         </el-table-column>
         <el-table-column
+          width="150"
           prop="updateTime"
           label="最后操作时间"
         >
         </el-table-column>
         <el-table-column
           label="操作"
-          width="160"
+          width="200"
           align="center"
         >
           <template slot-scope="scope">

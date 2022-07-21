@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -20,7 +21,7 @@ public class Token implements Serializable {
 
     private Long id;
     private Long userId;
-    private Integer amount;
+    private BigDecimal amount;
     private Integer status;
 
 

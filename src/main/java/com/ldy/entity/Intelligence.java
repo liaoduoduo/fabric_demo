@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -37,7 +38,7 @@ public class Intelligence implements Serializable {
     private Integer status;
 
     //情报token价值
-    private Integer price;
+    private BigDecimal price;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;

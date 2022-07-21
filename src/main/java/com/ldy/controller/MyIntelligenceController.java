@@ -12,9 +12,7 @@ import com.ldy.service.IntelligenceService;
 import com.ldy.service.UserIntelligenceService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,7 +91,20 @@ public class MyIntelligenceController {
 
         intelligenceDtoPage.setRecords(list);
         return R.success(intelligenceDtoPage);
+    }
 
+    @PostMapping("/hash")
+    public R<Intelligence> queryFileHash(@RequestBody IntelligenceDto intelligenceDto) {
+        Long id = intelligenceDto.getId();
+        System.out.println(id);
+        if (intelligenceDto.getOrigin().equals("本人发布")) {
+            Intelligence intelligence = intelligenceService.getById(id);
+            return R.success(intelligence);
+        }
+        UserIntelligence userIntelligence = userIntelligenceService.getById(id);
+        Long intelligenceId = userIntelligence.getIntelligenceId();
+        Intelligence intelligence = intelligenceService.getById(intelligenceId);
+        return R.success(intelligence);
     }
 
 }

@@ -20,8 +20,6 @@ public class UserIntelligence {
 
     //intelligence表主键
     private Long intelligenceId;
-    //intelligence表主键对应fileHash字段
-    private String fileHash;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;

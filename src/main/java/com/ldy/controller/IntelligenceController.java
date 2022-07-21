@@ -6,12 +6,15 @@ import com.ldy.common.BaseContext;
 import com.ldy.common.R;
 import com.ldy.dto.IntelligenceDto;
 import com.ldy.entity.Intelligence;
+import com.ldy.entity.User;
 import com.ldy.entity.UserIntelligence;
 import com.ldy.service.CategoryService;
 import com.ldy.service.IntelligenceService;
 import com.ldy.service.UserIntelligenceService;
+import com.ldy.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -39,6 +42,9 @@ public class IntelligenceController {
     @Resource
     private UserIntelligenceService userIntelligenceService;
 
+    @Autowired
+    private UserService userService;
+
     /**
      * @param page
      * @param pageSize
@@ -64,8 +70,14 @@ public class IntelligenceController {
             Long categoryId = record.getCategoryId();
             if (categoryId != null) {
                 intelligenceDto.setCategoryName(categoryService.getById(categoryId).getName());
-                list.add(intelligenceDto);
             }
+            Long userId = record.getUserId();
+            if (userId != null) {
+                User user = userService.getById(userId);
+                intelligenceDto.setUserName(user.getName());
+            }
+
+            list.add(intelligenceDto);
 
         }
         intelligenceDtoPage.setRecords(list);
@@ -162,8 +174,6 @@ public class IntelligenceController {
         UserIntelligence userIntelligence = new UserIntelligence();
         userIntelligence.setUserId(userId);
         userIntelligence.setIntelligenceId(id);
-        String fileHash = intelligence.getFileHash();
-        userIntelligence.setFileHash(fileHash);
 
         //购买成功，保存到数据库中
         userIntelligenceService.save(userIntelligence);

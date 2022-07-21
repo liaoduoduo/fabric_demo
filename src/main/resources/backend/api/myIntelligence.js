@@ -29,10 +29,10 @@ const addCoTask = (params) => {
   })
 }
 
-const queryFileHash = (id) => {
+const queryFileHash = (row) => {
   return $axios({
-    //注意这里传递的是myIntelligence的主键id
-    url: `/myIntelligence/hash/${id}`,
-    method: 'get'
+    url: `/myIntelligence/hash`,
+    method: 'post',
+    data :  row
   })
 }
