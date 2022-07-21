@@ -25,7 +25,7 @@ import java.security.cert.X509Certificate;
  * @Version v1.0
  */
 @Slf4j
-@Configuration
+//@Configuration
 public class GatewayConfig {
     /**
      * wallet文件夹路径

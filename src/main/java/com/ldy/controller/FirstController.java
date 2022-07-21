@@ -26,13 +26,13 @@ import java.util.concurrent.TimeoutException;
 
 @Api(tags = "测试链码操作")
 @Slf4j
-@RestController
+//@RestController
 public class FirstController {
 
-    @Resource
+    //@Resource
     private Contract contract;
 
-    @Resource
+    //@Resource
     private Network network;
 
 

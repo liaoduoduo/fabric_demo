@@ -87,6 +87,13 @@
             >
               {{ scope.row.status == '1' ? '禁用' : '启用' }}
             </el-button>
+            <el-button
+              type="text"
+              size="small" class="delBut non"
+              @click="deleteHandle(scope.row)"
+            >
+              删除
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -176,16 +183,41 @@
               'cancelButtonText': '取消',
               'type': 'warning'
               }).then(() => {
-              enableOrDisableEmployee({ 'id': this.id, 'status': !this.status ? 1 : 0 }).then(res => {
-                console.log('enableOrDisableEmployee',res)
+              enableOrDisableUser({ 'id': this.id, 'status': !this.status ? 1 : 0 }).then(res => {
                 if (String(res.code) === '1') {
                   this.$message.success('账号状态更改成功！')
+                  this.handleQuery()
+                } else {
+                  this.$message.error(res.msg)
                   this.handleQuery()
                 }
               }).catch(err => {
                 this.$message.error('请求出错了：' + err)
               })
             })
+          },
+          deleteHandle(row) {
+            this.$confirm('确定删除该用户, 是否继续?', '确定删除', {
+              'confirmButtonText': '确定',
+              'cancelButtonText': '取消',
+            }).then(()=>{
+              if(row.status === 1) {
+                this.$message.error('账号处于启用状态，无法删除！')
+                return false
+              }
+              deleteUser(row.id).then(res=> {
+                if (String(res.code) === '1') {
+                this.$message.success('账号删除成功！')
+                this.handleQuery()
+                }
+              }).catch(err => {
+              this.$message.error('请求出错了：' + err)
+              })
+            })
+
+
+
+
           },
           handleSizeChange (val) {
             this.pageSize = val

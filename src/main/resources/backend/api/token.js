@@ -50,3 +50,12 @@ const editToken = (params) => {
     })
 }
 
+//删除token账户
+const deleteToken = (ids) => {
+    return $axios({
+        url: '/token',
+        method: 'delete',
+        params : { ids: ids }
+    })
+}
+

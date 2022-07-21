@@ -10,10 +10,7 @@ import com.ldy.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,30 +35,43 @@ public class TokenController {
 
     @GetMapping("/page")
     public R<Page<TokenDto>> page(int page, int pageSize, String name) {
-        Page<Token> tokenPage = new Page<>(page, pageSize);
-        Page<TokenDto> tokenDtoPage = new Page<>();
-        tokenService.page(tokenPage,null);
-        BeanUtils.copyProperties(tokenPage, tokenDtoPage, "records");
-        List<TokenDto> list = new ArrayList<>();
-        List<Token> records = tokenPage.getRecords();
-        log.info("token分页查询结果为：{}",records);
-        for (Token record : records) {
-            TokenDto tokenDto = new TokenDto();
-            BeanUtils.copyProperties(record, tokenDto);
-            User user = userService.getById(record.getUserId());
-            tokenDto.setName(user.getName());
-            list.add(tokenDto);
-        }
-        if (name != null) {
-            list.removeIf(tokenDto -> !tokenDto.getName().contains(name));
-        }
-        tokenDtoPage.setRecords(list);
+
+        Page<TokenDto> tokenDtoPage = tokenService.pageQuery(page, pageSize, name);
+
         return R.success(tokenDtoPage);
     }
 
     @GetMapping("/{id}")
     public R<Token> getTokenById(@PathVariable Long id) {
         return R.success(tokenService.getById(id));
+    }
+
+    //如果参数时放在请求体中，application/json传入后台的话，那么后台要用@RequestBody才能接收到
+    @PostMapping
+    public R<String> save(@RequestBody Token token) {
+        tokenService.save(token);
+        return R.success("添加成功");
+    }
+
+    @PutMapping
+    public R<String> update(@RequestBody Token token) {
+        tokenService.updateById(token);
+        return R.success("修改成功");
+    }
+
+    @PostMapping("/status/{status}")
+    public R<String> status(@RequestParam List<Long> ids, @PathVariable int status) {
+        List<Token> tokens = tokenService.listByIds(ids);
+        for (Token token : tokens) {
+            token.setStatus(status);
+        }
+        tokenService.updateBatchById(tokens);
+        return R.success("修改状态成功");
+    }
+
+    @DeleteMapping
+    public R<String> delete(@RequestParam List<Long> ids) {
+         return tokenService.deleteBatch(ids);
     }
 
 }

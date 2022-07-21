@@ -91,9 +91,9 @@
             dialogVisible: false,
             checkList: [],
             ruleForm: {
+              id: '',
               userId: '',
               amount: '',
-              description: '',
               status: true
             },
             keyInd : 0,
@@ -117,10 +117,10 @@
                     } else {
                       const reg = /^\d+(\.\d{0,2})?$/
                       if (reg.test(value)) {
-                        if(value < 10000){
+                        if(value < 1000000){
                           callback()
                         }else{
-                          callback(new Error('账户价要小于10000！'))
+                          callback(new Error('账户价要小于1000000！'))
                         }
                       } else {
                         callback(new Error('价值格式只能为数字,且最多保留两位小数'))
@@ -193,7 +193,6 @@
                           this.ruleForm = {
                             userId: '',
                             amount: '',
-                            description: '',
                             status: true,
                             id: '',
                           }

@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="../../styles/page.css" />
 </head>
 <body>
-   <div class="dashboard-container" id="combo-app">
+   <div class="dashboard-container" id="token-app">
     <div class="container">
       <div class="tableBar">
         <el-input
@@ -129,7 +129,7 @@
     <script src="../../api/token.js"></script>
     <script>
       new Vue({
-        el: '#combo-app',
+        el: '#token-app',
         data() {
           return {
              input: '',
@@ -194,11 +194,11 @@
                 return this.$message.error('请选择删除对象')
               }
             }
-            this.$confirm('确定删除该套餐, 是否继续?', '确定删除', {
+            this.$confirm('确定删除该账户, 是否继续?', '确定删除', {
               'confirmButtonText': '确定',
               'cancelButtonText': '取消',
             }).then(() => {
-              deleteSetmeal(type === '批量' ? this.checkList.join(',') : id).then(res => {
+              deleteToken(type === '批量' ? this.checkList.join(',') : id).then(res => {
                 if (res.code === 1) {
                   this.$message.success('删除成功！')
                   this.handleQuery()

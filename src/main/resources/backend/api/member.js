@@ -7,7 +7,7 @@ function getMemberList (params) {
 }
 
 // 修改---启用禁用接口
-function enableOrDisableEmployee (params) {
+function enableOrDisableUser (params) {
   return $axios({
     url: '/user',
     method: 'put',
@@ -15,8 +15,8 @@ function enableOrDisableEmployee (params) {
   })
 }
 
-// 新增---添加员工
-function addEmployee (params) {
+// 新增---添加用户
+function addUser (params) {
   return $axios({
     url: '/user',
     method: 'post',
@@ -24,8 +24,8 @@ function addEmployee (params) {
   })
 }
 
-// 修改---添加员工
-function editEmployee (params) {
+// 修改---添加用户
+function editUser (params) {
   return $axios({
     url: '/user',
     method: 'put',
@@ -34,9 +34,18 @@ function editEmployee (params) {
 }
 
 // 修改页面反查详情接口
-function queryEmployeeById (id) {
+function queryUserById (id) {
   return $axios({
     url: `/user/${id}`,
     method: 'get'
   })
 }
+
+const deleteUser = (id) => {
+  return $axios({
+    url: '/user',
+    method: 'delete',
+    params : {id: id}
+  })
+}
+

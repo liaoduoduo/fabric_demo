@@ -24,11 +24,11 @@ import java.util.concurrent.TimeoutException;
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
-    @Resource
+/*    @Resource
     private Contract contract;
 
     @Resource
-    private Network network;
+    private Network network;*/
 
     /**
      * @param user 用户实体类
@@ -39,7 +39,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public byte[] saveByBlockChain(User user) {
         byte[] invokeResult = null;
-        try {
+/*        try {
             invokeResult = contract.createTransaction("saveUser")
                     .setEndorsingPeers(network.getChannel().getPeers(EnumSet.of(Peer.PeerRole.ENDORSING_PEER)))
                     //链码参数列表
@@ -53,7 +53,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                             String.valueOf(user.getStatus()));
         } catch (ContractException | InterruptedException | TimeoutException e) {
             e.printStackTrace();
-        }
+        }*/
         return invokeResult;
     }
 }

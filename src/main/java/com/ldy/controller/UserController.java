@@ -3,7 +3,9 @@ package com.ldy.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ldy.common.R;
+import com.ldy.entity.Intelligence;
 import com.ldy.entity.User;
+import com.ldy.service.IntelligenceService;
 import com.ldy.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -11,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.hyperledger.fabric.gateway.Contract;
 import org.hyperledger.fabric.gateway.ContractException;
 import org.hyperledger.fabric.gateway.Network;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -32,13 +35,10 @@ import java.util.concurrent.TimeoutException;
 public class UserController {
 
     @Resource
-    private Contract contract;
-
-    @Resource
-    private Network network;
-
-    @Resource
     private UserService userService;
+
+    @Autowired
+    private IntelligenceService intelligenceService;
 
     @ApiOperation("用户登录")
     @PostMapping("/login")
@@ -99,7 +99,7 @@ public class UserController {
     @PostMapping
     public R<String> add(@RequestBody User user) throws ContractException, InterruptedException, TimeoutException {
         log.info("新增用户信息：{}", user);
-        //设置统一初始密码,需要进行MD5加密处理
+        //设置统一初始密码,需要进行MD5加密处理(先不加密了)
         user.setPassword("123456");
         userService.save(user);
 
@@ -112,6 +112,18 @@ public class UserController {
 
     @PutMapping
     public R<String> update(@RequestBody User user) {
+        //如果要停用某个用户
+        if (user.getStatus() == 0) {
+            //判断该用户有没有发布情报，如果有不允许停用，必须先停用并删除情报
+            LambdaQueryWrapper<Intelligence> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(Intelligence::getUserId, user.getId());
+            int count = intelligenceService.count(queryWrapper);
+            if (count > 0) {
+                return R.error("该用户有正在发售的情报，不允许停用！");
+            }
+            //判断该用户有没有加入研判任务，如果有不允许停用，必须先退出
+            //...
+        }
         userService.updateById(user);
         //将修改后的用户存储到区块链中
 /*        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
@@ -126,6 +138,12 @@ public class UserController {
     public R<List<User>> list() {
         List<User> list = userService.list();
         return R.success(list);
+    }
+
+    @DeleteMapping
+    public R<String> delete(Long id) {
+        userService.removeById(id);
+        return R.success("删除成功");
     }
 
 
