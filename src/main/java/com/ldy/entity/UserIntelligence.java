@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -14,9 +15,12 @@ import java.time.LocalDateTime;
  * @Version v1.0
  */
 @Data
-public class UserIntelligence {
+public class UserIntelligence implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private Long id;
-    private Long userId;
+    private Long fromUserId;
+    private Long toUserId;
 
     //intelligence表主键
     private Long intelligenceId;

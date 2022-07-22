@@ -86,12 +86,7 @@ public class UserController {
     @ApiOperation("分页查询")
     @GetMapping("/page")
     public R<Page<User>> page(int page, int pageSize, String name) {
-        Page<User> userPage = new Page<>(page, pageSize);
-        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.like(name != null, User::getName, name)
-                .orderByDesc(User::getUpdateTime);
-
-        userService.page(userPage, queryWrapper);
+        Page<User> userPage = userService.pageQuery(page, pageSize, name);
         return R.success(userPage);
     }
 
@@ -102,7 +97,7 @@ public class UserController {
         //设置统一初始密码,需要进行MD5加密处理(先不加密了)
         user.setPassword("123456");
         userService.save(user);
-
+        log.info("刚刚插入的用户主键为：{}",user.getId());
         //存储到区块链中，调用链码：saveUser
         /*byte[] invokeResult = userService.saveByBlockChain(user);
         log.info("存储到区块的用户数据：{}",invokeResult);*/

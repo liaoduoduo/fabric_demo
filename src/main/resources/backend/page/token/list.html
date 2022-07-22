@@ -29,13 +29,13 @@
           ></i>
         </el-input>
         <div class="tableLab">
-          <span class="span-btn delBut non" @click="deleteHandle('批量', null)">批量删除</span>
+          <!--<span class="span-btn delBut non" @click="deleteHandle('批量', null)">批量删除</span>
           <span class="span-btn blueBug non" @click="statusHandle('1')">批量启用</span>
           <span
             style="border:none;"
             class="span-btn delBut non"
             @click="statusHandle('0')"
-          >批量停用</span>
+          >批量停用</span>-->
           <el-button
             type="primary"
             @click="addToken('add')"
@@ -61,7 +61,7 @@
         ></el-table-column>
 
         <el-table-column
-          prop="amount"
+          prop="token"
           label="持有token数目"
         >
         </el-table-column>
@@ -86,10 +86,11 @@
               size="small"
               class="blueBug"
               @click="addToken(scope.row.id)"
+              v-if="user === 'admin'"
             >
               修改
             </el-button>
-            <el-button
+<!--            <el-button
               type="text"
               size="small"
               class="blueBug"
@@ -103,7 +104,7 @@
               @click="deleteHandle('单删', scope.row.id)"
             >
               删除
-            </el-button>
+            </el-button>-->
           </template>
         </el-table-column>
       </el-table>

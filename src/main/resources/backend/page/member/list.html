@@ -75,6 +75,7 @@
               class="blueBug"
               @click="addMemberHandle(scope.row.id)"
               :class="{notAdmin:user !== 'admin'}"
+              v-if="user === 'admin' || user === scope.row.username"
             >
               编辑
             </el-button>
@@ -89,8 +90,10 @@
             </el-button>
             <el-button
               type="text"
-              size="small" class="delBut non"
+              size="small"
+              class="delBut non"
               @click="deleteHandle(scope.row)"
+              v-if="user === 'admin'"
             >
               删除
             </el-button>

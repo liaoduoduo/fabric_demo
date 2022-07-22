@@ -35,15 +35,15 @@
           class="demo-ruleForm"
         >
           <div>
-            <el-form-item label="用户:" prop="userId">
-              <el-select v-model="ruleForm.userId" placeholder="请选择用户" @change="$forceUpdate()">
+            <el-form-item label="用户:" prop="id">
+              <el-select v-model="ruleForm.id" placeholder="请选择用户" @change="$forceUpdate()">
                 <el-option v-for="(item, index) in userList" :key="index" :label="item.name" :value="item.id" />
               </el-select>
             </el-form-item>
           </div>
           <div>
-            <el-form-item label="token数目:" prop="amount">
-              <el-input v-model="ruleForm.amount" placeholder="请设置用户token数目" />
+            <el-form-item label="token数目:" prop="token">
+              <el-input v-model="ruleForm.token" placeholder="请设置用户token数目" />
             </el-form-item>
           </div>
 <!--          <div class="address">
@@ -92,8 +92,7 @@
             checkList: [],
             ruleForm: {
               id: '',
-              userId: '',
-              amount: '',
+              token: '',
               status: true
             },
             keyInd : 0,
@@ -104,12 +103,12 @@
         computed: {
           rules() {
             return {
-              userId: {
+              id: {
                 required: true,
                 message: '请输入账户名称',
                 trigger: 'change',
               },
-              amount: {
+              token: {
                 required: true,
                 validator: (rules, value, callback) => {
                     if (!value) {
@@ -191,10 +190,9 @@
                         } else {
                           this.$refs.ruleForm.resetFields()
                           this.ruleForm = {
-                            userId: '',
-                            amount: '',
-                            status: true,
                             id: '',
+                            token: '',
+                            status: true,
                           }
                         }
                       } else {

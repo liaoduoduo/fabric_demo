@@ -13,6 +13,9 @@ import java.io.Serializable;
  */
 @Data
 public class TaskUser implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private Long id;
 
     //研判任务id

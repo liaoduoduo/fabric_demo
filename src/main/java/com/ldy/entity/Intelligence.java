@@ -18,6 +18,8 @@ import java.time.LocalDateTime;
 @Data
 public class Intelligence implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private Long id;
     //上传用户id
     private Long userId;

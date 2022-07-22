@@ -1,7 +1,7 @@
 // 查询列表接口
 const getIntelligencePage = (params) => {
   return $axios({
-    url: '/myIntelligence/page',
+    url: '/userIntelligence/page',
     method: 'get',
     params
   })
@@ -22,16 +22,15 @@ const commonDownload = (params) => {
 // （批量）添加情报至协同任务
 const addCoTask = (params) => {
   return $axios({
-    url: '/myIntelligence/coTask/',
+    url: '/userIntelligence/coTask/',
     method: 'post',
-    //注意这里传递的是myIntelligence的主键id
     params: { ids: params.id }
   })
 }
 
 const queryFileHash = (row) => {
   return $axios({
-    url: `/myIntelligence/hash`,
+    url: `/userIntelligence/hash`,
     method: 'post',
     data :  row
   })

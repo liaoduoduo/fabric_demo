@@ -1,5 +1,6 @@
 package com.ldy.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ldy.entity.User;
 
@@ -19,4 +20,5 @@ public interface UserService extends IService<User> {
      */
     byte[] saveByBlockChain(User user);
 
+    Page<User> pageQuery(int page, int pageSize, String name);
 }

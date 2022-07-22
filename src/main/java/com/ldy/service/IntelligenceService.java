@@ -1,7 +1,10 @@
 package com.ldy.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.ldy.common.R;
 import com.ldy.entity.Intelligence;
+import com.ldy.vo.IntelligenceVo;
 
 import java.util.List;
 
@@ -13,7 +16,12 @@ import java.util.List;
  * @Version v1.0
  */
 public interface IntelligenceService extends IService<Intelligence> {
-    Intelligence queryLatestIntelligence(Long userId);
 
     void batchStatus(Integer status, List<Long> ids);
+
+    void saveByUserIntelligence(Intelligence intelligence);
+
+    R<String> buy(Long intelligenceId);
+
+    Page<IntelligenceVo> pageQuery(int page, int pageSize, String name);
 }

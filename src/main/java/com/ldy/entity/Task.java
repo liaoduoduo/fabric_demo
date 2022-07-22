@@ -16,6 +16,9 @@ import java.time.LocalDateTime;
  */
 @Data
 public class Task implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private Long id;
 
     //研判任务名

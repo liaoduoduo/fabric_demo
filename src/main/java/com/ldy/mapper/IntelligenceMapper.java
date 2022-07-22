@@ -13,5 +13,4 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface IntelligenceMapper extends BaseMapper<Intelligence> {
-    Intelligence queryLatestIntelligence(Long userId);
 }

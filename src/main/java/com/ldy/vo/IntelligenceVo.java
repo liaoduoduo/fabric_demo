@@ -1,4 +1,4 @@
-package com.ldy.dto;
+package com.ldy.vo;
 
 import com.ldy.entity.Intelligence;
 import lombok.Data;
@@ -11,8 +11,9 @@ import lombok.Data;
  * @Version v1.0
  */
 @Data
-public class IntelligenceDto extends Intelligence {
+public class IntelligenceVo extends Intelligence {
+
     private String categoryName;
-    private String origin;
     private String userName;
+
 }

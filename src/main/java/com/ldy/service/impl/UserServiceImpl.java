@@ -1,5 +1,7 @@
 package com.ldy.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ldy.mapper.UserMapper;
 import com.ldy.entity.User;
@@ -55,5 +57,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             e.printStackTrace();
         }*/
         return invokeResult;
+    }
+
+    @Override
+    public Page<User> pageQuery(int page, int pageSize, String name) {
+        Page<User> userPage = new Page<>(page, pageSize);
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.like(name != null, User::getName, name)
+                .orderByDesc(User::getUpdateTime);
+        this.page(userPage, queryWrapper);
+        return userPage;
     }
 }

@@ -9,6 +9,8 @@
   <link rel="stylesheet" href="../../plugins/element-ui/index.css"/>
   <link rel="stylesheet" href="../../styles/common.css"/>
   <link rel="stylesheet" href="../../styles/page.css"/>
+  <style>
+  </style>
 </head>
 <body>
 <div class="dashboard-container" id="food-app">
@@ -29,12 +31,10 @@
         ></i>
       </el-input>
       <div class="tableLab">
-        <span class="span-btn delBut non" @click="deleteHandle('批量', null)">批量删除</span>
-        <span class="span-btn blueBug non" @click="statusHandle('1')">批量启用</span>
-        <span style="border:none;" class="span-btn delBut non" @click="statusHandle('0')">批量停用</span>
+        <span class="span-btn blueBug non" @click="addCoTaskHandle('批量', null)">批量添加至协同任务</span>
         <el-button
           type="primary"
-          @click="addIntelligencetype('add')"
+          @click="addIntelligenceType('add')"
         >
           + 发布情报
         </el-button>
@@ -56,14 +56,12 @@
         label="情报名称"
       ></el-table-column>
       <el-table-column
-        align="center"
-        width="100"
-        prop="userName"
-        label="发布人"
+        prop="fromUserName"
+        label="发布者"
       ></el-table-column>
       <el-table-column prop="image" label="图片" align="center">
         <template slot-scope="{ row }">
-          <el-image style="width: 100px; height: 40px; border:none;cursor: pointer;"
+          <el-image style="width: auto; height: 40px; border:none;cursor: pointer;"
                     :src="getImage(row.image)"
                     :preview-src-list="[ `/common/download?name=${row.image}` ]">
             <div slot="error" class="image-slot">
@@ -86,6 +84,12 @@
           <span style="margin-right: 10px;">{{ scope.row.status == '0' ? '停用' : '启用' }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="情报来源">
+        <template slot-scope="scope">
+          <span style="margin-right: 10px;">{{ scope.row.origin }}</span>
+        </template>
+      </el-table-column>
+
       <el-table-column
         width="150"
         prop="updateTime"
@@ -94,7 +98,7 @@
       </el-table-column>
       <el-table-column
         label="操作"
-        width="200"
+        width="250"
         align="center"
       >
         <template slot-scope="scope">
@@ -102,37 +106,19 @@
             type="text"
             size="small"
             class="blueBug"
-            @click="buyIntelligence(scope.row.id)"
+            @click="addCoTaskHandle(scope.row.id)"
           >
-            购买
-          </el-button>
-          <el-button
-            type="text"
-            size="small"
-            class="blueBug"
-            @click="addIntelligencetype(scope.row.id)"
-            v-if="user === 'admin'"
-          >
-            修改
-          </el-button>
-          <el-button
-            type="text"
-            size="small"
-            class="blueBug"
-            @click="statusHandle(scope.row)"
-            v-if="user === 'admin'"
-          >
-            {{ scope.row.status == '0' ? '启售' : '停售' }}
+            添加至协同任务
           </el-button>
           <el-button
             type="text"
             size="small"
             class="delBut non"
-            @click="deleteHandle('单删', scope.row.id)"
-            v-if="user === 'admin'"
+            @click="queryFileHashHandle(scope.row)"
           >
-            删除
+            查看情报Hash值
           </el-button>
+
         </template>
       </el-table-column>
     </el-table>
@@ -147,6 +133,43 @@
       @current-change="handleCurrentChange"
     ></el-pagination>
   </div>
+
+  <el-dialog
+    :title="classData.title"
+    :visible.sync="classData.dialogVisible"
+    width="30%"
+    :before-close="handleClose"
+  >
+    <el-table
+      :data="fileTable"
+      stripe
+      class="tableBox"
+    >
+      <el-table-column
+        prop="name"
+        label="情报名"
+      ></el-table-column>
+      <el-table-column
+        prop="fileHash"
+        label="情报hash"
+      ></el-table-column>
+
+    </el-table>
+
+    <span
+      slot="footer"
+      class="dialog-footer"
+    >
+        <el-button
+          size="medium"
+          @click="classData.dialogVisible = false"
+        >确 定</el-button>
+        <el-button
+          size="medium"
+          @click="classData.dialogVisible = false"
+        >从IPFS获取情报文件</el-button>
+       </span>
+  </el-dialog>
 </div>
 <!-- 开发环境版本，包含了有帮助的命令行警告 -->
 <script src="../../plugins/vue/vue.js"></script>
@@ -155,7 +178,9 @@
 <!-- 引入axios -->
 <script src="../../plugins/axios/axios.min.js"></script>
 <script src="../../js/request.js"></script>
-<script src="../../api/intelligence.js"></script>
+<script src="../../api/userIntelligence.js"></script>
+<script src="//unpkg.com/vue@2/dist/vue.js"></script>
+<script src="//unpkg.com/element-ui@2.15.8/lib/index.js"></script>
 <script>
   new Vue({
     el: '#food-app',
@@ -168,7 +193,11 @@
         tableData: [],
         intelligenceState: '',
         checkList: [],
-        user: ''
+        classData: {
+          'title': '查看情报Hash值',
+          'dialogVisible': false,
+        },
+        fileTable: []
       }
     },
     computed: {},
@@ -202,7 +231,7 @@
         this.init();
       },
       // 添加
-      addIntelligencetype(st) {
+      addIntelligenceType(st) {
         if (st === 'add') {
           window.parent.menuHandle({
             id: '4',
@@ -217,15 +246,35 @@
           }, true)
         }
       },
-
-      buyIntelligence(st) {
-        window.parent.menuHandle({
-          id: '4',
-          url: '/backend/page/intelligence/buy.html?id=' + st,
-          name: '购买情报'
-        }, true)
+      //添加情报到协同任务
+      addCoTaskHandle(type, id) {
+        if (type === '批量' && id === null) {
+          if (this.checkList.length === 0) {
+            return this.$message.error('请选择要添加至协同任务的情报！')
+          }
+        }
+        this.$confirm('确认将该情报生成协同任务, 是否继续?', '确定删除', {
+          'confirmButtonText': '确定',
+          'cancelButtonText': '取消',
+        }).then(() => {
+          //join() 方法用于把数组中的所有元素转换一个字符串。
+          //指定要使用的分隔符。如果省略该参数，则使用逗号作为分隔符。
+          addCoTask(type === '批量' ? this.checkList.join(',') : id).then(res => {
+            if (res.code === 1) {
+              this.$message.success('生成研判任务成功！')
+              this.handleQuery()
+            } else {
+              this.$message.error(res.msg || '操作失败')
+            }
+          }).catch(err => {
+            this.$message.error('请求出错了：' + err)
+          })
+        })
       },
-
+      queryFileHashHandle(row) {
+        this.$set(this.fileTable, 0, {name: row.name, fileHash: row.fileHash})
+        this.classData.dialogVisible = true
+      },
       // 删除
       deleteHandle(type, id) {
         if (type === '批量' && id === null) {
@@ -283,8 +332,12 @@
           })
         })
       },
+      // 关闭弹窗
+      handleClose(st) {
+        this.classData.dialogVisible = false
+      },
 
-      // 全部操作
+      // 勾选复选框操作
       handleSelectionChange(val) {
         let checkArr = []
         val.forEach((n) => {
@@ -292,6 +345,7 @@
         })
         this.checkList = checkArr
       },
+
       handleSizeChange(val) {
         this.pageSize = val
         this.init()

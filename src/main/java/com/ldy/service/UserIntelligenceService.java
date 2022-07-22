@@ -1,7 +1,9 @@
 package com.ldy.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ldy.entity.UserIntelligence;
+import com.ldy.vo.UserIntelligenceVo;
 
 /**
  * @Author ldy
@@ -11,5 +13,6 @@ import com.ldy.entity.UserIntelligence;
  * @Version v1.0
  */
 public interface UserIntelligenceService extends IService<UserIntelligence> {
-    UserIntelligence queryLatestUserIntelligence(Long userId);
+    Page<UserIntelligenceVo> pageQuery(int page, int pageSize, String name);
+
 }

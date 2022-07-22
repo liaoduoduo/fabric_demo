@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -42,6 +43,8 @@ public class User implements Serializable {
 
     //状态
     private Integer status;
+
+    private BigDecimal token;
 
     //用户贡献度
     //private Long contribution;

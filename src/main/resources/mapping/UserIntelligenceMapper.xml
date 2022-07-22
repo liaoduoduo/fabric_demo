@@ -3,9 +3,28 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ldy.mapper.UserIntelligenceMapper">
-    <select id="queryLatestUserIntelligence" resultType="com.ldy.entity.UserIntelligence">
-        select * from fabric.user_intelligence where user_id = #{userId}
-        order by update_time desc limit 1
+    <select id="listUserIntelligence" resultType="com.ldy.vo.UserIntelligenceVo">
+        select ui.id id,
+        ui.from_user_id formUserId,
+        ui.to_user_id toUserId,
+        ui.create_time createTime,
+        ui.update_time updateTime,
+        ui.create_user createUser,
+        ui.update_user updateUser,
+        i.name name,
+        i.status status,
+        i.file_hash fileHash,
+        i.category_id categoryId,
+        i.image image,
+        i.price price
+        from fabric.user_intelligence ui
+        left join intelligence i on ui.intelligence_id = i.id
+        <where>
+            (ui.from_user_id = #{userId} or ui.to_user_id = #{userId})
+            <if test="name!= null">
+                and i.name like #{name}
+            </if>
+        </where>
     </select>
 </mapper>
 
