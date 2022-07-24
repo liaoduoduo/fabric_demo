@@ -97,13 +97,18 @@ public class IntelligenceServiceImpl extends ServiceImpl<IntelligenceMapper, Int
 
     @Override
     @Transactional
-    public R<String> buy(Long intelligenceId) {
+    public R<String> buy(Long intelligenceId, String password) {
         //获取当前登录用户id
         Long userId = BaseContext.getCurrentId();
         //获取该情报实体
         Intelligence intelligence = this.getById(intelligenceId);
         //获取当前登录用户实体
         User user = userService.getById(userId);
+
+        Token token = tokenService.getById(user.getTokenId());
+        if (!password.equals(token.getPassword())) {
+            return R.error("密码错误！");
+        }
 
         //判断该情报是否停售
         if (intelligence.getStatus() != 1) {
@@ -126,7 +131,6 @@ public class IntelligenceServiceImpl extends ServiceImpl<IntelligenceMapper, Int
         }
 
         //判断用户token余额
-        Token token = tokenService.getById(user.getTokenId());
         if (token.getCurrentToken().compareTo(intelligence.getToken()) < 0) {
             return R.error("token余额不足，无法购买！");
         }

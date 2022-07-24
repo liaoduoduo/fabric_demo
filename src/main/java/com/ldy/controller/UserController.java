@@ -14,13 +14,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.hyperledger.fabric.gateway.Contract;
 import org.hyperledger.fabric.gateway.ContractException;
 import org.hyperledger.fabric.gateway.Network;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 

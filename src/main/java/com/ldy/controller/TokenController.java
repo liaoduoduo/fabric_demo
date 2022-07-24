@@ -1,23 +1,15 @@
 package com.ldy.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.ldy.common.BaseContext;
 import com.ldy.common.R;
 import com.ldy.dto.TokenDto;
 import com.ldy.entity.Token;
-import com.ldy.entity.User;
 import com.ldy.service.TokenService;
-import com.ldy.service.UserService;
 import com.ldy.vo.TokenVo;
-import com.ldy.vo.UserVo;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -60,7 +52,6 @@ public class TokenController {
         tokenService.updateById(token);
         return R.success("修改token账户成功");
     }
-
 
     @PostMapping("/status/{status}")
     public R<String> updateTokenStatus(@RequestParam List<Long> ids, @PathVariable int status) {

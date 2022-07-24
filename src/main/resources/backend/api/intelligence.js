@@ -96,6 +96,6 @@ const buyIntelligence = (params) => {
   return $axios({
     url: `/intelligence/buy`,
     method: 'post',
-    params: { id: params }
+    data: params
   })
 }

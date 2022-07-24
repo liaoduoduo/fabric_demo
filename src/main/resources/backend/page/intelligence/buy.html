@@ -176,6 +176,39 @@
        </span>
   </el-dialog>
 
+  <el-dialog
+    :title="passwordData.title"
+    :visible.sync="passwordData.dialogVisible"
+    width="30%"
+    :before-close="handleClose"
+  >
+    <el-form
+      ref="ruleForm"
+      :model="ruleForm"
+      :inline="true"
+      class="demo-ruleForm">
+      <el-form-item
+        label="token账户密码:"
+      >
+        <el-input
+          v-model="ruleForm.password"
+          placeholder="请输入token账户密码"
+          type="password"
+          maxlength="20"/>
+      </el-form-item>
+    </el-form>
+    <span
+      slot="footer"
+      class="dialog-footer"
+    >
+        <el-button
+          size="medium"
+          @click="checkPassword()"
+        >确 定</el-button>
+       </span>
+
+  </el-dialog>
+
 </div>
 <!-- 开发环境版本，包含了有帮助的命令行警告 -->
 <script src="../../plugins/vue/vue.js"></script>
@@ -211,10 +244,15 @@
           'image': '',
           'description': '',
           'status': true,
-          intelligenceCategoryId: ''
+          intelligenceCategoryId: '',
+          password: ''
         },
         classData: {
           'title': '购买情报确认',
+          'dialogVisible': false,
+        },
+        passwordData: {
+          'title': '密码确认',
           'dialogVisible': false,
         },
         mak: false
@@ -291,6 +329,8 @@
       // 关闭弹窗
       handleClose(st) {
         this.classData.dialogVisible = false
+        this.passwordData.dialogVisible = false
+        this.ruleForm.password = ''
       },
 
       inputHandle(val, index) {
@@ -300,22 +340,30 @@
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            let params = this.ruleForm.id
-            console.log(this.ruleForm.id)
-            buyIntelligence(params).then(res => {
-              if (res.code === 1) {
-                this.$message.success('情报购买成功！')
-                this.goBack()
-              } else {
-                this.$message.error(res.msg || '操作失败')
-              }
-            }).catch(err => {
-              this.$message.error('请求出错了：' + err)
-            })
+            this.passwordData.dialogVisible = true;
           } else {
             return false
           }
           this.classData.dialogVisible = false
+        })
+      },
+      checkPassword() {
+        let params = {
+          id: this.ruleForm.id,
+          password : this.ruleForm.password
+        }
+        buyIntelligence(params).then(res => {
+          if (res.code === 1) {
+            this.$message.success('情报购买成功！')
+            this.ruleForm.password = ''
+            this.goBack()
+          } else {
+            this.ruleForm.password = ''
+            this.$message.error(res.msg || '操作失败')
+          }
+        }).catch(err => {
+          this.ruleForm.password = ''
+          this.$message.error('请求出错了：' + err)
         })
       },
 
