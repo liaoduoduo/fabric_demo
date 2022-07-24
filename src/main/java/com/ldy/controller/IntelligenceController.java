@@ -108,5 +108,11 @@ public class IntelligenceController {
         return R.success("修改状态成功！");
     }
 
+    @DeleteMapping
+    public R<String> delete(@RequestParam List<Long> ids) {
+        return intelligenceService.deleteBatch(ids);
+    }
+
+
 
 }

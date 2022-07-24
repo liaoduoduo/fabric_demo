@@ -1,7 +1,7 @@
 package com.ldy.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.ldy.entity.Category;
+import com.ldy.entity.IntelligenceCategory;
 
 /**
  * @Author ldy
@@ -10,5 +10,5 @@ import com.ldy.entity.Category;
  * @Description TODO
  * @Version v1.0
  */
-public interface CategoryService extends IService<Category> {
+public interface IntelligenceCategoryService extends IService<IntelligenceCategory> {
 }

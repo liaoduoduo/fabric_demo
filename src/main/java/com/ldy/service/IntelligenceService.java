@@ -24,4 +24,7 @@ public interface IntelligenceService extends IService<Intelligence> {
     R<String> buy(Long intelligenceId);
 
     Page<IntelligenceVo> pageQuery(int page, int pageSize, String name);
+
+    R<String> deleteBatch(List<Long> ids);
+
 }

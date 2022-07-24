@@ -3,11 +3,11 @@ package com.ldy.service.impl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ldy.common.BaseContext;
-import com.ldy.entity.Category;
+import com.ldy.entity.IntelligenceCategory;
 import com.ldy.entity.User;
 import com.ldy.mapper.UserIntelligenceMapper;
 import com.ldy.entity.UserIntelligence;
-import com.ldy.service.CategoryService;
+import com.ldy.service.IntelligenceCategoryService;
 import com.ldy.service.UserIntelligenceService;
 import com.ldy.service.UserService;
 import com.ldy.vo.UserIntelligenceVo;
@@ -31,7 +31,7 @@ public class UserIntelligenceServiceImpl extends ServiceImpl<UserIntelligenceMap
     private UserIntelligenceMapper userIntelligenceMapper;
 
     @Autowired
-    private CategoryService categoryService;
+    private IntelligenceCategoryService intelligenceCategoryService;
 
     @Autowired
     private UserService userService;
@@ -48,6 +48,7 @@ public class UserIntelligenceServiceImpl extends ServiceImpl<UserIntelligenceMap
 
         for (UserIntelligenceVo record : records) {
             Long formUserId = record.getFormUserId();
+            Long toUserId = record.getToUserId();
             if (formUserId.equals(userId)) {
                 record.setOrigin("本人发布");
             } else {
@@ -58,8 +59,14 @@ public class UserIntelligenceServiceImpl extends ServiceImpl<UserIntelligenceMap
             String formUserName = formUser.getName();
             record.setFromUserName(formUserName);
 
-            Category category = categoryService.getById(record.getCategoryId());
-            record.setCategoryName(category.getName());
+            User toUser = userService.getById(toUserId);
+            if (toUser != null) {
+                String toUserName = toUser.getName();
+                record.setToUserName(toUserName);
+            }
+
+            IntelligenceCategory intelligenceCategory = intelligenceCategoryService.getById(record.getIntelligenceCategoryId());
+            record.setIntelligenceCategoryName(intelligenceCategory.getName());
 
         }
         return userIntelligenceVoResultPage;

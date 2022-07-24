@@ -1,261 +1,264 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <!-- 引入样式 -->
-    <link rel="stylesheet" href="../../plugins/element-ui/index.css" />
-    <link rel="stylesheet" href="../../styles/common.css" />
-    <link rel="stylesheet" href="../../styles/page.css" />
-    <style>
-      #token-add-app .el-form-item__label::before{
+<head>
+  <meta charset="UTF-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Document</title>
+  <!-- 引入样式 -->
+  <link rel="stylesheet" href="../../plugins/element-ui/index.css"/>
+  <link rel="stylesheet" href="../../styles/common.css"/>
+  <link rel="stylesheet" href="../../styles/page.css"/>
+  <style>
+      #token-add-app .el-form-item__label::before {
           content: '*';
           color: #F56C6C;
           margin-right: 4px;
       }
 
-      #token-add-app .uploadImg .el-form-item__label::before{
+      #token-add-app .uploadImg .el-form-item__label::before {
           content: '*';
           color: #F56C6C;
           margin-right: 4px;
       }
-    </style>
-  </head>
-  <body>
-    <div class="addBrand-container" id="token-add-app">
-      <div class="container">
-        <el-form
-          ref="ruleForm"
-          :model="ruleForm"
-          :rules="rules"
-          :inline="true"
-          label-width="180px"
-          class="demo-ruleForm"
-        >
-          <div>
-            <el-form-item label="用户:" prop="id">
-              <el-select v-model="ruleForm.id" placeholder="请选择用户" @change="$forceUpdate()">
-                <el-option v-for="(item, index) in userList" :key="index" :label="item.name" :value="item.id" />
-              </el-select>
-            </el-form-item>
-          </div>
-          <div>
-            <el-form-item label="token数目:" prop="token">
-              <el-input v-model="ruleForm.token" placeholder="请设置用户token数目" />
-            </el-form-item>
-          </div>
-<!--          <div class="address">
-            <el-form-item label="用户账户描述:">
-              <el-input v-model="ruleForm.description" type="textarea" :rows="3" placeholder="套餐描述，最长200字" maxlength="200"/>
-            </el-form-item>
-          </div>-->
-          <div class="subBox address">
-            <el-form-item>
-              <el-button @click="goBack()"> 取消 </el-button>
-              <el-button type="primary" @click="submitForm('ruleForm', false)"> 保存 </el-button>
-              <el-button
-                v-if="actionType == 'add'"
-                type="primary"
-                class="continue"
-                @click="submitForm('ruleForm', true)"
-              >
-                保存并继续添加用户账户
-              </el-button>
-            </el-form-item>
-          </div>
-        </el-form>
+  </style>
+</head>
+<body>
+<div class="addBrand-container" id="token-add-app">
+  <div class="container">
+    <el-form
+      ref="ruleForm"
+      :model="ruleForm"
+      :rules="rules"
+      :inline="true"
+      label-width="180px"
+      class="demo-ruleForm"
+    >
+      <div>
+        <el-form-item label="用户:" prop="userId" v-if="this.actionType=='add'">
+          <el-select v-model="ruleForm.userId" placeholder="请选择用户" @change="$forceUpdate()">
+            <el-option v-for="(item, index) in userList" :key="index" :label="item.name" :value="item.id"/>
+          </el-select>
+        </el-form-item>
       </div>
-    </div>
-    <!-- 开发环境版本，包含了有帮助的命令行警告 -->
-    <script src="../../plugins/vue/vue.js"></script>
-    <!-- 引入组件库 -->
-    <script src="../../plugins/element-ui/index.js"></script>
-    <!-- 引入axios -->
-    <script src="../../plugins/axios/axios.min.js"></script>
-    <script src="../../js/request.js"></script>
-    <script src="../../js/validate.js"></script>
-    <script src="../../js/index.js"></script>
-    <script src="../../api/token.js"></script>
-    <script>
-      new Vue({
-        el: '#token-add-app',
-        data() {
-          return {
-            id: '',
-            actionType: '',
-            value: '',
-            userList: [],
-            seachKey: '',
-            dialogVisible: false,
-            checkList: [],
-            ruleForm: {
-              id: '',
-              token: '',
-              status: true
-            },
-            keyInd : 0,
-            searchValue: '',
-            checkedList: []
-          }
+      <div>
+        <el-form-item label="token数目:" prop="token">
+          <el-input v-model="ruleForm.currentToken" placeholder="请设置用户token数目"/>
+        </el-form-item>
+      </div>
+      <!--          <div class="address">
+                  <el-form-item label="用户账户描述:">
+                    <el-input v-model="ruleForm.description" type="textarea" :rows="3" placeholder="套餐描述，最长200字" maxlength="200"/>
+                  </el-form-item>
+                </div>-->
+      <div class="subBox address">
+        <el-form-item>
+          <el-button @click="goBack()"> 取消</el-button>
+          <el-button type="primary" @click="submitForm('ruleForm', false)"> 保存</el-button>
+          <el-button
+            v-if="actionType == 'add'"
+            type="primary"
+            class="continue"
+            @click="submitForm('ruleForm', true)"
+          >
+            保存并继续添加用户账户
+          </el-button>
+        </el-form-item>
+      </div>
+    </el-form>
+  </div>
+</div>
+<!-- 开发环境版本，包含了有帮助的命令行警告 -->
+<script src="../../plugins/vue/vue.js"></script>
+<!-- 引入组件库 -->
+<script src="../../plugins/element-ui/index.js"></script>
+<!-- 引入axios -->
+<script src="../../plugins/axios/axios.min.js"></script>
+<script src="../../js/request.js"></script>
+<script src="../../js/validate.js"></script>
+<script src="../../js/index.js"></script>
+<script src="../../api/token.js"></script>
+<script>
+  new Vue({
+    el: '#token-add-app',
+    data() {
+      return {
+        id: '',
+        actionType: '',
+        value: '',
+        userList: [],
+        seachKey: '',
+        dialogVisible: false,
+        checkList: [],
+        ruleForm: {
+          userId: '',
+          id: '',
+          currentToken: '',
+          status: true
         },
-        computed: {
-          rules() {
-            return {
-              id: {
-                required: true,
-                message: '请输入账户名称',
-                trigger: 'change',
-              },
-              token: {
-                required: true,
-                validator: (rules, value, callback) => {
-                    if (!value) {
-                      callback(new Error('请填写账户数目'))
+        keyInd: 0,
+        searchValue: '',
+        checkedList: []
+      }
+    },
+    computed: {
+      rules() {
+        return {
+          id: {
+            required: true,
+            message: '请输入账户名称',
+            trigger: 'change',
+          },
+          currentToken: {
+            required: true,
+            validator: (rules, value, callback) => {
+              if (!value) {
+                callback(new Error('请填写账户数目'))
+              } else {
+                const reg = /^\d+(\.\d{0,2})?$/
+                if (reg.test(value)) {
+                  if (value < 1000000) {
+                    callback()
+                  } else {
+                    callback(new Error('账户价要小于1000000！'))
+                  }
+                } else {
+                  callback(new Error('价值格式只能为数字,且最多保留两位小数'))
+                }
+              }
+            },
+            trigger: 'blur',
+          },
+        }
+      },
+    },
+    watch: {
+      seachKey(value) {
+        if (value.trim()) {
+          this.getDishForName(this.seachKey)
+        }
+      },
+      checkList(value) {
+        this.checkedList = value
+      }
+    },
+    created() {
+      this.getAllUser()
+      this.id = requestUrlParam('id')
+      this.actionType = this.id ? 'edit' : 'add'
+      if (this.id) {
+        this.init()
+      }
+    },
+    mounted() {
+    },
+    methods: {
+      async init() {
+        queryTokenById(this.id).then((res) => {
+          if (String(res.code) === '1') {
+            this.ruleForm = res.data
+            this.ruleForm.status = res.data.status === '1'
+            // this.ruleForm.password = ''
+          } else {
+            this.$message.error(res.msg || '操作失败')
+          }
+        })
+      },
+
+      // 获取所有用户
+      getAllUser() {
+        getUserList().then(res => {
+          if (res.code === 1) {
+            this.userList = res.data
+          } else {
+            this.$message.error(res.msg || '操作失败')
+          }
+        })
+      },
+
+      submitForm(formName, st) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            let prams = {...this.ruleForm}
+            prams.status = this.ruleForm ? 1 : 0
+            if (this.actionType == 'add') {
+              delete prams.id
+              addToken(prams)
+                .then((res) => {
+                  if (res.code === 1) {
+                    this.$message.success('账户添加成功！')
+                    if (!st) {
+                      this.goBack()
                     } else {
-                      const reg = /^\d+(\.\d{0,2})?$/
-                      if (reg.test(value)) {
-                        if(value < 1000000){
-                          callback()
-                        }else{
-                          callback(new Error('账户价要小于1000000！'))
-                        }
-                      } else {
-                        callback(new Error('价值格式只能为数字,且最多保留两位小数'))
+                      this.$refs.ruleForm.resetFields()
+                      this.ruleForm = {
+                        id: '',
+                        token: '',
+                        status: true,
                       }
                     }
-                  },
-                trigger: 'blur',
-              },
+                  } else {
+                    this.$message.error(res.msg || '操作失败')
+                  }
+                })
+                .catch((err) => {
+                  this.$message.error('请求出错了：' + err)
+                })
+            } else {
+              delete prams.updateTime
+              delete prams.userId;
+              editToken(prams)
+                .then((res) => {
+                  if (res.code === 1) {
+                    this.$message.success('账户修改成功！')
+                    this.goBack()
+                  } else {
+                    this.$message.error(res.msg || '操作失败')
+                  }
+                })
+                .catch((err) => {
+                  this.$message.error('请求出错了：' + err)
+                })
             }
-          },
-        },
-        watch:{
-          seachKey(value){
-            if (value.trim()){
-              this.getDishForName(this.seachKey)
-            }
-          },
-          checkList(value){
-            this.checkedList = value
+          } else {
+            return false
           }
-        },
-        created() {
-          this.getAllUser()
-          this.id = requestUrlParam('id')
-          this.actionType = this.id ? 'edit' : 'add'
-          if (this.id) {
-            this.init()
-          }
-        },
-        mounted() {},
-        methods: {
-          async init() {
-            queryTokenById(this.id).then((res) => {
-              if (String(res.code) === '1') {
-                this.ruleForm = res.data
-                this.ruleForm.status = res.data.status === '1'
-                // this.ruleForm.password = ''
-              } else {
-                this.$message.error(res.msg || '操作失败')
-              }
-            })
+        })
+      },
+      goBack() {
+        window.parent.menuHandle(
+          {
+            id: '5',
+            url: '/backend/page/token/list.html',
+            name: 'token管理',
           },
+          false
+        )
+      },
 
-          // 获取所有用户
-          getAllUser() {
-            getUserList().then(res => {
-              if (res.code === 1) {
-                this.userList = res.data
-              } else {
-                this.$message.error(res.msg || '操作失败')
-              }
-            })
-          },
+      checkTypeHandle(ind, id) {
+        this.keyInd = ind
+        this.getDishList(id)
+      },
 
-          submitForm(formName, st) {
-            this.$refs[formName].validate((valid) => {
-              if (valid) {
-                let prams = { ...this.ruleForm }
-                prams.status = this.ruleForm ? 1 : 0
-                if (this.actionType == 'add') {
-                  delete prams.id
-                  addToken(prams)
-                    .then((res) => {
-                      if (res.code === 1) {
-                        this.$message.success('账户添加成功！')
-                        if (!st) {
-                          this.goBack()
-                        } else {
-                          this.$refs.ruleForm.resetFields()
-                          this.ruleForm = {
-                            id: '',
-                            token: '',
-                            status: true,
-                          }
-                        }
-                      } else {
-                        this.$message.error(res.msg || '操作失败')
-                      }
-                    })
-                    .catch((err) => {
-                      this.$message.error('请求出错了：' + err)
-                    })
-                } else {
-                  delete prams.updateTime
-                  editToken(prams)
-                    .then((res) => {
-                      if (res.code === 1) {
-                        this.$message.success('账户修改成功！')
-                        this.goBack()
-                      } else {
-                        this.$message.error(res.msg || '操作失败')
-                      }
-                    })
-                    .catch((err) => {
-                      this.$message.error('请求出错了：' + err)
-                    })
-                }
-              } else {
-                return false
-              }
-            })
-          },
-          goBack() {
-            window.parent.menuHandle(
-              {
-                id: '5',
-                url: '/backend/page/token/list.html',
-                name: 'token管理',
-              },
-              false
-            )
-          },
+      checkedListHandle(value) {
+        this.getCheckList(this.checkedList)
+      },
 
-          checkTypeHandle (ind,id) {
-            this.keyInd = ind
-            this.getDishList(id)
-          },
+      open(done) {
+        this.dishListCache = JSON.parse(JSON.stringify(this.checkList))
+      },
 
-          checkedListHandle (value) {
-            this.getCheckList(this.checkedList)
-          },
+      close(done) {
+        this.checkList = this.dishListCache
+      },
 
-          open (done) {
-            this.dishListCache = JSON.parse(JSON.stringify(this.checkList))
-          },
-
-          close (done) {
-            this.checkList = this.dishListCache
-          },
-
-          // 删除
-          delCheck (ind){
-            this.checkedList.splice(ind, 1)
-          }
-        },
-      })
-    </script>
-  </body>
+      // 删除
+      delCheck(ind) {
+        this.checkedList.splice(ind, 1)
+      }
+    },
+  })
+</script>
+</body>
 </html>

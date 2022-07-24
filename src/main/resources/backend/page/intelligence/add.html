@@ -42,10 +42,10 @@
         </el-form-item>
         <el-form-item
             label="情报分类:"
-            prop="categoryId"
+            prop="intelligenceCategoryId"
         >
           <el-select
-              v-model="ruleForm.categoryId"
+              v-model="ruleForm.intelligenceCategoryId"
               placeholder="请选择情报分类"
           >
             <el-option v-for="(item,index) in categoryList" :key="index" :label="item.name" :value="item.id"/>
@@ -55,10 +55,10 @@
       <div>
         <el-form-item
             label="情报价值:"
-            prop="price"
+            prop="token"
         >
           <el-input
-              v-model="ruleForm.price"
+              v-model="ruleForm.token"
               placeholder="请设置情报价值"
           />
         </el-form-item>
@@ -166,12 +166,12 @@
           'name': '',
           'id': '',
           'userId': '',
-          'price': '',
+          'token': '',
           'fileHash': '',
           'image': '',
           'description': '',
           'status': true,
-          categoryId: ''
+          intelligenceCategoryId: ''
         },
         mak: false
       }
@@ -182,13 +182,13 @@
           'name': [
             {'required': true, 'message': '请填写情报名称', 'trigger': 'blur'}
           ],
-          'categoryId': [
+          'intelligenceCategoryId': [
             {'required': true, 'message': '请选择情报分类', 'trigger': 'change'}
           ],
           'fileHash': [
             {'required': true, 'message': '请填写情报hash', 'trigger': 'blur'}
           ],
-          'price': [
+          'token': [
             {
               'required': true,
               validator: (rules, value, callback) => {
@@ -230,9 +230,6 @@
           if (String(res.code) === '1') {
             this.ruleForm = {...res.data}
             this.ruleForm.status = res.data.status == '1'
-            this.ruleForm.fileHash = res.data.fileHash
-            this.ruleForm.name = res.data.name
-            this.ruleForm.description = res.data.description
 
             // this.ruleForm.id = res.data.data.categoryId
             // this.imageUrl = res.data.data.image

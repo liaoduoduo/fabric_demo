@@ -3,8 +3,8 @@ package com.ldy.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ldy.common.R;
-import com.ldy.entity.Category;
-import com.ldy.service.CategoryService;
+import com.ldy.entity.IntelligenceCategory;
+import com.ldy.service.IntelligenceCategoryService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -17,12 +17,12 @@ import java.util.List;
  * @Description 分类控制器
  * @Version v1.0
  */
-@RequestMapping("/category")
+@RequestMapping("/intelligenceCategory")
 @RestController
-public class CategoryController {
+public class IntelligenceCategoryController {
 
     @Resource
-    private CategoryService categoryService;
+    private IntelligenceCategoryService intelligenceCategoryService;
 
     /**
      * @description 分页查询
@@ -32,23 +32,22 @@ public class CategoryController {
      * @return com.ldy.common.R<com.baomidou.mybatisplus.extension.plugins.pagination.Page<com.ldy.pojo.Category>>
      */
     @GetMapping("/page")
-    public R<Page<Category>> page(int page, int pageSize) {
-        Page<Category> categoryPage = new Page<>(page, pageSize);
-        LambdaQueryWrapper<Category> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.orderByAsc(Category::getSort);
-        categoryService.page(categoryPage,queryWrapper);
+    public R<Page<IntelligenceCategory>> page(int page, int pageSize) {
+        Page<IntelligenceCategory> categoryPage = new Page<>(page, pageSize);
+        LambdaQueryWrapper<IntelligenceCategory> queryWrapper = new LambdaQueryWrapper<>();
+        intelligenceCategoryService.page(categoryPage,queryWrapper);
         return R.success(categoryPage);
     }
 
     /**
      * @description 新增情报分类
      * @date 2022/7/4 16:21
-     * @param category
+     * @param intelligenceCategory
      * @return com.ldy.common.R<java.lang.String>
      */
     @PostMapping
-    public R<String> addCategory(@RequestBody Category category) {
-        categoryService.save(category);
+    public R<String> addCategory(@RequestBody IntelligenceCategory intelligenceCategory) {
+        intelligenceCategoryService.save(intelligenceCategory);
         //存储到区块链中
         //。。。。。。。。。
         return R.success("新增情报分类成功");
@@ -61,12 +60,12 @@ public class CategoryController {
      * @return com.ldy.common.R<java.util.List<com.ldy.pojo.Category>>
      */
     @GetMapping("/list")
-    public R<List<Category>> list() {
+    public R<List<IntelligenceCategory>> list() {
         //条件构造器
-        LambdaQueryWrapper<Category> queryWrapper = new LambdaQueryWrapper<>();
+        LambdaQueryWrapper<IntelligenceCategory> queryWrapper = new LambdaQueryWrapper<>();
         //添加排序条件
-        queryWrapper.orderByAsc(Category::getSort).orderByDesc(Category::getUpdateTime);
-        List<Category> list = categoryService.list(queryWrapper);
+        queryWrapper.orderByDesc(IntelligenceCategory::getUpdateTime);
+        List<IntelligenceCategory> list = intelligenceCategoryService.list(queryWrapper);
         return R.success(list);
     }
 

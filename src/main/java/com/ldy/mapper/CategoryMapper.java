@@ -1,7 +1,7 @@
 package com.ldy.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.ldy.entity.Category;
+import com.ldy.entity.IntelligenceCategory;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -12,5 +12,5 @@ import org.apache.ibatis.annotations.Mapper;
  * @Version v1.0
  */
 @Mapper
-public interface CategoryMapper extends BaseMapper<Category> {
+public interface CategoryMapper extends BaseMapper<IntelligenceCategory> {
 }

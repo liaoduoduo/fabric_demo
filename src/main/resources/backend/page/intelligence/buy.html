@@ -74,10 +74,10 @@
         </el-form-item>
         <el-form-item
           label="情报分类:"
-          prop="categoryId"
+          prop="intelligenceCategoryId"
         >
           <el-select
-            v-model="ruleForm.categoryId"
+            v-model="ruleForm.intelligenceCategoryId"
             placeholder="请选择情报分类"
             disabled
           >
@@ -88,10 +88,10 @@
       <div>
         <el-form-item
           label="情报价值:"
-          prop="price"
+          prop="token"
         >
           <el-input
-            v-model="ruleForm.price"
+            v-model="ruleForm.token"
             placeholder="请设置情报价值"
             disabled
           />
@@ -102,8 +102,7 @@
           prop="fileHash"
         >
           <el-input
-            v-model="ruleForm.fileHash"
-            placeholder="请设置情报hash值，根据hash值可获取完整情报数据"
+            placeholder="购买后才可查看"
             disabled
           />
         </el-form-item>
@@ -207,12 +206,12 @@
           'name': '',
           'id': '',
           'userId': '',
-          'price': '',
+          'token': '',
           'fileHash': '',
           'image': '',
           'description': '',
           'status': true,
-          categoryId: ''
+          intelligenceCategoryId: ''
         },
         classData: {
           'title': '购买情报确认',
@@ -227,10 +226,10 @@
           'name': [
             {'required': true, 'message': '请填写情报名称', 'trigger': 'blur'}
           ],
-          'categoryId': [
+          'intelligenceCategoryId': [
             {'required': true, 'message': '请选择情报分类', 'trigger': 'change'}
           ],
-          'price': [
+          'token': [
             {
               'required': true,
               validator: (rules, value, callback) => {

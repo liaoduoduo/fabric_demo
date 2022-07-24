@@ -2,6 +2,7 @@ package com.ldy.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -41,10 +42,14 @@ public class User implements Serializable {
     //身份证号
     private String idNumber;
 
+    //单位
+    private String unit;
+
     //状态
     private Integer status;
 
-    private BigDecimal token;
+    //token钱包账户id
+    private Long tokenId;
 
     //用户贡献度
     //private Long contribution;
@@ -60,4 +65,8 @@ public class User implements Serializable {
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updateUser;
+
+    //逻辑删除
+    @TableLogic
+    private Integer isDeleted;
 }

@@ -24,7 +24,7 @@ const queryTokenById = (id) => {
 }
 
 // 批量启用禁用
-const tokenStatusByStatus = (params) => {
+const tokenStatusByBatch = (params) => {
     return $axios({
         url: `/token/status/${params.status}`,
         method: 'post',

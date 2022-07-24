@@ -56,7 +56,7 @@ const queryIntelligenceById = (id) => {
 // 获取情报分类列表
 const getCategoryList = (params) => {
   return $axios({
-    url: '/category/list',
+    url: '/intelligenceCategory/list',
     method: 'get',
     params
   })

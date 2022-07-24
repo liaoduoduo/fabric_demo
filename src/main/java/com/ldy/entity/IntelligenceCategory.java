@@ -2,57 +2,45 @@ package com.ldy.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * @Author ldy
- * @Date 2022/7/1 16:56
- * @ClassName Task
- * @Description 研判任务实体类
- * @Version v1.0
+ * 情报分类
  */
 @Data
-public class Task implements Serializable {
+public class IntelligenceCategory implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private Long id;
 
-    //研判任务名
+    //分类名称
     private String name;
 
-    //研判任务阶段
-    private String stage;
-
-    //研判任务悬赏
-    private Integer price;
-
-    //研判任务描述
-    private String description;
-
-    //研判任务结果，默认未结束
-    private String result;
-
-    //研判任务打分，默认0分
-    private Integer score;
-
-    //研判任务状态，0停止，1启动
-    private Integer status;
-
+    //创建时间
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
+    //更新时间
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 
+
+    //创建人
     @TableField(fill = FieldFill.INSERT)
     private Long createUser;
 
+
+    //修改人
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updateUser;
 
+
+    @TableLogic
+    private Integer isDeleted;
 
 }
