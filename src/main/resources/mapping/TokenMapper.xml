@@ -13,5 +13,6 @@
                 u.name like concat('%', #{name}, '%')
             </if>
         </where>
+        order by t.update_time desc
     </select>
 </mapper>

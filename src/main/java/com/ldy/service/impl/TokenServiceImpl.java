@@ -55,6 +55,7 @@ public class TokenServiceImpl extends ServiceImpl<TokenMapper, Token> implements
                     ArrayList<TokenVo> oneResult = new ArrayList<>();
                     oneResult.add(record);
                     tokenVoPage.setRecords(oneResult);
+                    tokenVoPage.setTotal(1);
                 }
             }
         }

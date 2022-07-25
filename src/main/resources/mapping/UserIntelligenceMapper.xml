@@ -25,6 +25,7 @@
                 and i.name like concat('%',#{name},'%')
             </if>
         </where>
+        order by ui.update_time desc
     </select>
 </mapper>
 
