@@ -69,5 +69,17 @@ public class IntelligenceCategoryController {
         return R.success(list);
     }
 
+    @PutMapping
+    public R<String> update(@RequestBody IntelligenceCategory intelligenceCategory) {
+        intelligenceCategoryService.updateById(intelligenceCategory);
+        return R.success("修改成功！");
+    }
+
+    @DeleteMapping
+    public R<String> delete(Long id) {
+        intelligenceCategoryService.removeById(id);
+        return R.success("删除成功！");
+    }
+
 
 }
