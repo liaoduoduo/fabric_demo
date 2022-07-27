@@ -87,6 +87,14 @@
       >
         <template slot-scope="scope">
           <el-button
+                  type="text"
+                  size="small"
+                  class="blueBug"
+                  @click = "infoToken('add')"
+          >
+            详情
+          </el-button>
+          <el-button
             type="text"
             size="small"
             class="blueBug"
@@ -102,17 +110,19 @@
           >
             {{ scope.row.status == '0' ? '启用' : '停用' }}
           </el-button>
-          <!--
- <el-button
-   type="text"
-    size="small" class="delBut non"
-   @click="deleteHandle('单删', scope.row.id)"
- >
-   删除
- </el-button>-->
+
+
+<!--         <el-button-->
+<!--           type="text"-->
+<!--            size="small" class="delBut non"-->
+<!--           @click="deleteHandle('单删', scope.row.id)"-->
+<!--         >-->
+<!--           删除-->
+<!--         </el-button>-->
         </template>
       </el-table-column>
     </el-table>
+
     <el-pagination
       class="pageList"
       :page-sizes="[10, 20, 30, 40]"
@@ -218,6 +228,17 @@
         })
       },
 
+      infoToken(st)
+      {
+        if (st === 'add') {
+          window.parent.menuHandle({
+            id: '5',
+            url: '/backend/page/token/info.html',
+            name: 'Token 详情'
+          }, true)
+        }
+      },
+
       //状态更改
       statusHandle(row) {
         let params = {}
@@ -269,6 +290,9 @@
       }
     }
   })
+
+
+
 </script>
 </body>
 </html>
