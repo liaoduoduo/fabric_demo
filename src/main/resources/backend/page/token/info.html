@@ -1,71 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Document</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>token info</title>
   <!-- 引入样式 -->
   <link rel="stylesheet" href="../../plugins/element-ui/index.css"/>
   <link rel="stylesheet" href="../../styles/common.css"/>
   <link rel="stylesheet" href="../../styles/page.css"/>
-  <style>
-    #token-add-app .el-form-item__label::before {
-      content: '*';
-      color: #F56C6C;
-      margin-right: 4px;
-    }
-
-    #token-add-app .uploadImg .el-form-item__label::before {
-      content: '*';
-      color: #F56C6C;
-      margin-right: 4px;
-    }
-  </style>
 </head>
 <body>
-<div class="addBrand-container" id="token-add-app">
+<div class="dashboard-container" id="token-app">
   <div class="container">
-    <el-form
-            ref="ruleForm"
-            :model="ruleForm"
-            :rules="rules"
-            :inline="true"
-            label-width="180px"
-            class="demo-ruleForm"
+
+    <el-table
+            :data="tokenData"
+            stripe
+            class="tableBox"
+            @selection-change="handleSelectionChange"
     >
-      <div>
-        <el-form-item label="用户:" prop="userId" v-if="this.actionType=='add'">
-          <el-select v-model="ruleForm.userId" placeholder="请选择用户" @change="$forceUpdate()">
-            <el-option v-for="(item, index) in userList" :key="index" :label="item.name" :value="item.id"/>
-          </el-select>
-        </el-form-item>
-      </div>
-      <div>
-        <el-form-item label="token数目:" prop="token">
-          <el-input v-model="ruleForm.currentToken" placeholder="请设置用户token数目"/>
-        </el-form-item>
-      </div>
-      <!--          <div class="address">
-                  <el-form-item label="用户账户描述:">
-                    <el-input v-model="ruleForm.description" type="textarea" :rows="3" placeholder="套餐描述，最长200字" maxlength="200"/>
-                  </el-form-item>
-                </div>-->
-      <div class="subBox address">
-        <el-form-item>
-          <el-button @click="goBack()"> 取消</el-button>
-          <el-button type="primary" @click="submitForm('ruleForm', false)"> 保存</el-button>
-          <el-button
-                  v-if="actionType == 'add'"
-                  type="primary"
-                  class="continue"
-                  @click="submitForm('ruleForm', true)"
-          >
-            保存并继续添加用户账户
-          </el-button>
-        </el-form-item>
-      </div>
-    </el-form>
+
+      <!--复选框
+      <el-table-column
+              type="selection"
+      ></el-table-column>-->
+
+      <el-table-column
+              prop="transaction"
+              label="交易记录"
+      ></el-table-column>
+
+      <el-table-column
+              prop="change"
+              label="米币增减"
+      ></el-table-column>
+
+      <el-table-column
+              prop="freezeToken"
+              label="冻结米币数目"
+      ></el-table-column>
+
+      <el-table-column
+              prop="tranToken"
+              label="当前米币数目"
+      >
+      </el-table-column>
+
+      <el-table-column
+              prop="tranReasons"
+              label="变更原因"
+      >
+      </el-table-column>
+
+      <el-table-column
+              prop="tranTime"
+              label="交易时间"
+      >
+      </el-table-column>
+
+    </el-table>
+
+    <el-pagination
+            class="pageList"
+            :page-sizes="[10, 20, 30, 40]"
+            :page-size="pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="counts"
+            @size-change="handleSizeChange"
+            :current-page.sync="page"
+            @current-change="handleCurrentChange"
+    ></el-pagination>
+
   </div>
 </div>
 <!-- 开发环境版本，包含了有帮助的命令行警告 -->
@@ -75,190 +81,157 @@
 <!-- 引入axios -->
 <script src="../../plugins/axios/axios.min.js"></script>
 <script src="../../js/request.js"></script>
-<script src="../../js/validate.js"></script>
-<script src="../../js/index.js"></script>
 <script src="../../api/token.js"></script>
 <script>
   new Vue({
-    el: '#token-add-app',
+    el: '#token-app',
     data() {
       return {
-        id: '',
-        actionType: '',
-        value: '',
-        userList: [],
-        seachKey: '',
-        dialogVisible: false,
-        checkList: [],
-        ruleForm: {
-          userId: '',
-          id: '',
-          currentToken: '',
-          status: true
-        },
-        keyInd: 0,
-        searchValue: '',
-        checkedList: []
+        input: '',
+        counts: 0,
+        page: 1,
+        pageSize: 10,
+        tableData: [],
+        dishState: '',
+        checkList: []
       }
     },
-    computed: {
-      rules() {
-        return {
-          id: {
-            required: true,
-            message: '请输入账户名称',
-            trigger: 'change',
-          },
-          currentToken: {
-            required: true,
-            validator: (rules, value, callback) => {
-              if (!value) {
-                callback(new Error('请填写账户数目'))
-              } else {
-                const reg = /^\d+(\.\d{0,2})?$/
-                if (reg.test(value)) {
-                  if (value < 1000000) {
-                    callback()
-                  } else {
-                    callback(new Error('账户价要小于1000000！'))
-                  }
-                } else {
-                  callback(new Error('价值格式只能为数字,且最多保留两位小数'))
-                }
-              }
-            },
-            trigger: 'blur',
-          },
-        }
-      },
-    },
-    watch: {
-      seachKey(value) {
-        if (value.trim()) {
-          this.getDishForName(this.seachKey)
-        }
-      },
-      checkList(value) {
-        this.checkedList = value
-      }
-    },
+    computed: {},
     created() {
-      this.getAllUser()
-      this.id = requestUrlParam('id')
-      this.actionType = this.id ? 'edit' : 'add'
-      if (this.id) {
-        this.init()
-      }
+      this.init()
+      this.user = JSON.parse(localStorage.getItem('userInfo')).username
     },
     mounted() {
     },
     methods: {
       async init() {
-        queryTokenById(this.id).then((res) => {
+        const params = {
+          page: this.page,
+          pageSize: this.pageSize,
+          name: this.input ? this.input : undefined
+        }
+        await getTokenPage(params).then(res => {
           if (String(res.code) === '1') {
-            this.ruleForm = res.data
-            this.ruleForm.status = res.data.status === '1'
-            // this.ruleForm.password = ''
-          } else {
-            this.$message.error(res.msg || '操作失败')
+            this.tableData = res.data.records || []
+            this.counts = res.data.total
           }
+        }).catch(err => {
+          this.$message.error('请求出错了：' + err)
         })
       },
-
-      // 获取所有用户
-      getAllUser() {
-        getUserList().then(res => {
-          if (res.code === 1) {
-            this.userList = res.data
-          } else {
-            this.$message.error(res.msg || '操作失败')
-          }
-        })
+      getImage(image) {
+        return `/common/download?name=${image}`
       },
-
-      submitForm(formName, st) {
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            let prams = {...this.ruleForm}
-            prams.status = this.ruleForm ? 1 : 0
-            if (this.actionType == 'add') {
-              delete prams.id
-              addToken(prams)
-                      .then((res) => {
-                        if (res.code === 1) {
-                          this.$message.success('账户添加成功！')
-                          if (!st) {
-                            this.goBack()
-                          } else {
-                            this.$refs.ruleForm.resetFields()
-                            this.ruleForm = {
-                              id: '',
-                              token: '',
-                              status: true,
-                            }
-                          }
-                        } else {
-                          this.$message.error(res.msg || '操作失败')
-                        }
-                      })
-                      .catch((err) => {
-                        this.$message.error('请求出错了：' + err)
-                      })
-            } else {
-              delete prams.updateTime
-              delete prams.userId;
-              editToken(prams)
-                      .then((res) => {
-                        if (res.code === 1) {
-                          this.$message.success('账户修改成功！')
-                          this.goBack()
-                        } else {
-                          this.$message.error(res.msg || '操作失败')
-                        }
-                      })
-                      .catch((err) => {
-                        this.$message.error('请求出错了：' + err)
-                      })
-            }
-          } else {
-            return false
-          }
-        })
+      handleQuery() {
+        this.page = 1;
+        this.init();
       },
-      goBack() {
-        window.parent.menuHandle(
-                {
-                  id: '5',
-                  url: '/backend/page/token/list.html',
-                  name: 'token管理',
-                },
-                false
-        )
-      },
-
-      checkTypeHandle(ind, id) {
-        this.keyInd = ind
-        this.getDishList(id)
-      },
-
-      checkedListHandle(value) {
-        this.getCheckList(this.checkedList)
-      },
-
-      open(done) {
-        this.dishListCache = JSON.parse(JSON.stringify(this.checkList))
-      },
-
-      close(done) {
-        this.checkList = this.dishListCache
+      // 添加
+      addToken(st) {
+        if (st === 'add') {
+          window.parent.menuHandle({
+            id: '5',
+            url: '/backend/page/token/add.html',
+            name: '添加用户账户'
+          }, true)
+        } else {
+          window.parent.menuHandle({
+            id: '5',
+            url: '/backend/page/token/add.html?id=' + st,
+            name: '修改用户账户'
+          }, true)
+        }
       },
 
       // 删除
-      delCheck(ind) {
-        this.checkedList.splice(ind, 1)
+      deleteHandle(type, id) {
+        if (type === '批量' && id === null) {
+          if (this.checkList.length === 0) {
+            return this.$message.error('请选择删除对象')
+          }
+        }
+        this.$confirm('确定删除该账户, 是否继续?', '确定删除', {
+          'confirmButtonText': '确定',
+          'cancelButtonText': '取消',
+        }).then(() => {
+          deleteToken(type === '批量' ? this.checkList.join(',') : id).then(res => {
+            if (res.code === 1) {
+              this.$message.success('删除成功！')
+              this.handleQuery()
+            } else {
+              this.$message.error(res.msg || '操作失败')
+            }
+          }).catch(err => {
+            this.$message.error('请求出错了：' + err)
+          })
+        })
+      },
+
+      infoToken(st)
+      {
+        if (st === 'add') {
+          window.parent.menuHandle({
+            id: '5',
+            url: '/backend/page/token/info.html',
+            name: 'Token 详情'
+          }, true)
+        }
+      },
+
+      //状态更改
+      statusHandle(row) {
+        let params = {}
+        if (typeof row === 'string') {
+          if (this.checkList.length == 0) {
+            this.$message.error('批量操作，请先勾选操作账户！')
+            return false
+          }
+          params.ids = this.checkList.join(',')
+          params.status = row
+        } else {
+          params.ids = row.id
+          params.status = row.status ? '0' : '1'
+        }
+        this.$confirm('确认更改该账户状态?', '提示', {
+          'confirmButtonText': '确定',
+          'cancelButtonText': '取消',
+          'type': 'warning'
+        }).then(() => {
+          // 起售停售---批量起售停售接口
+          tokenStatusByBatch(params).then(res => {
+            if (res.code === 1) {
+              this.$message.success('账户状态已经更改成功！')
+              this.handleQuery()
+            } else {
+              this.$message.error(res.msg || '操作失败')
+            }
+          }).catch(err => {
+            this.$message.error('请求出错了：' + err)
+          })
+        })
+      },
+
+      // 全部操作
+      handleSelectionChange(val) {
+        let checkArr = []
+        val.forEach((n) => {
+          checkArr.push(n.id)
+        })
+        this.checkList = checkArr
+      },
+      handleSizeChange(val) {
+        this.pageSize = val
+        this.init()
+      },
+      handleCurrentChange(val) {
+        this.page = val
+        this.init()
       }
-    },
+    }
   })
+
+
+
 </script>
 </body>
 </html>
