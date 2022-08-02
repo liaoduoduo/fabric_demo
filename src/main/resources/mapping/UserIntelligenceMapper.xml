@@ -11,6 +11,7 @@
         ui.update_time updateTime,
         ui.create_user createUser,
         ui.update_user updateUser,
+        i.id intelligenceId,
         i.name name,
         i.status status,
         i.file_hash fileHash,

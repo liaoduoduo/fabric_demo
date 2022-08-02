@@ -22,9 +22,9 @@ const commonDownload = (params) => {
 // （批量）添加情报至协同任务
 const addCoTask = (params) => {
   return $axios({
-    url: '/userIntelligence/coTask/',
+    url: '/cotasking/save',
     method: 'post',
-    params: { ids: params.id }
+    params: params
   })
 }
 

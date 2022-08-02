@@ -49,14 +49,9 @@ public class LoginCheckFilter implements Filter {
             filterChain.doFilter(request, response);
             return;
         }
-        // 为了测试
-        BaseContext.setCurrentId(1L);
-        filterChain.doFilter(request, response);
-        return;
-
 
         //4、判断后端用户登录状态，如果已登录，则直接放行
-        /*if (request.getSession().getAttribute("user") != null) {
+        if (request.getSession().getAttribute("user") != null) {
             Long userId = (Long) request.getSession().getAttribute("user");
             log.info("用户已登录，id为{}", userId);
 
@@ -65,14 +60,11 @@ public class LoginCheckFilter implements Filter {
 
             filterChain.doFilter(request, response);
             return;
-        }*/
+        }
         //5、如果未登录则返回未登录结果，通过输出流方式向客户端页面响应数据
         //request.js中定义了返回对象的属性判断逻辑
-        // log.info("用户未登录！");
-
-        // response.getWriter().write(JSON.toJSONString(R.error("NOTLOGIN")));
-        // response.sendRedirect("redirect:/backend/page/login/login.html");
-
+        log.info("用户未登录！");
+        response.getWriter().write(JSON.toJSONString(R.error("NOTLOGIN")));
     }
 
     //检查本次请求是否需要放行
