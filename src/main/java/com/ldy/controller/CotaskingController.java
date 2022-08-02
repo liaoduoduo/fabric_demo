@@ -7,12 +7,17 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ldy.common.R;
 import com.ldy.entity.Cotasking;
 import com.ldy.entity.CotaskingIntelligence;
+import com.ldy.entity.User;
 import com.ldy.service.ICotaskingIntelligenceService;
 import com.ldy.service.ICotaskingService;
+import com.ldy.service.UserService;
+import com.ldy.vo.CotaskingVo;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,6 +39,8 @@ public class CotaskingController {
     @Autowired
     ICotaskingIntelligenceService cotaskingIntelligenceService;
 
+    @Autowired
+    private UserService userService;
 
     @ApiOperation("用于生成协同任务")
     @PostMapping("/save")
@@ -65,17 +72,29 @@ public class CotaskingController {
 
     @ApiOperation("用于分页查询，并兼顾模糊查询")
     @GetMapping("/getPage")
-    public R<Page<Cotasking>> getPage(@RequestParam(value = "page", defaultValue = "1") int page,
-                                      @RequestParam(value = "pageSize", defaultValue = "5") int pageSize,
-                                      @RequestParam("name") String name) {
+    public R<Page<CotaskingVo>> getPage(@RequestParam(value = "page", defaultValue = "1") int page,
+                                        @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+                                        String name) {
         Page<Cotasking> cotaskPage = new Page<>(page, pageSize);
         // 当查询所有值时，将queryWrapper = null
         LambdaQueryWrapper<Cotasking> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.like(StringUtils.isBlank(name), Cotasking::getName, name).orderByDesc(Cotasking::getUpdateTime);
-        Page<Cotasking> cotaskingPage = cotaskingService.page(cotaskPage, queryWrapper);
-        List<Cotasking> records = cotaskingPage.getRecords();
-        records.forEach(System.out::println);
-        return R.success(cotaskingPage);
+        queryWrapper.like(!StringUtils.isBlank(name), Cotasking::getName, name).orderByDesc(Cotasking::getUpdateTime);
+        cotaskingService.page(cotaskPage, queryWrapper);
+        Page<CotaskingVo> cotaskVoPage = new Page<>();
+        BeanUtils.copyProperties(cotaskPage, cotaskVoPage, "records");
+        List<CotaskingVo> list = new ArrayList<>();
+
+        for (Cotasking record : cotaskPage.getRecords()) {
+            CotaskingVo cotaskingVo = new CotaskingVo();
+            BeanUtils.copyProperties(record, cotaskingVo);
+            Long createUserId = record.getCreateUser();
+            String user = userService.getById(createUserId).getName();
+            cotaskingVo.setUser(user);
+            list.add(cotaskingVo);
+        }
+        System.out.println(list);
+        cotaskVoPage.setRecords(list);
+        return R.success(cotaskVoPage);
     }
 
     @ApiOperation("逻辑删除协同任务")
@@ -95,11 +114,11 @@ public class CotaskingController {
     @ApiOperation("修改协同任务的简述与详细描述")
     @PutMapping("/update")
     public R<String> updateCotask(@RequestBody Cotasking cotasking) {
-        if (cotasking.getId() == 0){
+        if (cotasking.getId() == 0) {
             return R.error("修改失败");
         }
         Cotasking cotasking1 = cotaskingService.getById(cotasking.getId());
-        if (cotasking1.getStatus() == 0){
+        if (cotasking1.getStatus() == 0) {
             return R.error("修改失败: 未激活状态");
         }
         boolean result = cotaskingService.updateById(cotasking);
@@ -110,7 +129,7 @@ public class CotaskingController {
     @PutMapping("/updateStatus")
     public R<String> updateStatus(@RequestBody Cotasking cotasking) {
         boolean b = cotaskingService.updateById(cotasking);
-        return b ? R.success("修改成功"):R.error("修改失败");
+        return b ? R.success("修改成功") : R.error("修改失败");
     }
 
     @ApiOperation("修改协同任务的完成状态，并设置不可更改--未激活")
@@ -121,9 +140,8 @@ public class CotaskingController {
         cotasking.setStatus(0);
         cotasking.setFinished(1);
         boolean b = cotaskingService.updateById(cotasking);
-        return b ? R.success("修改成功"):R.error("修改失败");
+        return b ? R.success("修改成功") : R.error("修改失败");
     }
-
 
 
 }
