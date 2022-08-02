@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN" style="height: 100%">
+<head>
+  <meta charset="utf-8">
+</head>
+<body style="height: 100%; margin: 0">
+  <div id="container" style="height: 100%"></div>
+
+  
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.3.3/dist/echarts.min.js"></script>
+  <!-- Uncomment this line if you want to dataTool extension
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.3.3/dist/extension/dataTool.min.js"></script>
+  -->
+  <!-- Uncomment this line if you want to use gl extension
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts-gl@2/dist/echarts-gl.min.js"></script>
+  -->
+  <!-- Uncomment this line if you want to echarts-stat extension
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts-stat@latest/dist/ecStat.min.js"></script>
+  -->
+  <!-- Uncomment this line if you want to use map
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@4.9.0/map/js/china.js"></script>
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@4.9.0/map/js/world.js"></script>
+  -->
+  <!-- Uncomment these two lines if you want to use bmap extension
+  <script type="text/javascript" src="https://api.map.baidu.com/api?v=3.0&ak=YOUR_API_KEY"></script>
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.3.3/dist/extension/bmap.min.js"></script>
+  -->
+
+  <script type="text/javascript">
+    var dom = document.getElementById('container');
+    var myChart = echarts.init(dom, null, {
+      renderer: 'canvas',
+      useDirtyRect: false
+    });
+    var app = {};
+    
+    var option;
+
+    const posList = [
+  'left',
+  'right',
+  'top',
+  'bottom',
+  'inside',
+  'insideTop',
+  'insideLeft',
+  'insideRight',
+  'insideBottom',
+  'insideTopLeft',
+  'insideTopRight',
+  'insideBottomLeft',
+  'insideBottomRight'
+];
+app.configParameters = {
+  rotate: {
+    min: -90,
+    max: 90
+  },
+  align: {
+    options: {
+      left: 'left',
+      center: 'center',
+      right: 'right'
+    }
+  },
+  verticalAlign: {
+    options: {
+      top: 'top',
+      middle: 'middle',
+      bottom: 'bottom'
+    }
+  },
+  position: {
+    options: posList.reduce(function (map, pos) {
+      map[pos] = pos;
+      return map;
+    }, {})
+  },
+  distance: {
+    min: 0,
+    max: 100
+  }
+};
+app.config = {
+  rotate: 90,
+  align: 'left',
+  verticalAlign: 'middle',
+  position: 'insideBottom',
+  distance: 15,
+  onChange: function () {
+    const labelOption = {
+      rotate: app.config.rotate,
+      align: app.config.align,
+      verticalAlign: app.config.verticalAlign,
+      position: app.config.position,
+      distance: app.config.distance
+    };
+    myChart.setOption({
+      series: [
+        {
+          label: labelOption
+        },
+        {
+          label: labelOption
+        },
+        {
+          label: labelOption
+        },
+        {
+          label: labelOption
+        }
+      ]
+    });
+  }
+};
+const labelOption = {
+  show: true,
+  position: app.config.position,
+  distance: app.config.distance,
+  align: app.config.align,
+  verticalAlign: app.config.verticalAlign,
+  rotate: app.config.rotate,
+  formatter: '{c}  {name|{a}}',
+  fontSize: 16,
+  rich: {
+    name: {}
+  }
+};
+option = {
+  title: {
+    text: '详细数据可视化',
+    textStyle: {
+            fontSize: 25,
+            fontWeight: 'bolder',
+            // color: '#6495ed'       // 主标题文字颜色  
+        },
+    // subtext: '详细数据可视化', 
+    // subtarget:"self",  
+    // subtextStyle: {
+    //        fontSize: 24,
+    //         fontWeight: 'bolder',
+    //         // color: '#6495ed'         // 副标题文字颜色
+    //     },
+    //  sublink: 'histogram.html',
+    // // left: 'center'
+  },
+  tooltip: {
+    trigger: 'axis',
+    axisPointer: {
+      type: 'shadow'
+    }
+  },
+  legend: {
+    data: ['线索数', '线索破案数', '抓人数', '缴获毒品数']
+  },
+  toolbox: {
+    show: true,
+    itemSize : 50,
+    orient: 'vertical',
+    left: 'right',
+    top: 'center',
+    feature: {
+      mark: { show: true },
+      dataView: { show: true, readOnly: false },
+      magicType: { show: true, type: ['line', 'bar', 'stack','pie'] },
+      restore: { show: true },
+      saveAsImage: { show: true }
+    }
+  },
+  xAxis: [
+    {
+      type: 'category',
+      axisTick: { show: false },
+      data: ['聊城', '芜湖', '武汉', '深圳', '北京', '上海', '广州', '徐州', '苏州', '杭州', '汕头', '佛山']
+    }
+  ],
+  yAxis: [
+    {
+      type: 'value'
+    }
+  ],
+  series: [
+    {
+      name: '线索数',
+      type: 'bar',
+      barGap: 0,
+      label: labelOption,
+      emphasis: {
+        focus: 'series'
+      },
+      data: [320, 332, 301, 334, 390,320, 332, 301, 334, 390]
+    },
+    {
+      name: '线索破案数',
+      type: 'bar',
+      label: labelOption,
+      emphasis: {
+        focus: 'series'
+      },
+      data: [220, 182, 191, 234, 290,220, 182, 191, 234, 290]
+    },
+    {
+      name: '抓人数',
+      type: 'bar',
+      label: labelOption,
+      emphasis: {
+        focus: 'series'
+      },
+      data: [150, 232, 201, 154, 190,150, 232, 201, 154, 190]
+    },
+    {
+      name: '缴获毒品数',
+      type: 'bar',
+      label: labelOption,
+      emphasis: {
+        focus: 'series'
+      },
+      data: [98, 77, 101, 99, 40,98, 77, 101, 99, 40]
+    }
+  ]
+};
+
+    if (option && typeof option === 'object') {
+      myChart.setOption(option);
+    }
+
+    window.addEventListener('resize', myChart.resize);
+  </script>
+</body>
+</html>
