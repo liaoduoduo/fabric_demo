@@ -2,6 +2,7 @@ package com.ldy.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -24,7 +25,7 @@ public class Intelligence implements Serializable {
     //上传用户id
     private Long userId;
 
-    private Long categoryId;
+    private Long intelligenceCategoryId;
 
     private String name;
 
@@ -40,7 +41,7 @@ public class Intelligence implements Serializable {
     private Integer status;
 
     //情报token价值
-    private BigDecimal price;
+    private BigDecimal token;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
@@ -53,5 +54,8 @@ public class Intelligence implements Serializable {
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updateUser;
+
+    @TableLogic
+    private Integer isDeleted;
 
 }

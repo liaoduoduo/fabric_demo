@@ -21,7 +21,10 @@ public interface IntelligenceService extends IService<Intelligence> {
 
     void saveByUserIntelligence(Intelligence intelligence);
 
-    R<String> buy(Long intelligenceId);
+    R<String> buy(Long intelligenceId, String password);
 
     Page<IntelligenceVo> pageQuery(int page, int pageSize, String name);
+
+    R<String> deleteBatch(List<Long> ids);
+
 }

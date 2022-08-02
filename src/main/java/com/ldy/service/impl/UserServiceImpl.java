@@ -6,15 +6,20 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ldy.mapper.UserMapper;
 import com.ldy.entity.User;
 import com.ldy.service.UserService;
+import com.ldy.vo.UserVo;
 import org.hyperledger.fabric.gateway.Contract;
 import org.hyperledger.fabric.gateway.ContractException;
 import org.hyperledger.fabric.gateway.Network;
 import org.hyperledger.fabric.sdk.Peer;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 
 /**
  * @Author ldy
@@ -60,12 +65,33 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public Page<User> pageQuery(int page, int pageSize, String name) {
+    public Page<UserVo> pageQuery(int page, int pageSize, String name) {
         Page<User> userPage = new Page<>(page, pageSize);
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.like(name != null, User::getName, name)
                 .orderByDesc(User::getUpdateTime);
         this.page(userPage, queryWrapper);
-        return userPage;
+        Page<UserVo> userVoPage = new Page<>();
+        BeanUtils.copyProperties(userPage, userVoPage, "records");
+        List<User> records = userPage.getRecords();
+        List<UserVo> userVos = records.stream().map(item -> {
+            UserVo userVo = new UserVo();
+            BeanUtils.copyProperties(item, userVo);
+            return userVo;
+        }).collect(Collectors.toList());
+        userVoPage.setRecords(userVos);
+        return userVoPage;
+    }
+
+    @Override
+    public List<UserVo> listUserVo() {
+        List<User> list = this.list();
+        List<UserVo> userVos = new ArrayList<>();
+        for (User user : list) {
+            UserVo userVo = new UserVo();
+            BeanUtils.copyProperties(user, userVo);
+            userVos.add(userVo);
+        }
+        return userVos;
     }
 }

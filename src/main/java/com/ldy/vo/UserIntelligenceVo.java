@@ -15,6 +15,7 @@ public class UserIntelligenceVo extends Intelligence {
     private Long formUserId;
     private Long toUserId;
     private String origin;
-    private String categoryName;
+    private String intelligenceCategoryName;
     private String fromUserName;
+    private String toUserName;
 }

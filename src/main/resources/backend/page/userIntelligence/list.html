@@ -48,16 +48,19 @@
     >
       <el-table-column
         type="selection"
-        width="25"
       ></el-table-column>
       <el-table-column
-        width="200"
+        width="170"
         prop="name"
         label="情报名称"
       ></el-table-column>
       <el-table-column
         prop="fromUserName"
         label="发布者"
+      ></el-table-column>
+      <el-table-column
+        prop="toUserName"
+        label="购买者"
       ></el-table-column>
       <el-table-column prop="image" label="图片" align="center">
         <template slot-scope="{ row }">
@@ -71,15 +74,16 @@
         </template>
       </el-table-column>
       <el-table-column
-        prop="categoryName"
+        prop="intelligenceCategoryName"
         label="情报分类"
       ></el-table-column>
       <el-table-column label="情报价值">
         <template slot-scope="scope">
-          <span style="margin-right: 10px;">￥{{ scope.row.price }}</span>
+          <span style="margin-right: 10px;">￥{{ scope.row.token }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="情报状态">
+      <el-table-column label="情报状态" width="80">
+
         <template slot-scope="scope">
           <span style="margin-right: 10px;">{{ scope.row.status == '0' ? '停用' : '启用' }}</span>
         </template>
@@ -91,14 +95,14 @@
       </el-table-column>
 
       <el-table-column
-        width="150"
+        width="140"
         prop="updateTime"
         label="最后操作时间"
       >
       </el-table-column>
       <el-table-column
         label="操作"
-        width="250"
+        width="230"
         align="center"
       >
         <template slot-scope="scope">
@@ -153,7 +157,6 @@
         prop="fileHash"
         label="情报hash"
       ></el-table-column>
-
     </el-table>
 
     <span
@@ -179,8 +182,6 @@
 <script src="../../plugins/axios/axios.min.js"></script>
 <script src="../../js/request.js"></script>
 <script src="../../api/userIntelligence.js"></script>
-<script src="//unpkg.com/vue@2/dist/vue.js"></script>
-<script src="//unpkg.com/element-ui@2.15.8/lib/index.js"></script>
 <script>
   new Vue({
     el: '#food-app',
@@ -253,7 +254,7 @@
             return this.$message.error('请选择要添加至协同任务的情报！')
           }
         }
-        this.$confirm('确认将该情报生成协同任务, 是否继续?', '确定删除', {
+        this.$confirm('确认将所选情报生成协同任务, 是否继续?', '确定删除', {
           'confirmButtonText': '确定',
           'cancelButtonText': '取消',
         }).then(() => {

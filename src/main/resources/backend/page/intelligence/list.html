@@ -29,9 +29,9 @@
         ></i>
       </el-input>
       <div class="tableLab">
-        <span class="span-btn delBut non" @click="deleteHandle('批量', null)">批量删除</span>
-        <span class="span-btn blueBug non" @click="statusHandle('1')">批量启用</span>
-        <span style="border:none;" class="span-btn delBut non" @click="statusHandle('0')">批量停用</span>
+        <span class="span-btn delBut non" v-if="user === 'admin'" @click="deleteHandle('批量', null)" >批量删除</span>
+        <span class="span-btn blueBug non" v-if="user === 'admin'" @click="statusHandle('1')">批量启用</span>
+        <span style="border:none;" class="span-btn delBut non" v-if="user === 'admin'" @click="statusHandle('0')">批量停用</span>
         <el-button
           type="primary"
           @click="addIntelligencetype('add')"
@@ -48,10 +48,9 @@
     >
       <el-table-column
         type="selection"
-        width="25"
       ></el-table-column>
       <el-table-column
-        width="200"
+        width="180"
         prop="name"
         label="情报名称"
       ></el-table-column>
@@ -78,10 +77,10 @@
       ></el-table-column>
       <el-table-column label="情报价值">
         <template slot-scope="scope">
-          <span style="margin-right: 10px;">￥{{ scope.row.price }}</span>
+          <span style="margin-right: 10px;">￥{{ scope.row.token }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="情报状态">
+      <el-table-column label="情报状态" width="80">
         <template slot-scope="scope">
           <span style="margin-right: 10px;">{{ scope.row.status == '0' ? '停用' : '启用' }}</span>
         </template>

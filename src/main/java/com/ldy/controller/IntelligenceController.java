@@ -3,6 +3,7 @@ package com.ldy.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ldy.common.R;
+import com.ldy.dto.BuyIntelligenceDto;
 import com.ldy.entity.Intelligence;
 import com.ldy.entity.UserIntelligence;
 import com.ldy.service.IntelligenceService;
@@ -98,8 +99,12 @@ public class IntelligenceController {
 
 
     @PostMapping("/buy")
-    public R<String> buy(Long id) {
-        return intelligenceService.buy(id);
+    public R<String> buy(@RequestBody BuyIntelligenceDto buyIntelligenceDto) {
+        Long id = buyIntelligenceDto.getId();
+        String password = buyIntelligenceDto.getPassword();
+        log.info("++++++++++++++++++++++{}",id);
+        log.info("++++++++++++++++++++++{}",password);
+        return intelligenceService.buy(id, password);
     }
 
     @PostMapping("/status/{status}")
@@ -107,6 +112,12 @@ public class IntelligenceController {
         intelligenceService.batchStatus(status, ids);
         return R.success("修改状态成功！");
     }
+
+    @DeleteMapping
+    public R<String> delete(@RequestParam List<Long> ids) {
+        return intelligenceService.deleteBatch(ids);
+    }
+
 
 
 }

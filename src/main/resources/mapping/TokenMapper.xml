@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ldy.mapper.TokenMapper">
+    <select id="pageByName" resultType="com.ldy.vo.TokenVo">
+        select t.id id,u.name name, t.current_token currentToken, t.block_token blockToken, t.status status, t.update_time updateTime
+        from token t
+        inner join user u on t.id = u.token_id
+        <where>
+            <if test="name != null and name != ''">
+                u.name like concat('%', #{name}, '%')
+            </if>
+        </where>
+        order by t.update_time desc
+    </select>
+</mapper>

@@ -7,6 +7,7 @@ import com.ldy.entity.Intelligence;
 import com.ldy.entity.User;
 import com.ldy.service.IntelligenceService;
 import com.ldy.service.UserService;
+import com.ldy.vo.UserVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -53,7 +54,7 @@ public class UserController {
         //eq(列名, 值)
         //可以通过Lambda获取数据库列名
         queryWrapper.eq(User::getUsername, user.getUsername());
-        //从数据库中查出来的emp对象
+        //从数据库中查出来的user对象
         User one = userService.getOne(queryWrapper);
 
         //3、如果没有查询到则返回登录失败结果
@@ -66,12 +67,12 @@ public class UserController {
             return R.error("登录失败");
         }
 
-        //5、查看员工状态，如果为已禁用状态，则返回员工已禁用结果
+        //5、查看状态，如果为已禁用状态，则返回员工已禁用结果
         if (one.getStatus() == 0) {
             return R.error("账号已禁用");
         }
 
-        //6、登录成功，将员工id存入Session并返回登录成功结果
+        //6、登录成功，将id存入Session并返回登录成功结果
         request.getSession().setAttribute("user", one.getId());
         return R.success(one);
     }
@@ -85,8 +86,8 @@ public class UserController {
 
     @ApiOperation("分页查询")
     @GetMapping("/page")
-    public R<Page<User>> page(int page, int pageSize, String name) {
-        Page<User> userPage = userService.pageQuery(page, pageSize, name);
+    public R<Page<UserVo>> page(int page, int pageSize, String name) {
+        Page<UserVo> userPage = userService.pageQuery(page, pageSize, name);
         return R.success(userPage);
     }
 
@@ -97,7 +98,7 @@ public class UserController {
         //设置统一初始密码,需要进行MD5加密处理(先不加密了)
         user.setPassword("123456");
         userService.save(user);
-        log.info("刚刚插入的用户主键为：{}",user.getId());
+        log.info("刚刚插入的用户主键为：{}", user.getId());
         //存储到区块链中，调用链码：saveUser
         /*byte[] invokeResult = userService.saveByBlockChain(user);
         log.info("存储到区块的用户数据：{}",invokeResult);*/
@@ -130,15 +131,20 @@ public class UserController {
     }
 
     @GetMapping("/list")
-    public R<List<User>> list() {
-        List<User> list = userService.list();
-        return R.success(list);
+    public R<List<UserVo>> list() {
+        return R.success(userService.listUserVo());
     }
 
     @DeleteMapping
     public R<String> delete(Long id) {
         userService.removeById(id);
         return R.success("删除成功");
+    }
+
+    @GetMapping("/{id}")
+    public R<User> queryUserById(@PathVariable Long id) {
+        User user = userService.getById(id);
+        return R.success(user);
     }
 
 

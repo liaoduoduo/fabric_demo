@@ -5,14 +5,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ldy.common.BaseContext;
 import com.ldy.common.R;
+import com.ldy.entity.Token;
 import com.ldy.entity.User;
 import com.ldy.entity.UserIntelligence;
 import com.ldy.mapper.IntelligenceMapper;
 import com.ldy.entity.Intelligence;
-import com.ldy.service.CategoryService;
-import com.ldy.service.IntelligenceService;
-import com.ldy.service.UserIntelligenceService;
-import com.ldy.service.UserService;
+import com.ldy.service.*;
 import com.ldy.vo.IntelligenceVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +37,10 @@ public class IntelligenceServiceImpl extends ServiceImpl<IntelligenceMapper, Int
     private UserService userService;
 
     @Autowired
-    private CategoryService categoryService;
+    private IntelligenceCategoryService intelligenceCategoryService;
+
+    @Autowired
+    private TokenService tokenService;
 
     @Override
     public Page<IntelligenceVo> pageQuery(int page, int pageSize, String name) {
@@ -55,9 +56,9 @@ public class IntelligenceServiceImpl extends ServiceImpl<IntelligenceMapper, Int
         for (Intelligence record : records) {
             IntelligenceVo intelligenceDto = new IntelligenceVo();
             BeanUtils.copyProperties(record, intelligenceDto);
-            Long categoryId = record.getCategoryId();
+            Long categoryId = record.getIntelligenceCategoryId();
             if (categoryId != null) {
-                intelligenceDto.setCategoryName(categoryService.getById(categoryId).getName());
+                intelligenceDto.setCategoryName(intelligenceCategoryService.getById(categoryId).getName());
             }
             Long userId = record.getUserId();
             if (userId != null) {
@@ -96,13 +97,18 @@ public class IntelligenceServiceImpl extends ServiceImpl<IntelligenceMapper, Int
 
     @Override
     @Transactional
-    public R<String> buy(Long intelligenceId) {
+    public R<String> buy(Long intelligenceId, String password) {
         //获取当前登录用户id
         Long userId = BaseContext.getCurrentId();
         //获取该情报实体
         Intelligence intelligence = this.getById(intelligenceId);
         //获取当前登录用户实体
         User user = userService.getById(userId);
+
+        Token token = tokenService.getById(user.getTokenId());
+        if (!password.equals(token.getPassword())) {
+            return R.error("密码错误！");
+        }
 
         //判断该情报是否停售
         if (intelligence.getStatus() != 1) {
@@ -125,12 +131,12 @@ public class IntelligenceServiceImpl extends ServiceImpl<IntelligenceMapper, Int
         }
 
         //判断用户token余额
-        if (user.getToken().compareTo(intelligence.getPrice()) < 0) {
+        if (token.getCurrentToken().compareTo(intelligence.getToken()) < 0) {
             return R.error("token余额不足，无法购买！");
         }
         //根据该情报价格，扣除token,并更新该用户余额
-        user.setToken(user.getToken().subtract(intelligence.getPrice()));
-        userService.updateById(user);
+        token.setCurrentToken(token.getCurrentToken().subtract(intelligence.getToken()));
+        tokenService.updateById(token);
 
         //并存到区块链（未完成）
 
@@ -139,9 +145,19 @@ public class IntelligenceServiceImpl extends ServiceImpl<IntelligenceMapper, Int
         userIntelligence.setFromUserId(intelligence.getUserId());
         userIntelligence.setToUserId(userId);
         userIntelligence.setIntelligenceId(intelligenceId);
-
-        //保存到数据库中
         userIntelligenceService.save(userIntelligence);
         return R.success("购买成功！");
+    }
+
+    @Override
+    public R<String> deleteBatch(List<Long> ids) {
+        List<Intelligence> intelligences = this.listByIds(ids);
+        for (Intelligence intelligence : intelligences) {
+            if (intelligence.getStatus() != 0) {
+                return R.error("所选含有未停用的情报，无法删除！");
+            }
+        }
+        this.removeByIds(ids);
+        return R.success("删除成功！");
     }
 }

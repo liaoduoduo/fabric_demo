@@ -119,7 +119,7 @@
     <!-- 引入axios -->
     <script src="../../plugins/axios/axios.min.js"></script>
     <script src="../../js/request.js"></script>
-    <script src="../../api/member.js"></script>
+    <script src="../../api/user.js"></script>
     <script>
       new Vue({
         el: '#member-app',
@@ -217,10 +217,6 @@
               this.$message.error('请求出错了：' + err)
               })
             })
-
-
-
-
           },
           handleSizeChange (val) {
             this.pageSize = val
