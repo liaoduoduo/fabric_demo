@@ -102,7 +102,6 @@
         ></iframe>
       </div>
     </div>
-<<<<<<< HEAD
     <!-- 开发环境版本，包含了有帮助的命令行警告 -->
     <script src="plugins/vue/vue.js"></script>
     <!-- 引入组件库 -->
@@ -112,7 +111,6 @@
     <script src="js/request.js"></script>
     <script src="./api/login.js"></script>
     <script>
-
       new Vue({
         el: '#app',
         data() {
@@ -121,206 +119,126 @@
             menuActived: '1',
             userInfo: {},
             menuList: [
-                  {
-                    id: '1',
-                    name: '首页',
-                    url: 'page/homepage/bmap.html',
-                    icon: 'icon-shouye'
-                  },
-                  {
-                    id: '2',
-                    name: '用户列表',
-                    url: 'page/member/list.html',
-                    icon: 'icon-user'
-                  },
-                  {
-                    id: '3',
-                    name: '情报分类',
-                    url: 'page/category/list.html',
-                    icon: 'icon-category'
-                  },
-                  {
-                    id: '4',
-                    name: '情报交易',
-                    url: 'page/intelligence/list.html',
-                    icon: 'icon-jiaoyisuo'
-                  },
-                  {
-                    id: '5',
-                    name: 'token账户',
-                    url: 'page/token/list.html',
-                    icon: 'icon-licai'
-                  },
-                  {
-                    id: '6',
-                    name: '操作明细',
-                    url: 'page/orders/list.html',
-                    icon: 'icon-order'
-                  },
-                  {
-                    id: '7',
-                    name: '我的情报',
-                    url: 'page/userIntelligence/list.html',
-                    icon: 'icon-renfangqingbao'
-                  },
-                  {
-                    id: '8',
-                    name: '研判任务',
-                    url: 'page/task/list.html',
-                    icon: 'icon-renwu'
-                  },
-                  {
-                    id: '9',
-                    name: '情报悬赏',
-                    url: 'page/orders/list.html',
-                    icon: 'icon-xuanshang'
-                  },
-                  {
-                    id: '10',
-                    name: '贡献度',
-                    url: 'page/orders/list.html',
-                    icon: 'icon-lujing'
-                  },
-=======
+              {
+                id: '1',
+                name: '首页',
+                url: 'page/homepage/bmap.html',
+                icon: 'icon-shouye'
+              },
+              {
+                id: '2',
+                name: '用户列表',
+                url: 'page/user/list.html',
+                icon: 'icon-user'
+              },
+              {
+                id: '3',
+                name: '情报分类',
+                url: 'page/intelligenceCategory/list.html',
+                icon: 'icon-category'
+              },
+              {
+                id: '4',
+                name: '情报交易',
+                url: 'page/intelligence/list.html',
+                icon: 'icon-jiaoyisuo'
+              },
+              {
+                id: '5',
+                name: 'token账户',
+                url: 'page/token/list.html',
+                icon: 'icon-licai'
+              },
+              {
+                id: '6',
+                name: '我的情报',
+                url: 'page/userIntelligence/list.html',
+                icon: 'icon-renfangqingbao'
+              },
+              {
+                id: '7',
+                name: '操作明细',
+                url: 'page/orders/list.html',
+                icon: 'icon-order'
+              },
+              {
+                id: '8',
+                name: '研判任务',
+                url: 'page/task/list.html',
+                icon: 'icon-renwu'
+              },
+              {
+                id: '9',
+                name: '情报悬赏',
+                url: 'page/orders/list.html',
+                icon: 'icon-xuanshang'
+              },
+              {
+                id: '10',
+                name: '贡献度',
+                url: 'page/orders/list.html',
+                icon: 'icon-lujing'
+              },
+
+              //   ],
+              // },
+            ],
+            iframeUrl: 'page/homepage/bmap.html',
+            headTitle: '首页',
+            goBackFlag: false,
+            loading: true,
+            timer: null
+          }
+        },
+        computed: {},
+        created() {
+          const userInfo = window.localStorage.getItem('userInfo')
+          if (userInfo) {
+            this.userInfo = JSON.parse(userInfo)
+          }
+          this.closeLoading()
+        },
+        beforeDestroy() {
+          this.timer = null
+          clearTimeout(this.timer)
+        },
+        mounted() {
+          window.menuHandle = this.menuHandle
+        },
+        methods: {
+          logout() {
+            logoutApi().then((res) => {
+              if (res.code === 1) {
+                localStorage.removeItem('userInfo')
+                window.location.href = '/backend/page/login/login.html'
+              }
+            })
+          },
+          goBack() {
+            // window.location.href = 'javascript:history.go(-1)'
+            const menu = this.menuList.find(item => item.id === this.menuActived)
+            // this.goBackFlag = false
+            // this.headTitle = menu.name
+            this.menuHandle(menu, false)
+          },
+          menuHandle(item, goBackFlag) {
+            this.loading = true
+            this.menuActived = item.id
+            this.iframeUrl = item.url
+            this.headTitle = item.name
+            this.goBackFlag = goBackFlag
+            this.closeLoading()
+          },
+          closeLoading() {
+            this.timer = null
+            this.timer = setTimeout(() => {
+              this.loading = false
+            }, 1000)
+          }
+        }
+      })
+    </script>
   </div>
 </div>
-<!-- 开发环境版本，包含了有帮助的命令行警告 -->
-<script src="plugins/vue/vue.js"></script>
-<!-- 引入组件库 -->
-<script src="plugins/element-ui/index.js"></script>
-<!-- 引入axios -->
-<script src="plugins/axios/axios.min.js"></script>
-<script src="js/request.js"></script>
-<script src="./api/login.js"></script>
-<script>
->>>>>>> c428fe3d13051abf8b5939757aa40c2097cf37fd
-
-  new Vue({
-    el: '#app',
-    data() {
-      return {
-        defAct: '1',
-        menuActived: '1',
-        userInfo: {},
-        menuList: [
-          {
-            id: '1',
-            name: '首页',
-            url: 'page/intelligence/list.html',
-            icon: 'icon-shouye'
-          },
-          {
-            id: '2',
-            name: '用户列表',
-            url: 'page/user/list.html',
-            icon: 'icon-user'
-          },
-          {
-            id: '3',
-            name: '情报分类',
-            url: 'page/intelligenceCategory/list.html',
-            icon: 'icon-category'
-          },
-          {
-            id: '4',
-            name: '情报交易',
-            url: 'page/intelligence/list.html',
-            icon: 'icon-jiaoyisuo'
-          },
-          {
-            id: '5',
-            name: 'token账户',
-            url: 'page/token/list.html',
-            icon: 'icon-licai'
-          },
-          {
-            id: '6',
-            name: '我的情报',
-            url: 'page/userIntelligence/list.html',
-            icon: 'icon-renfangqingbao'
-          },
-          {
-            id: '7',
-            name: '操作明细',
-            url: 'page/orders/list.html',
-            icon: 'icon-order'
-          },
-          {
-            id: '8',
-            name: '研判任务',
-            url: 'page/task/list.html',
-            icon: 'icon-renwu'
-          },
-          {
-            id: '9',
-            name: '情报悬赏',
-            url: 'page/orders/list.html',
-            icon: 'icon-xuanshang'
-          },
-          {
-            id: '10',
-            name: '贡献度',
-            url: 'page/orders/list.html',
-            icon: 'icon-lujing'
-          },
-
-          //   ],
-          // },
-        ],
-        iframeUrl: 'page/intelligence/list.html',
-        headTitle: '首页',
-        goBackFlag: false,
-        loading: true,
-        timer: null
-      }
-    },
-    computed: {},
-    created() {
-      const userInfo = window.localStorage.getItem('userInfo')
-      if (userInfo) {
-        this.userInfo = JSON.parse(userInfo)
-      }
-      this.closeLoading()
-    },
-    beforeDestroy() {
-      this.timer = null
-      clearTimeout(this.timer)
-    },
-    mounted() {
-      window.menuHandle = this.menuHandle
-    },
-    methods: {
-      logout() {
-        logoutApi().then((res) => {
-          if (res.code === 1) {
-            localStorage.removeItem('userInfo')
-            window.location.href = '/backend/page/login/login.html'
-          }
-        })
-      },
-      goBack() {
-        // window.location.href = 'javascript:history.go(-1)'
-        const menu = this.menuList.find(item => item.id === this.menuActived)
-        // this.goBackFlag = false
-        // this.headTitle = menu.name
-        this.menuHandle(menu, false)
-      },
-      menuHandle(item, goBackFlag) {
-        this.loading = true
-        this.menuActived = item.id
-        this.iframeUrl = item.url
-        this.headTitle = item.name
-        this.goBackFlag = goBackFlag
-        this.closeLoading()
-      },
-      closeLoading() {
-        this.timer = null
-        this.timer = setTimeout(() => {
-          this.loading = false
-        }, 1000)
-      }
-    }
-  })
-</script>
 </body>
 </html>
