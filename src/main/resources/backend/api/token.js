@@ -59,3 +59,11 @@ const deleteToken = (ids) => {
     })
 }
 
+//查看token交易明细
+const getTokenLog = params => {
+    return $axios({
+        url: '/token/log',
+        method: 'get',
+        params : params
+    })
+}

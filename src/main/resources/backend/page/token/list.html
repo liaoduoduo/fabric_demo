@@ -86,12 +86,12 @@
       >
         <template slot-scope="scope">
           <el-button
-                  type="text"
-                  size="small"
-                  class="blueBug"
-                  @click = "infoToken('add')"
+            type="text"
+            size="small"
+            class="blueBug"
+            @click="infoToken(scope.row.id)"
           >
-            详情
+            查看明细
           </el-button>
           <el-button
             type="text"
@@ -114,13 +114,13 @@
           </el-button>
 
 
-<!--         <el-button-->
-<!--           type="text"-->
-<!--            size="small" class="delBut non"-->
-<!--           @click="deleteHandle('单删', scope.row.id)"-->
-<!--         >-->
-<!--           删除-->
-<!--         </el-button>-->
+          <!--         <el-button-->
+          <!--           type="text"-->
+          <!--            size="small" class="delBut non"-->
+          <!--           @click="deleteHandle('单删', scope.row.id)"-->
+          <!--         >-->
+          <!--           删除-->
+          <!--         </el-button>-->
         </template>
       </el-table-column>
     </el-table>
@@ -230,15 +230,13 @@
         })
       },
 
-      infoToken(st)
-      {
-        if (st === 'add') {
-          window.parent.menuHandle({
-            id: '5',
-            url: '/backend/page/token/info.html',
-            name: 'Token 详情'
-          }, true)
-        }
+      infoToken(id) {
+        window.parent.menuHandle({
+          id: '5',
+          url: '/backend/page/token/info.html?id=' + id,
+          name: 'token明细'
+        }, true)
+
       },
 
       //状态更改
@@ -292,7 +290,6 @@
       }
     }
   })
-
 
 
 </script>

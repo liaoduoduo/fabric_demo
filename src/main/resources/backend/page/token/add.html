@@ -42,8 +42,40 @@
         </el-form-item>
       </div>
       <div>
-        <el-form-item label="token数目:" prop="token">
+        <el-form-item label="可用token数目:" prop="currentToken" v-if="this.actionType=='add'">
           <el-input v-model="ruleForm.currentToken" placeholder="请设置用户token数目"/>
+        </el-form-item>
+      </div>
+      <div>
+        <el-form-item label="可用token数目:" prop="currentToken" v-if="this.actionType=='edit'">
+          <el-input v-model="ruleForm.currentToken" placeholder="请修改用户token数目"/>
+        </el-form-item>
+      </div>
+      <div>
+        <el-form-item label="冻结token数目:" prop="blockToken" v-if="this.actionType=='edit'">
+          <el-input v-model="ruleForm.blockToken" placeholder="请修改用户已冻结token数目"/>
+        </el-form-item>
+      </div>
+      <div>
+        <el-form-item label="账户密码:" prop="password" v-if="this.actionType=='add'">
+          <el-input
+            type="text"
+            v-model="ruleForm.password"
+            autocomplete="off"
+            style="-webkit-text-security:disc;"
+            placeholder="请设置账户密码"
+          ></el-input>
+        </el-form-item>
+      </div>
+        <div>
+        <el-form-item label="密码确认:" prop="pwdconfirm" v-if="this.actionType=='add'">
+          <el-input
+            type="text"
+            v-model="ruleForm.pwdconfirm"
+            autocomplete="off"
+            style="-webkit-text-security:disc;"
+            placeholder="请确认账户密码"
+          ></el-input>
         </el-form-item>
       </div>
       <!--          <div class="address">
@@ -94,7 +126,10 @@
           userId: '',
           id: '',
           currentToken: '',
-          status: true
+          blockToken: '',
+          status: true,
+          password: '',
+          pwdconfirm: ''
         },
         keyInd: 0,
         searchValue: '',
@@ -104,7 +139,7 @@
     computed: {
       rules() {
         return {
-          id: {
+          userId: {
             required: true,
             message: '请输入账户名称',
             trigger: 'change',
@@ -129,8 +164,65 @@
             },
             trigger: 'blur',
           },
+          blockToken: {
+            required: true,
+            validator: (rules, value, callback) => {
+              if (!value) {
+                callback(new Error('请填写账户数目'))
+              } else {
+                const reg = /^\d+(\.\d{0,2})?$/
+                if (reg.test(value)) {
+                  if (value < 1000000) {
+                    callback()
+                  } else {
+                    callback(new Error('账户价要小于1000000！'))
+                  }
+                } else {
+                  callback(new Error('价值格式只能为数字,且最多保留两位小数'))
+                }
+              }
+            },
+            trigger: 'blur',
+          },
+          password: [
+            { required: true, message: "请输入密码", trigger: "blur" },
+            {
+              min: 6,
+              max: 16,
+              message: "长度在 6 到 16 个字符",
+              trigger: "blur",
+            },
+            { validator: (rule, value, callback) => {
+                if (value === "") {
+                  callback(new Error("请输入密码"));
+                } else {
+                  if (this.ruleForm.pwdconfirm !== "") {
+                    this.$refs.ruleForm.validateField("pwdconfirm");
+                  }
+                  callback();
+                }
+              }, trigger: "blur" },
+          ],
+          pwdconfirm: [
+            { required: true, message: "请确认密码", trigger: "blur" },
+            {
+              min: 6,
+              max: 16,
+              message: "长度在 6 到 16 个字符",
+              trigger: "blur",
+            },
+            { validator: (rule, value, callback) => {
+                if (value === "") {
+                  callback(new Error("请再次输入密码"));
+                } else if (value !== this.ruleForm.password) {
+                  callback(new Error("两次输入密码不一致!"));
+                } else {
+                  callback();
+                }
+              }, trigger: "blur", required: true },
+          ]
         }
-      },
+      }
     },
     watch: {
       seachKey(value) {

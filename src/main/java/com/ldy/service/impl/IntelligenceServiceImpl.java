@@ -5,11 +5,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ldy.common.BaseContext;
 import com.ldy.common.R;
-import com.ldy.entity.Token;
-import com.ldy.entity.User;
-import com.ldy.entity.UserIntelligence;
+import com.ldy.entity.*;
 import com.ldy.mapper.IntelligenceMapper;
-import com.ldy.entity.Intelligence;
 import com.ldy.service.*;
 import com.ldy.vo.IntelligenceVo;
 import org.springframework.beans.BeanUtils;
@@ -17,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +39,9 @@ public class IntelligenceServiceImpl extends ServiceImpl<IntelligenceMapper, Int
 
     @Autowired
     private TokenService tokenService;
+
+    @Autowired
+    private TokenLogService tokenLogService;
 
     @Override
     public Page<IntelligenceVo> pageQuery(int page, int pageSize, String name) {
@@ -99,14 +100,16 @@ public class IntelligenceServiceImpl extends ServiceImpl<IntelligenceMapper, Int
     @Transactional
     public R<String> buy(Long intelligenceId, String password) {
         //获取当前登录用户id
-        Long userId = BaseContext.getCurrentId();
+        Long payerId = BaseContext.getCurrentId();
         //获取该情报实体
         Intelligence intelligence = this.getById(intelligenceId);
         //获取当前登录用户实体
-        User user = userService.getById(userId);
+        User payer = userService.getById(payerId);
 
-        Token token = tokenService.getById(user.getTokenId());
-        if (!password.equals(token.getPassword())) {
+        //获取当前登录用户token钱包
+        Long payerTokenId = payer.getTokenId();
+        Token payerToken = tokenService.getById(payerTokenId);
+        if (!password.equals(payerToken.getPassword())) {
             return R.error("密码错误！");
         }
 
@@ -116,7 +119,7 @@ public class IntelligenceServiceImpl extends ServiceImpl<IntelligenceMapper, Int
         }
 
         //判断该用户买的是不是自己发布的情报
-        if (intelligence.getUserId().equals(userId)) {
+        if (intelligence.getUserId().equals(payerId)) {
             return R.error("不能购买自己发布的情报！");
         }
 
@@ -124,26 +127,54 @@ public class IntelligenceServiceImpl extends ServiceImpl<IntelligenceMapper, Int
         LambdaQueryWrapper<UserIntelligence> queryWrapper = new LambdaQueryWrapper<>();
 
         queryWrapper.eq(UserIntelligence::getIntelligenceId, intelligence.getId())
-                .eq(UserIntelligence::getToUserId, userId);
+                .eq(UserIntelligence::getToUserId, payerId);
 
         if (userIntelligenceService.count(queryWrapper) > 0) {
             return R.error("该情报你已拥有！");
         }
 
         //判断用户token余额
-        if (token.getCurrentToken().compareTo(intelligence.getToken()) < 0) {
+        BigDecimal price = intelligence.getToken();
+
+        if (payerToken.getCurrentToken().compareTo(price) < 0) {
             return R.error("token余额不足，无法购买！");
         }
-        //根据该情报价格，扣除token,并更新该用户余额
-        token.setCurrentToken(token.getCurrentToken().subtract(intelligence.getToken()));
-        tokenService.updateById(token);
+        //根据该情报价格，扣除token,并更新该付款用户余额
+        payerToken.setCurrentToken(payerToken.getCurrentToken().subtract(price));
+        tokenService.updateById(payerToken);
+
+        //给收款用户更新余额
+        Long payeeId = intelligence.getUserId();
+        User payee = userService.getById(payeeId);
+        Long payeeTokenId = payee.getTokenId();
+        Token payeeToken = tokenService.getById(payeeTokenId);
+        payeeToken.setCurrentToken(payeeToken.getCurrentToken().add(price));
+        tokenService.updateById(payeeToken);
+
+        //存到交易记录表
+        TokenLog payerTokenLog = new TokenLog();
+        payerTokenLog.setTokenId(payerTokenId);
+        payerTokenLog.setCurrentChange(price.negate());//扣钱，取相反数
+        payerTokenLog.setCurrentToken(payerToken.getCurrentToken());
+        payerTokenLog.setBlockToken(payerToken.getBlockToken());
+        payerTokenLog.setContent("购买情报");
+
+        TokenLog payeeTokenLog = new TokenLog();
+        payeeTokenLog.setTokenId(payeeTokenId);
+        payeeTokenLog.setCurrentChange(price);
+        payeeTokenLog.setCurrentToken(payeeToken.getCurrentToken());
+        payeeTokenLog.setBlockToken(payeeToken.getBlockToken());
+        payeeTokenLog.setContent("售出情报");
+
+        tokenLogService.save(payerTokenLog);
+        tokenLogService.save(payeeTokenLog);
 
         //并存到区块链（未完成）
 
         //更新我的情报表
         UserIntelligence userIntelligence = new UserIntelligence();
         userIntelligence.setFromUserId(intelligence.getUserId());
-        userIntelligence.setToUserId(userId);
+        userIntelligence.setToUserId(payerId);
         userIntelligence.setIntelligenceId(intelligenceId);
         userIntelligenceService.save(userIntelligence);
         return R.success("购买成功！");

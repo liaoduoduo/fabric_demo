@@ -15,61 +15,63 @@
   <div class="container">
 
     <el-table
-            :data="tokenData"
-            stripe
-            class="tableBox"
-            @selection-change="handleSelectionChange"
+      :data="tableData"
+      stripe
+      class="tableBox"
+      @selection-change="handleSelectionChange"
     >
 
-      <!--复选框
       <el-table-column
-              type="selection"
-      ></el-table-column>-->
+        label="可用金额变更数目"
+      >
+        <template slot-scope="scope">
+          <span>{{ scope.row.currentChange > 0 ? '+'+scope.row.currentChange : scope.row.currentChange }}</span>
+        </template>
+      </el-table-column>
 
       <el-table-column
-              prop="transaction"
-              label="交易记录"
+        prop="blockChange"
+        label="冻结金额变更数目"
+      >
+        <template slot-scope="scope">
+          <span>{{ scope.row.blockChange > 0 ? '+'+scope.row.blockChange : scope.row.blockChange }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column
+        prop="currentToken"
+        label="剩余可用金额"
       ></el-table-column>
 
       <el-table-column
-              prop="change"
-              label="米币增减"
-      ></el-table-column>
-
-      <el-table-column
-              prop="freezeToken"
-              label="冻结米币数目"
-      ></el-table-column>
-
-      <el-table-column
-              prop="tranToken"
-              label="当前米币数目"
+        prop="blockToken"
+        label="剩余冻结金额"
       >
       </el-table-column>
 
       <el-table-column
-              prop="tranReasons"
-              label="变更原因"
+        prop="content"
+        label="变更原因"
       >
       </el-table-column>
 
       <el-table-column
-              prop="tranTime"
-              label="交易时间"
+        prop="createTime"
+        label="变更时间"
       >
       </el-table-column>
 
     </el-table>
 
     <el-pagination
-            class="pageList"
-            :page-sizes="[10, 20, 30, 40]"
-            :page-size="pageSize"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="counts"
-            @size-change="handleSizeChange"
-            :current-page.sync="page"
-            @current-change="handleCurrentChange"
+      class="pageList"
+      :page-sizes="[10, 20, 30, 40]"
+      :page-size="pageSize"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="counts"
+      @size-change="handleSizeChange"
+      :current-page.sync="page"
+      @current-change="handleCurrentChange"
     ></el-pagination>
 
   </div>
@@ -81,12 +83,14 @@
 <!-- 引入axios -->
 <script src="../../plugins/axios/axios.min.js"></script>
 <script src="../../js/request.js"></script>
+<script src="../../js/index.js"></script>
 <script src="../../api/token.js"></script>
 <script>
   new Vue({
     el: '#token-app',
     data() {
       return {
+        id: '',
         input: '',
         counts: 0,
         page: 1,
@@ -98,8 +102,10 @@
     },
     computed: {},
     created() {
-      this.init()
-      this.user = JSON.parse(localStorage.getItem('userInfo')).username
+      this.id = requestUrlParam('id')
+      if (this.id) {
+        this.init()
+      }
     },
     mounted() {
     },
@@ -108,9 +114,9 @@
         const params = {
           page: this.page,
           pageSize: this.pageSize,
-          name: this.input ? this.input : undefined
+          id: this.id
         }
-        await getTokenPage(params).then(res => {
+        await getTokenLog(params).then(res => {
           if (String(res.code) === '1') {
             this.tableData = res.data.records || []
             this.counts = res.data.total
@@ -119,119 +125,12 @@
           this.$message.error('请求出错了：' + err)
         })
       },
-      getImage(image) {
-        return `/common/download?name=${image}`
-      },
       handleQuery() {
         this.page = 1;
         this.init();
-      },
-      // 添加
-      addToken(st) {
-        if (st === 'add') {
-          window.parent.menuHandle({
-            id: '5',
-            url: '/backend/page/token/add.html',
-            name: '添加用户账户'
-          }, true)
-        } else {
-          window.parent.menuHandle({
-            id: '5',
-            url: '/backend/page/token/add.html?id=' + st,
-            name: '修改用户账户'
-          }, true)
-        }
-      },
-
-      // 删除
-      deleteHandle(type, id) {
-        if (type === '批量' && id === null) {
-          if (this.checkList.length === 0) {
-            return this.$message.error('请选择删除对象')
-          }
-        }
-        this.$confirm('确定删除该账户, 是否继续?', '确定删除', {
-          'confirmButtonText': '确定',
-          'cancelButtonText': '取消',
-        }).then(() => {
-          deleteToken(type === '批量' ? this.checkList.join(',') : id).then(res => {
-            if (res.code === 1) {
-              this.$message.success('删除成功！')
-              this.handleQuery()
-            } else {
-              this.$message.error(res.msg || '操作失败')
-            }
-          }).catch(err => {
-            this.$message.error('请求出错了：' + err)
-          })
-        })
-      },
-
-      infoToken(st)
-      {
-        if (st === 'add') {
-          window.parent.menuHandle({
-            id: '5',
-            url: '/backend/page/token/info.html',
-            name: 'Token 详情'
-          }, true)
-        }
-      },
-
-      //状态更改
-      statusHandle(row) {
-        let params = {}
-        if (typeof row === 'string') {
-          if (this.checkList.length == 0) {
-            this.$message.error('批量操作，请先勾选操作账户！')
-            return false
-          }
-          params.ids = this.checkList.join(',')
-          params.status = row
-        } else {
-          params.ids = row.id
-          params.status = row.status ? '0' : '1'
-        }
-        this.$confirm('确认更改该账户状态?', '提示', {
-          'confirmButtonText': '确定',
-          'cancelButtonText': '取消',
-          'type': 'warning'
-        }).then(() => {
-          // 起售停售---批量起售停售接口
-          tokenStatusByBatch(params).then(res => {
-            if (res.code === 1) {
-              this.$message.success('账户状态已经更改成功！')
-              this.handleQuery()
-            } else {
-              this.$message.error(res.msg || '操作失败')
-            }
-          }).catch(err => {
-            this.$message.error('请求出错了：' + err)
-          })
-        })
-      },
-
-      // 全部操作
-      handleSelectionChange(val) {
-        let checkArr = []
-        val.forEach((n) => {
-          checkArr.push(n.id)
-        })
-        this.checkList = checkArr
-      },
-      handleSizeChange(val) {
-        this.pageSize = val
-        this.init()
-      },
-      handleCurrentChange(val) {
-        this.page = val
-        this.init()
       }
     }
   })
-
-
-
 </script>
 </body>
 </html>

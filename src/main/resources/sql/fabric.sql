@@ -30,7 +30,7 @@ CREATE TABLE `cotasking` (
   `create_user` bigint(20) NOT NULL COMMENT '创建人',
   `update_user` bigint(20) NOT NULL COMMENT '修改人',
   `finished` int(11) NOT NULL COMMENT '是否完成',
-  `deleted` int(11) NOT NULL COMMENT '逻辑删除',
+  `deleted` int(11) NOT NULL DEFAULT '0' COMMENT '逻辑删除',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `id` (`id`) USING BTREE,
   KEY `create_user` (`create_user`) USING BTREE,
@@ -102,7 +102,7 @@ CREATE TABLE `decide_info` (
   `create_user` bigint(20) NOT NULL COMMENT '创建人',
   `update_user` bigint(20) NOT NULL COMMENT '修改人',
   `update_time` datetime NOT NULL COMMENT '更新时间',
-  `deleted` int(11) NOT NULL COMMENT '逻辑删除',
+  `deleted` int(11) NOT NULL DEFAULT '0' COMMENT '逻辑删除',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `decide_info_category_id` (`decide_info_category_id`) USING BTREE,
   CONSTRAINT `decide_info_ibfk_1` FOREIGN KEY (`decide_info_category_id`) REFERENCES `decide_info_category` (`id`)
@@ -224,7 +224,7 @@ CREATE TABLE `decide_info_category` (
   `update_time` datetime NOT NULL COMMENT '更新时间',
   `create_user` bigint(20) NOT NULL COMMENT '创建人',
   `update_user` bigint(20) NOT NULL COMMENT '修改人',
-  `deleted` int(11) NOT NULL COMMENT '逻辑删除',
+  `deleted` int(11) NOT NULL DEFAULT '0' COMMENT '逻辑删除',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `task_category_id` (`task_category_id`) USING BTREE,
   CONSTRAINT `decide_info_category_ibfk_1` FOREIGN KEY (`task_category_id`) REFERENCES `task_category` (`id`)
@@ -265,7 +265,7 @@ CREATE TABLE `intelligence` (
   `image` varchar(200) CHARACTER SET utf8mb4 NOT NULL COMMENT '文件地址',
   `description` varchar(400) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL COMMENT '描述信息',
   `status` int(11) NOT NULL DEFAULT '1' COMMENT '0 停售 1 起售',
-  `token` decimal(10,0) NOT NULL COMMENT 'MiToken',
+  `token` decimal(10,2) NOT NULL COMMENT '情报售价',
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` datetime NOT NULL COMMENT '更新时间',
   `create_user` bigint(20) NOT NULL COMMENT '创建人',
@@ -276,15 +276,15 @@ CREATE TABLE `intelligence` (
   KEY `intelligence_ibfk_2` (`create_user`) USING BTREE,
   CONSTRAINT `intelligence_ibfk_1` FOREIGN KEY (`intelligence_category_id`) REFERENCES `intelligence_category` (`id`),
   CONSTRAINT `intelligence_ibfk_2` FOREIGN KEY (`create_user`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='情报表';
 
 /*Data for the table `intelligence` */
 
 insert  into `intelligence`(`id`,`user_id`,`intelligence_category_id`,`name`,`file_hash`,`image`,`description`,`status`,`token`,`create_time`,`update_time`,`create_user`,`update_user`,`deleted`) values 
-(1,1,1,'冰毒','test hash','test','full test ',1,2,'2022-07-05 00:00:00','2022-07-07 00:00:00',1,1,0),
-(2,1,1,'人员吸毒','test hash','举报电话录音','某某时间某人举报他人聚众吸毒',1,20,'2022-07-28 00:00:00','2022-07-29 19:17:45',1,1,0),
-(3,1,1,'聚众吸毒','test hash','举报图片','某某时间某人举报他人聚众吸毒',1,30,'2022-07-28 00:00:00','2022-07-29 19:17:45',1,1,0),
-(4,1,1,'摇头丸交易','test hash','举报信息','某某酒吧出现毒品交易',1,20,'2022-07-30 00:00:00','2022-07-30 11:12:13',1,1,0);
+(1,1,1,'冰毒','test hash','test','full test ',1,2.00,'2022-07-05 00:00:00','2022-07-07 00:00:00',1,1,0),
+(2,1,1,'人员吸毒','test hash','举报电话录音','某某时间某人举报他人聚众吸毒',1,20.00,'2022-07-28 00:00:00','2022-07-29 19:17:45',1,1,0),
+(3,1,1,'聚众吸毒','test hash','举报图片','某某时间某人举报他人聚众吸毒',1,30.00,'2022-07-28 00:00:00','2022-07-29 19:17:45',1,1,0),
+(4,1,1,'摇头丸交易','test hash','举报信息','某某酒吧出现毒品交易',1,20.00,'2022-07-30 00:00:00','2022-07-30 11:12:13',1,1,0);
 
 /*Table structure for table `intelligence_category` */
 
@@ -318,7 +318,7 @@ CREATE TABLE `task` (
   `decide_info_category_id` bigint(20) NOT NULL COMMENT '待研判任务分类id，与任务分类id作为联合主键，用于确定相应需填写的内容',
   `begin_time` datetime NOT NULL COMMENT '任务开始时间',
   `end_time` datetime NOT NULL COMMENT '任务结束时间',
-  `token` decimal(10,0) NOT NULL COMMENT '任务金额',
+  `token` decimal(10,2) NOT NULL COMMENT '任务金额',
   `open` int(11) NOT NULL COMMENT '任务是否公开，作为悬赏',
   `status` int(11) NOT NULL COMMENT '是否激活',
   `create_time` datetime NOT NULL COMMENT '创建时间',
@@ -327,7 +327,7 @@ CREATE TABLE `task` (
   `update_user` bigint(20) NOT NULL COMMENT '修改人',
   `finished` int(11) NOT NULL COMMENT '是否完成',
   `evaluation` varchar(255) NOT NULL COMMENT '任务评价',
-  `deleted` int(11) NOT NULL COMMENT '逻辑删除',
+  `deleted` int(11) NOT NULL DEFAULT '0' COMMENT '逻辑删除',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `t1` (`cotasking_id`) USING BTREE,
   KEY `t2` (`task_category_id`) USING BTREE,
@@ -340,7 +340,7 @@ CREATE TABLE `task` (
 /*Data for the table `task` */
 
 insert  into `task`(`id`,`name`,`cotasking_id`,`task_category_id`,`decide_info_category_id`,`begin_time`,`end_time`,`token`,`open`,`status`,`create_time`,`update_time`,`create_user`,`update_user`,`finished`,`evaluation`,`deleted`) values 
-(1553929747610882050,'核查嫌疑人身份信息',1552606804301815810,1,17,'2022-07-31 08:00:00','2022-08-31 08:00:00',0,1,1,'2022-08-01 10:24:57','2022-08-01 10:24:57',1,1,0,'',0);
+(1553929747610882050,'核查嫌疑人身份信息',1552606804301815810,1,17,'2022-07-31 08:00:00','2022-08-31 08:00:00',0.00,1,1,'2022-08-01 10:24:57','2022-08-01 10:24:57',1,1,0,'',0);
 
 /*Table structure for table `task_category` */
 
@@ -488,8 +488,8 @@ DROP TABLE IF EXISTS `token`;
 
 CREATE TABLE `token` (
   `id` bigint(20) NOT NULL COMMENT 'Token主键',
-  `current_token` double NOT NULL COMMENT '总token',
-  `block_token` double NOT NULL DEFAULT '0' COMMENT '任务发布冻结token',
+  `current_token` decimal(10,2) NOT NULL COMMENT '总token',
+  `block_token` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '任务发布冻结token',
   `password` varchar(32) NOT NULL COMMENT '钱包密码',
   `status` int(11) NOT NULL COMMENT '钱包状态',
   `create_time` datetime NOT NULL COMMENT '创建时间',
@@ -503,8 +503,41 @@ CREATE TABLE `token` (
 /*Data for the table `token` */
 
 insert  into `token`(`id`,`current_token`,`block_token`,`password`,`status`,`create_time`,`update_time`,`create_user`,`update_user`,`deleted`) values 
-(1,10000,0.2,'123456',1,'2022-07-24 22:05:00','2022-08-02 11:40:30',1,1,0),
-(1554313285411336194,12301,0,'123456',1,'2022-08-02 11:49:00','2022-08-02 12:04:08',1,1554312923220602882,0);
+(1,10022.00,0.20,'123456',1,'2022-07-24 22:05:00','2022-08-03 17:53:02',1,1,0),
+(1554313285411336194,1211.00,0.00,'123456',1,'2022-08-02 11:49:00','2022-08-03 17:18:59',1,1554312923220602882,0),
+(1554768275022409729,997.23,0.00,'123456',1,'2022-08-03 17:56:58','2022-08-03 17:59:18',1,1,0);
+
+/*Table structure for table `token_log` */
+
+DROP TABLE IF EXISTS `token_log`;
+
+CREATE TABLE `token_log` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `token_id` bigint(20) NOT NULL COMMENT 'tokenid',
+  `current_change` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '未冻结金额变更数目',
+  `block_change` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '冻结金额变更数目',
+  `current_token` decimal(10,2) NOT NULL COMMENT '当前未冻结金额',
+  `block_token` decimal(10,2) NOT NULL COMMENT '当前冻结金额',
+  `content` varchar(100) DEFAULT NULL COMMENT '交易原因/内容',
+  `create_time` datetime NOT NULL COMMENT '交易/创建时间',
+  `update_time` datetime NOT NULL COMMENT '更新时间',
+  `create_user` bigint(20) NOT NULL COMMENT '创建人',
+  `update_user` bigint(20) NOT NULL COMMENT '修改人',
+  `deleted` int(11) NOT NULL DEFAULT '0' COMMENT '逻辑删除',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='账户变更记录表';
+
+/*Data for the table `token_log` */
+
+insert  into `token_log`(`id`,`token_id`,`current_change`,`block_change`,`current_token`,`block_token`,`content`,`create_time`,`update_time`,`create_user`,`update_user`,`deleted`) values 
+(1554754392463314946,1554313285411336194,-11071.00,0.00,1230.00,0.00,'管理员更新token账户','2022-08-03 17:01:48','2022-08-03 17:01:48',1,1,0),
+(1554757152378220546,1554313285411336194,1.00,0.00,1231.00,0.00,'管理员更新token账户','2022-08-03 17:12:46','2022-08-03 17:12:46',1,1,0),
+(1554758474389286913,1,1.00,0.00,10001.00,0.20,'管理员更新token账户','2022-08-03 17:18:01','2022-08-03 17:18:01',1,1,0),
+(1554758718044794881,1554313285411336194,-20.00,0.00,1211.00,0.00,'购买情报','2022-08-03 17:18:59','2022-08-03 17:18:59',1554312923220602882,1554312923220602882,0),
+(1554758718044794882,1,20.00,0.00,10021.00,0.20,'售出情报','2022-08-03 17:18:59','2022-08-03 17:18:59',1554312923220602882,1554312923220602882,0),
+(1554765079780552705,1,1.00,0.00,10022.00,0.20,'管理员更新token账户','2022-08-03 17:44:16','2022-08-03 17:44:16',1,1,0),
+(1554767285258924034,1,0.00,0.00,10022.00,0.20,'管理员更新token账户','2022-08-03 17:53:02','2022-08-03 17:53:02',1,1,0),
+(1554768275110490114,1554768275022409729,997.23,0.00,997.23,0.00,'新建账户分配','2022-08-03 17:56:58','2022-08-03 17:56:58',1,1,0);
 
 /*Table structure for table `user` */
 
@@ -535,7 +568,8 @@ CREATE TABLE `user` (
 
 insert  into `user`(`id`,`username`,`name`,`password`,`phone`,`sex`,`id_number`,`unit`,`status`,`token_id`,`create_time`,`update_time`,`create_user`,`update_user`,`deleted`) values 
 (1,'admin','管理员','123456','',0,'','广东省禁毒局',1,1,'2022-07-24 22:05:00','2022-07-24 22:05:00',1,1,0),
-(1554312923220602882,'ldy','ldy','123456','16601248025',1,'440000076540765','湖北工业大学',1,1554313285411336194,'2022-08-02 11:47:33','2022-08-02 11:49:00',1,1,0);
+(1554312923220602882,'ldy','ldy','123456','16601248025',1,'440000076540765','湖北工业大学',1,1554313285411336194,'2022-08-02 11:47:33','2022-08-02 11:49:00',1,1,0),
+(1554767522597810178,'qwer','张三','123456','17777777777',1,'123467129461222','禁毒局',1,1554768275022409729,'2022-08-03 17:53:58','2022-08-03 17:56:58',1,1,0);
 
 /*Table structure for table `user_intelligence` */
 
@@ -563,7 +597,8 @@ CREATE TABLE `user_intelligence` (
 /*Data for the table `user_intelligence` */
 
 insert  into `user_intelligence`(`id`,`from_user_id`,`to_user_id`,`intelligence_id`,`create_time`,`update_time`,`create_user`,`update_user`,`deleted`) values 
-(1554317094468554754,1,1554312923220602882,4,'2022-08-02 12:04:08','2022-08-02 12:04:08',1554312923220602882,1554312923220602882,0);
+(1554317094468554754,1,1554312923220602882,4,'2022-08-02 12:04:08','2022-08-02 12:04:08',1554312923220602882,1554312923220602882,0),
+(1554758718044794883,1,1554312923220602882,2,'2022-08-03 17:18:59','2022-08-03 17:18:59',1554312923220602882,1554312923220602882,0);
 
 /*Table structure for table `user_task` */
 

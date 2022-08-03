@@ -28,4 +28,6 @@ public interface TokenService extends IService<Token> {
     boolean saveByUser(TokenDto tokenDto);
 
     void updateTokenStatus(List<Long> ids, int status);
+
+    void updateWithLog(Token token);
 }

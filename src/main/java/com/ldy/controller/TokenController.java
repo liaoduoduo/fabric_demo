@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ldy.common.R;
 import com.ldy.dto.TokenDto;
 import com.ldy.entity.Token;
+import com.ldy.entity.TokenLog;
+import com.ldy.service.TokenLogService;
 import com.ldy.service.TokenService;
 import com.ldy.vo.TokenVo;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +29,9 @@ public class TokenController {
     @Autowired
     private TokenService tokenService;
 
+    @Autowired
+    private TokenLogService tokenLogService;
+
     @GetMapping("/page")
     public R<Page<TokenVo>> page(int page, int pageSize, String name) {
         return R.success(tokenService.pageByName(page, pageSize, name));
@@ -49,7 +54,7 @@ public class TokenController {
 
     @PutMapping
     public R<String> update(@RequestBody Token token) {
-        tokenService.updateById(token);
+        tokenService.updateWithLog(token);
         return R.success("修改token账户成功");
     }
 
@@ -57,6 +62,11 @@ public class TokenController {
     public R<String> updateTokenStatus(@RequestParam List<Long> ids, @PathVariable int status) {
         tokenService.updateTokenStatus(ids, status);
         return R.success("修改token状态成功！");
+    }
+
+    @GetMapping("/log")
+    public R<Page<TokenLog>> getTokenLog(int page, int pageSize, Long id) {
+        return R.success(tokenLogService.getTokenLog(page,pageSize,id));
     }
 
 }

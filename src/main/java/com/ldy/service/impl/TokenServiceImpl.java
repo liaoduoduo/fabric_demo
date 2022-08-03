@@ -7,8 +7,10 @@ import com.ldy.common.BaseContext;
 import com.ldy.common.R;
 import com.ldy.dto.TokenDto;
 import com.ldy.entity.Token;
+import com.ldy.entity.TokenLog;
 import com.ldy.entity.User;
 import com.ldy.mapper.TokenMapper;
+import com.ldy.service.TokenLogService;
 import com.ldy.service.TokenService;
 import com.ldy.service.UserService;
 import com.ldy.vo.TokenVo;
@@ -19,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +41,9 @@ public class TokenServiceImpl extends ServiceImpl<TokenMapper, Token> implements
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private TokenLogService tokenLogService;
 
     @Override
     public Page<TokenVo> pageByName(int page, int pageSize, String name) {
@@ -104,7 +110,37 @@ public class TokenServiceImpl extends ServiceImpl<TokenMapper, Token> implements
         updateUser.setId(tokenDto.getUserId());
         updateUser.setTokenId(token.getId());
         userService.updateById(updateUser);
+
+        TokenLog tokenLog = new TokenLog();
+        tokenLog.setTokenId(token.getId());
+        tokenLog.setCurrentToken(tokenDto.getCurrentToken());
+        tokenLog.setCurrentChange(tokenDto.getCurrentToken());
+        tokenLog.setBlockToken(new BigDecimal(0));
+        tokenLog.setContent("新建账户分配");
+        tokenLogService.save(tokenLog);
+
         return true;
+    }
+
+    @Override
+    @Transactional
+    public void updateWithLog(Token token) {
+        Long tokenId = token.getId();
+        TokenLog tokenLog = new TokenLog();
+        tokenLog.setTokenId(tokenId);
+
+        //获取数据库中最新token账户
+        Token latest = this.getById(tokenId);
+
+        tokenLog.setCurrentToken(token.getCurrentToken());
+        tokenLog.setCurrentChange(token.getCurrentToken().subtract(latest.getCurrentToken()));
+        tokenLog.setBlockToken(token.getBlockToken());
+        tokenLog.setBlockChange(token.getBlockToken().subtract(latest.getBlockToken()));
+        tokenLog.setContent("管理员更新token账户");
+
+        this.updateById(token);
+        tokenLogService.save(tokenLog);
+
     }
 
     @Override
