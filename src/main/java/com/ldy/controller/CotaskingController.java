@@ -7,9 +7,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ldy.common.R;
 import com.ldy.entity.Cotasking;
 import com.ldy.entity.CotaskingIntelligence;
+import com.ldy.entity.Intelligence;
 import com.ldy.entity.User;
 import com.ldy.service.ICotaskingIntelligenceService;
 import com.ldy.service.ICotaskingService;
+import com.ldy.service.IntelligenceService;
 import com.ldy.service.UserService;
 import com.ldy.vo.CotaskingVo;
 import io.swagger.annotations.ApiOperation;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -41,6 +44,9 @@ public class CotaskingController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private IntelligenceService intelligenceService;
 
     @ApiOperation("用于生成协同任务")
     @PostMapping("/save")
@@ -141,6 +147,26 @@ public class CotaskingController {
         cotasking.setFinished(1);
         boolean b = cotaskingService.updateById(cotasking);
         return b ? R.success("修改成功") : R.error("修改失败");
+    }
+
+    @ApiOperation("获取协同任务详细信息以及包含的情报")
+    @GetMapping("/getById")
+    public R<CotaskingVo> getInfoById(Long id) {
+        Cotasking cotask = cotaskingService.getById(id);
+        LambdaQueryWrapper<CotaskingIntelligence> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(CotaskingIntelligence::getCotaskingId, id);
+        List<CotaskingIntelligence> cotaskingIntelligences = cotaskingIntelligenceService.list(queryWrapper);
+        CotaskingVo cotaskingVo = new CotaskingVo();
+        BeanUtils.copyProperties(cotask, cotaskingVo);
+        ArrayList<String> list = new ArrayList<>();
+        for (CotaskingIntelligence cotaskingIntelligence : cotaskingIntelligences) {
+            Long intelligenceId = cotaskingIntelligence.getIntelligenceId();
+            Intelligence intelligence = intelligenceService.getById(intelligenceId);
+            String name = intelligence.getName();
+            list.add(name);
+        }
+        cotaskingVo.setIntelligenceNames(list);
+        return R.success(cotaskingVo);
     }
 
 

@@ -38,8 +38,13 @@
 
       <el-row :gutter="0">
         <el-col :span="12">
-          <el-form-item label="协同任务完成状态：">
-            <el-input v-model="ruleForm.goodsCategory" disabled />
+          <el-form-item label="协同任务完成状态：" v-if="ruleForm.finished=='0'">
+            <el-input disabled placeholder="进行中"/>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="协同任务完成状态："  v-if="ruleForm.finished=='1'">
+            <el-input disabled placeholder="已完成"/>
           </el-form-item>
         </el-col>
       </el-row>
@@ -61,7 +66,7 @@
         <el-col :span="12">
           <el-form-item label="任务包含的情报：">
             <el-select
-              v-model="ruleForm.programsArr"
+              v-model="ruleForm.intelligences"
               :filterable="true"
               multiple
               readonly
@@ -69,9 +74,9 @@
               style="width: 200%;"
             >
               <el-option
-                v-for="(item) in selectProducts"
-                :label="item.goodsName"
-                :value="item.id"
+                v-for="item in ruleForm.intelligences"
+                :label="item"
+                :value="item"
                 style="width: 200px;"
               />
             </el-select>
@@ -91,7 +96,7 @@
 <script src="../../js/request.js"></script>
 <script src="../../js/validate.js"></script>
 <script src="../../js/index.js"></script>
-<script src="../../api/intelligence.js"></script>
+<script src="../../api/cotask.js"></script>
 
 <script>
   new Vue({
@@ -99,21 +104,13 @@
     data() {
       return {
         id: '',
-        restKey: 0,
-        textarea: '',
-        value: '',
-        imageUrl: '',
-        actionType: '',
-        categoryList: [],
-        vueRest: '1',
         index: 0,
-        inputStyle: {'flex': 1},
         ruleForm: {
-        }
+        },
+        selectIntelligences: []
       }
     },
     created() {
-      this.getIntelligenceList()
       this.id = requestUrlParam('id')
       this.init()
     },
@@ -125,21 +122,8 @@
           console.log(res)
           if (String(res.code) === '1') {
             this.ruleForm = {...res.data}
-            this.ruleForm.status = res.data.status == '1'
-
-            // this.ruleForm.id = res.data.data.categoryId
-            // this.imageUrl = res.data.data.image
-            this.imageUrl = `/common/download?name=${res.data.image}`
-          } else {
-            this.$message.error(res.msg || '操作失败')
-          }
-        })
-      },
-      // 获取情报分类
-      getIntelligenceList() {
-        getCategoryList().then(res => {
-          if (res.code === 1) {
-            this.categoryList = res.data
+            this.ruleForm.intelligences = res.data.intelligenceNames
+            console.log(this.selectIntelligences)
           } else {
             this.$message.error(res.msg || '操作失败')
           }
@@ -150,21 +134,11 @@
         // this.selectFlavor(false,index)
       },
 
-      handleAvatarSuccess(response, file, fileList) {
-        // 拼接down接口预览
-        if (response.code === 0 && response.msg === '未登录') {
-          window.top.location.href = '/backend/page/login/login.html'
-        } else {
-          this.imageUrl = `/common/download?name=${response.data}`
-          this.ruleForm.image = response.data
-        }
-      },
-
       goBack() {
         window.parent.menuHandle({
-          id: '4',
+          id: '7',
           url: '/backend/page/cotask/list.html',
-          name: '情报交易'
+          name: '协同任务'
         }, false)
       }
     }

@@ -7,10 +7,10 @@ const getCotaskPage = (params) => {
   })
 }
 
-const queryCotaskById = () => {
+const queryCotaskById = (id) => {
   return $axios({
     url: '/cotasking/getById',
     method: 'get',
-    params
+    params: {id: id}
   })
 }
