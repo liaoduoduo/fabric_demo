@@ -68,5 +68,5 @@ public class User implements Serializable {
 
     //逻辑删除
     @TableLogic
-    private Integer isDeleted;
+    private Integer deleted;
 }

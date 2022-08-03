@@ -41,6 +41,6 @@ public class IntelligenceCategory implements Serializable {
 
 
     @TableLogic
-    private Integer isDeleted;
+    private Integer deleted;
 
 }

@@ -56,6 +56,6 @@ public class Intelligence implements Serializable {
     private Long updateUser;
 
     @TableLogic
-    private Integer isDeleted;
+    private Integer deleted;
 
 }

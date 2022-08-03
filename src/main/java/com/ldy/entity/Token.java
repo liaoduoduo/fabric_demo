@@ -44,7 +44,7 @@ public class Token implements Serializable {
     private Long updateUser;
 
     @TableLogic
-    private Integer isDeleted;
+    private Integer deleted;
 
 
 

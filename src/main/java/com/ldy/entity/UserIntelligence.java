@@ -39,5 +39,5 @@ public class UserIntelligence implements Serializable {
     private Long updateUser;
 
     @TableLogic
-    private Integer isDeleted;
+    private Integer deleted;
 }
