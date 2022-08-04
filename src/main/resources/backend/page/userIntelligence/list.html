@@ -110,7 +110,7 @@
             type="text"
             size="small"
             class="blueBug"
-            @click="addCoTaskHandle(scope.row.id)"
+            @click="addCoTaskHandle('',scope.row.intelligenceId)"
           >
             添加至协同任务
           </el-button>
@@ -137,6 +137,65 @@
       @current-change="handleCurrentChange"
     ></el-pagination>
   </div>
+
+  <el-dialog
+    :title="coTaskData.title"
+    :visible.sync="coTaskData.dialogVisible"
+    width="30%"
+    :before-close="handleClose"
+  >
+    <div class="container">
+      <el-form
+        ref="ruleForm"
+        :model="ruleForm"
+        :inline="true"
+        label-width="180px"
+        class="demo-ruleForm"
+      >
+        <div>
+          <el-form-item
+            label="协同任务名:"
+            prop="name"
+            label-width="100px"
+          >
+            <el-input
+              v-model="ruleForm.name"
+              placeholder="请填写任务名称"
+              maxlength="20"
+            />
+          </el-form-item>
+          <el-form-item
+            label="任务描述:"
+            prop="name"
+            label-width="100px"
+          >
+            <el-input
+              v-model="ruleForm.description"
+              type="textarea"
+              :rows="3"
+              placeholder="情报描述，最长200字"
+              maxlength="200"
+            />
+          </el-form-item>
+        </div>
+      </el-form>
+    </div>
+
+    <span
+      slot="footer"
+      class="dialog-footer"
+    >
+        <el-button
+          size="medium"
+          @click="submitCoTask()"
+        >确 定</el-button>
+        <el-button
+          size="medium"
+          @click="classData.dialogVisible = false"
+        >取消</el-button>
+    </span>
+
+  </el-dialog>
 
   <el-dialog
     :title="classData.title"
@@ -171,7 +230,7 @@
           size="medium"
           @click="classData.dialogVisible = false"
         >从IPFS获取情报文件</el-button>
-       </span>
+    </span>
   </el-dialog>
 </div>
 <!-- 开发环境版本，包含了有帮助的命令行警告 -->
@@ -197,6 +256,16 @@
         classData: {
           'title': '查看情报Hash值',
           'dialogVisible': false,
+        },
+        ruleForm: {
+          name: '',
+          description: ''
+        },
+        coTaskData: {
+          'title': '添加协同任务',
+          'dialogVisible': false,
+          intelligenceId: '',
+          type: ''
         },
         fileTable: []
       }
@@ -231,22 +300,6 @@
         this.page = 1;
         this.init();
       },
-      // 添加
-      addIntelligenceType(st) {
-        if (st === 'add') {
-          window.parent.menuHandle({
-            id: '4',
-            url: '/backend/page/intelligence/add.html',
-            name: '新增情报'
-          }, true)
-        } else {
-          window.parent.menuHandle({
-            id: '4',
-            url: '/backend/page/intelligence/add.html?id=' + st,
-            name: '修改情报'
-          }, true)
-        }
-      },
       //添加情报到协同任务
       addCoTaskHandle(type, id) {
         if (type === '批量' && id === null) {
@@ -254,22 +307,40 @@
             return this.$message.error('请选择要添加至协同任务的情报！')
           }
         }
+        console.log(id)
         this.$confirm('确认将所选情报生成协同任务, 是否继续?', '确定删除', {
           'confirmButtonText': '确定',
           'cancelButtonText': '取消',
-        }).then(() => {
-          //join() 方法用于把数组中的所有元素转换一个字符串。
-          //指定要使用的分隔符。如果省略该参数，则使用逗号作为分隔符。
-          addCoTask(type === '批量' ? this.checkList.join(',') : id).then(res => {
-            if (res.code === 1) {
-              this.$message.success('生成研判任务成功！')
-              this.handleQuery()
-            } else {
-              this.$message.error(res.msg || '操作失败')
-            }
-          }).catch(err => {
-            this.$message.error('请求出错了：' + err)
-          })
+        }).then(
+          () => {
+            this.coTaskData.dialogVisible = true
+            this.coTaskData.intelligenceId = id
+            this.coTaskData.type = type
+          }
+        )
+      },
+      submitCoTask() {
+        let params = {
+          name: this.ruleForm.name,
+          intelligenceIds: '',
+          description: this.ruleForm.description
+        }
+        if (this.coTaskData.type === '批量') {
+          params.intelligenceIds = this.checkList.join(',')
+        } else {
+          params.intelligenceIds = this.coTaskData.intelligenceId
+        }
+        addCoTask(params).then(res => {
+          if (res.code === 1) {
+            this.$message.success('生成研判任务成功！')
+            this.handleQuery()
+            this.coTaskData.dialogVisible = false
+          } else {
+            this.$message.error(res.msg || '操作失败')
+            this.coTaskData.dialogVisible = false
+          }
+        }).catch(err => {
+          this.$message.error('请求出错了：' + err)
         })
       },
       queryFileHashHandle(row) {
@@ -336,13 +407,14 @@
       // 关闭弹窗
       handleClose(st) {
         this.classData.dialogVisible = false
+        this.coTaskData.dialogVisible = false
       },
 
       // 勾选复选框操作
       handleSelectionChange(val) {
         let checkArr = []
         val.forEach((n) => {
-          checkArr.push(n.id)
+          checkArr.push(n.intelligenceId)
         })
         this.checkList = checkArr
       },

@@ -116,7 +116,7 @@ public class TokenServiceImpl extends ServiceImpl<TokenMapper, Token> implements
         tokenLog.setCurrentToken(tokenDto.getCurrentToken());
         tokenLog.setCurrentChange(tokenDto.getCurrentToken());
         tokenLog.setBlockToken(new BigDecimal(0));
-        tokenLog.setContent("新建账户分配");
+        tokenLog.setContent("新建token账户分配初始值");
         tokenLogService.save(tokenLog);
 
         return true;

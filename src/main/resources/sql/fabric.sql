@@ -326,7 +326,7 @@ CREATE TABLE `task` (
   `create_user` bigint(20) NOT NULL COMMENT '创建人',
   `update_user` bigint(20) NOT NULL COMMENT '修改人',
   `finished` int(11) NOT NULL COMMENT '是否完成',
-  `evaluation` varchar(255) NOT NULL COMMENT '任务评价',
+  `evaluation` varchar(255) DEFAULT NULL COMMENT '任务评价',
   `deleted` int(11) NOT NULL DEFAULT '0' COMMENT '逻辑删除',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `t1` (`cotasking_id`) USING BTREE,
@@ -340,7 +340,8 @@ CREATE TABLE `task` (
 /*Data for the table `task` */
 
 insert  into `task`(`id`,`name`,`cotasking_id`,`task_category_id`,`decide_info_category_id`,`begin_time`,`end_time`,`token`,`open`,`status`,`create_time`,`update_time`,`create_user`,`update_user`,`finished`,`evaluation`,`deleted`) values 
-(1553929747610882050,'核查嫌疑人身份信息',1552606804301815810,1,17,'2022-07-31 08:00:00','2022-08-31 08:00:00',0.00,1,1,'2022-08-01 10:24:57','2022-08-01 10:24:57',1,1,0,'',0);
+(1553929747610882050,'核查嫌疑人身份信息',1552606804301815810,1,17,'2022-07-31 08:00:00','2022-08-31 08:00:00',0.00,1,1,'2022-08-01 10:24:57','2022-08-01 10:24:57',1,1,0,'',0),
+(1554286171159429122,'核查嫌疑人虚拟身份信息-version02',1552606804301815810,1,1,'2022-08-31 08:00:00','2022-08-31 08:00:00',0.00,0,1,'2022-08-02 17:21:36','2022-08-02 17:21:36',1,1,0,NULL,0);
 
 /*Table structure for table `task_category` */
 
@@ -504,8 +505,32 @@ CREATE TABLE `token` (
 
 insert  into `token`(`id`,`current_token`,`block_token`,`password`,`status`,`create_time`,`update_time`,`create_user`,`update_user`,`deleted`) values 
 (1,10022.00,0.20,'123456',1,'2022-07-24 22:05:00','2022-08-03 17:53:02',1,1,0),
-(1554313285411336194,1211.00,0.00,'123456',1,'2022-08-02 11:49:00','2022-08-03 17:18:59',1,1554312923220602882,0),
+(1554313285411336194,11211.00,100.00,'123456',1,'2022-08-02 11:49:00','2022-08-03 18:02:12',1,1,0),
 (1554768275022409729,997.23,0.00,'123456',1,'2022-08-03 17:56:58','2022-08-03 17:59:18',1,1,0);
+
+/*Table structure for table `token_deal` */
+
+DROP TABLE IF EXISTS `token_deal`;
+
+CREATE TABLE `token_deal` (
+  `id` bigint(20) NOT NULL COMMENT 'token交易id',
+  `from_user` bigint(20) NOT NULL COMMENT '支付方',
+  `to_user` bigint(20) NOT NULL COMMENT '收款方',
+  `task_id` bigint(20) DEFAULT NULL COMMENT '当收到的是任务时',
+  `intelligence_id` bigint(20) DEFAULT NULL COMMENT '当购买的是情报时',
+  `value` decimal(10,5) NOT NULL COMMENT '交易金额',
+  `create_time` datetime NOT NULL COMMENT '创建时间',
+  `update_time` datetime NOT NULL COMMENT '更新时间',
+  `create_user` bigint(20) NOT NULL COMMENT '创建人',
+  `update_user` bigint(20) NOT NULL COMMENT '修改人',
+  `deleted` int(11) NOT NULL DEFAULT '0' COMMENT '逻辑删除',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+
+/*Data for the table `token_deal` */
+
+insert  into `token_deal`(`id`,`from_user`,`to_user`,`task_id`,`intelligence_id`,`value`,`create_time`,`update_time`,`create_user`,`update_user`,`deleted`) values 
+(1555014669104762881,1,2,1554739782943453186,NULL,0.50000,'2022-08-04 10:16:03','2022-08-04 10:16:03',1,1,0);
 
 /*Table structure for table `token_log` */
 
@@ -537,7 +562,8 @@ insert  into `token_log`(`id`,`token_id`,`current_change`,`block_change`,`curren
 (1554758718044794882,1,20.00,0.00,10021.00,0.20,'售出情报','2022-08-03 17:18:59','2022-08-03 17:18:59',1554312923220602882,1554312923220602882,0),
 (1554765079780552705,1,1.00,0.00,10022.00,0.20,'管理员更新token账户','2022-08-03 17:44:16','2022-08-03 17:44:16',1,1,0),
 (1554767285258924034,1,0.00,0.00,10022.00,0.20,'管理员更新token账户','2022-08-03 17:53:02','2022-08-03 17:53:02',1,1,0),
-(1554768275110490114,1554768275022409729,997.23,0.00,997.23,0.00,'新建账户分配','2022-08-03 17:56:58','2022-08-03 17:56:58',1,1,0);
+(1554768275110490114,1554768275022409729,997.23,0.00,997.23,0.00,'新建账户分配','2022-08-03 17:56:58','2022-08-03 17:56:58',1,1,0),
+(1554769593946468353,1554313285411336194,10000.00,100.00,11211.00,100.00,'管理员更新token账户','2022-08-03 18:02:12','2022-08-03 18:02:12',1,1,0);
 
 /*Table structure for table `user` */
 

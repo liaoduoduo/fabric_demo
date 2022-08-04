@@ -102,8 +102,6 @@ public class IntelligenceController {
     public R<String> buy(@RequestBody BuyIntelligenceDto buyIntelligenceDto) {
         Long id = buyIntelligenceDto.getId();
         String password = buyIntelligenceDto.getPassword();
-        log.info("++++++++++++++++++++++{}",id);
-        log.info("++++++++++++++++++++++{}",password);
         return intelligenceService.buy(id, password);
     }
 
@@ -117,7 +115,5 @@ public class IntelligenceController {
     public R<String> delete(@RequestParam List<Long> ids) {
         return intelligenceService.deleteBatch(ids);
     }
-
-
 
 }

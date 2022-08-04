@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <!-- 引入样式 -->
+  <link rel="stylesheet" href="../../plugins/element-ui/index.css"/>
+  <link rel="stylesheet" href="../../styles/common.css"/>
+  <link rel="stylesheet" href="../../styles/page.css"/>
+  <style>
+      #food-add-app .uploadImg .el-form-item__label::before {
+          content: '*';
+          color: #F56C6C;
+          margin-right: 4px;
+      }
+
+  </style>
+</head>
+<body>
+<div class="addBrand-container" id="cotask-info-app">
+  <div class="container">
+    <el-form
+      ref="ruleForm"
+      :model="ruleForm"
+      :inline="true"
+      label-width="180px"
+      class="demo-ruleForm"
+    >
+      <el-row style="margin-top: 30px">
+        <el-col :span="12">
+          <el-form-item label="协同任务名：" prop="name" label-with="100px">
+            <el-input v-model="ruleForm.name" disabled/>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-row :gutter="0">
+        <el-col :span="12">
+          <el-form-item label="协同任务完成状态：" v-if="ruleForm.finished=='0'">
+            <el-input disabled placeholder="进行中"/>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="协同任务完成状态："  v-if="ruleForm.finished=='1'">
+            <el-input disabled placeholder="已完成"/>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-form-item
+          label="协同任务描述："
+          prop="name"
+        >
+          <el-input
+            v-model="ruleForm.description"
+            type="textarea"
+            :rows="3"
+            maxlength="200"
+            disabled
+          />
+        </el-form-item>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="任务包含的情报：">
+            <el-select
+              v-model="ruleForm.intelligences"
+              :filterable="true"
+              multiple
+              readonly
+              size="small"
+              style="width: 200%;"
+            >
+              <el-option
+                v-for="item in ruleForm.intelligences"
+                :label="item"
+                :value="item"
+                style="width: 200px;"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+    </el-form>
+  </div>
+</div>
+<!-- 开发环境版本，包含了有帮助的命令行警告 -->
+<script src="../../plugins/vue/vue.js"></script>
+<!-- 引入组件库 -->
+<script src="../../plugins/element-ui/index.js"></script>
+<!-- 引入axios -->
+<script src="../../plugins/axios/axios.min.js"></script>
+<script src="../../js/request.js"></script>
+<script src="../../js/validate.js"></script>
+<script src="../../js/index.js"></script>
+<script src="../../api/cotask.js"></script>
+
+<script>
+  new Vue({
+    el: '#cotask-info-app',
+    data() {
+      return {
+        id: '',
+        index: 0,
+        ruleForm: {
+        },
+        selectIntelligences: []
+      }
+    },
+    created() {
+      this.id = requestUrlParam('id')
+      this.init()
+    },
+    mounted() {
+    },
+    methods: {
+      async init() {
+        queryCotaskById(this.id).then(res => {
+          console.log(res)
+          if (String(res.code) === '1') {
+            this.ruleForm = {...res.data}
+            this.ruleForm.intelligences = res.data.intelligenceNames
+            console.log(this.selectIntelligences)
+          } else {
+            this.$message.error(res.msg || '操作失败')
+          }
+        })
+      },
+
+      inputHandle(val, index) {
+        // this.selectFlavor(false,index)
+      },
+
+      goBack() {
+        window.parent.menuHandle({
+          id: '7',
+          url: '/backend/page/cotask/list.html',
+          name: '协同任务'
+        }, false)
+      }
+    }
+  })
+</script>
+</body>
+</html>

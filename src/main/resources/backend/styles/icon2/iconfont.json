@@ -6,6 +6,27 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "19317173",
+      "name": "皇冠",
+      "font_class": "huangguan",
+      "unicode": "f057",
+      "unicode_decimal": 61527
+    },
+    {
+      "icon_id": "24847092",
+      "name": "悬赏",
+      "font_class": "xuanshang1",
+      "unicode": "e677",
+      "unicode_decimal": 58999
+    },
+    {
+      "icon_id": "18325193",
+      "name": "任务",
+      "font_class": "renwu1",
+      "unicode": "e649",
+      "unicode_decimal": 58953
+    },
+    {
       "icon_id": "7429",
       "name": "首页",
       "font_class": "shouye",
@@ -13,25 +34,11 @@
       "unicode_decimal": 58881
     },
     {
-      "icon_id": "11491728",
-      "name": "贡献度",
-      "font_class": "lujing",
-      "unicode": "e60c",
-      "unicode_decimal": 58892
-    },
-    {
       "icon_id": "5651472",
       "name": "人防情报",
       "font_class": "renfangqingbao",
       "unicode": "e669",
       "unicode_decimal": 58985
-    },
-    {
-      "icon_id": "1111351",
-      "name": "悬赏",
-      "font_class": "xuanshang",
-      "unicode": "e61a",
-      "unicode_decimal": 58906
     },
     {
       "icon_id": "7874505",

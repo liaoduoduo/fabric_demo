@@ -11,12 +11,12 @@
   <link rel="stylesheet" href="../../styles/page.css"/>
 </head>
 <body>
-<div class="dashboard-container" id="food-app">
+<div class="dashboard-container" id="cotask-app">
   <div class="container">
     <div class="tableBar">
       <el-input
         v-model="input"
-        placeholder="请输入情报名称"
+        placeholder="请输入任务名称"
         style="width: 250px"
         clearable
         @keyup.enter.native="handleQuery"
@@ -50,60 +50,47 @@
         type="selection"
       ></el-table-column>
       <el-table-column
-        width="180"
         prop="name"
-        label="情报名称"
+        label="任务名称"
+        width="100"
       ></el-table-column>
       <el-table-column
         align="center"
-        width="100"
-        prop="userName"
+        prop="user"
         label="发布人"
       ></el-table-column>
-      <el-table-column prop="image" label="图片" align="center">
-        <template slot-scope="{ row }">
-          <el-image style="width: 100px; height: 40px; border:none;cursor: pointer;"
-                    :src="getImage(row.image)"
-                    :preview-src-list="[ `/common/download?name=${row.image}` ]">
-            <div slot="error" class="image-slot">
-              <img src="./../../images/noImg.png" style="width: auto; height: 40px; border:none;">
-            </div>
-          </el-image>
+      <el-table-column
+        prop="finished"
+        label="完成情况"
+      >
+        <template slot-scope="scope">
+          <span style="margin-right: 10px;">{{ scope.row.finished == '0' ? '进行中' : '已完成' }}</span>
         </template>
       </el-table-column>
       <el-table-column
-        prop="categoryName"
-        label="情报分类"
-      ></el-table-column>
-      <el-table-column label="情报价值">
-        <template slot-scope="scope">
-          <span style="margin-right: 10px;">{{ scope.row.token }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="情报状态" width="80">
-        <template slot-scope="scope">
-          <span style="margin-right: 10px;">{{ scope.row.status == '0' ? '停用' : '启用' }}</span>
-        </template>
+        prop="createTime"
+        label="发布时间"
+      >
       </el-table-column>
       <el-table-column
-        width="150"
         prop="updateTime"
         label="最后操作时间"
       >
       </el-table-column>
+
       <el-table-column
         label="操作"
-        width="200"
         align="center"
+        width="250"
       >
         <template slot-scope="scope">
           <el-button
             type="text"
             size="small"
             class="blueBug"
-            @click="buyIntelligence(scope.row.id)"
+            @click="goDetail(scope.row.id)"
           >
-            购买
+            查看详情
           </el-button>
           <el-button
             type="text"
@@ -121,7 +108,7 @@
             @click="statusHandle(scope.row)"
             v-if="user === 'admin'"
           >
-            {{ scope.row.status == '0' ? '启售' : '停售' }}
+            {{ scope.row.status == '0' ? '启用' : '停用' }}
           </el-button>
           <el-button
             type="text"
@@ -154,10 +141,10 @@
 <!-- 引入axios -->
 <script src="../../plugins/axios/axios.min.js"></script>
 <script src="../../js/request.js"></script>
-<script src="../../api/intelligence.js"></script>
+<script src="../../api/cotask.js"></script>
 <script>
   new Vue({
-    el: '#food-app',
+    el: '#cotask-app',
     data() {
       return {
         input: '',
@@ -184,7 +171,7 @@
           pageSize: this.pageSize,
           name: this.input ? this.input : undefined
         }
-        await getIntelligencePage(params).then(res => {
+        await getCotaskPage(params).then(res => {
           if (String(res.code) === '1') {
             this.tableData = res.data.records || []
             this.counts = res.data.total
@@ -199,6 +186,13 @@
       handleQuery() {
         this.page = 1;
         this.init();
+      },
+      goDetail(id) {
+        window.parent.menuHandle({
+          id: '7',
+          url: '/backend/page/cotask/info.html?id=' + id,
+          name: '协同任务详情'
+        }, true)
       },
       // 添加
       addIntelligencetype(st) {

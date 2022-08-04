@@ -12,6 +12,7 @@ import lombok.Data;
  */
 @Data
 public class UserIntelligenceVo extends Intelligence {
+    private Long intelligenceId;
     private Long formUserId;
     private Long toUserId;
     private String origin;
