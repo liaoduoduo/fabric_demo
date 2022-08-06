@@ -1,91 +1,173 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-  <!-- 引入样式 -->
-  <link rel="stylesheet" href="../../plugins/element-ui/index.css"/>
-  <link rel="stylesheet" href="../../styles/common.css"/>
-  <link rel="stylesheet" href="../../styles/page.css"/>
-  <style>
-      #food-add-app .uploadImg .el-form-item__label::before {
-          content: '*';
-          color: #F56C6C;
-          margin-right: 4px;
-      }
 
-  </style>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="../../plugins/element-ui/index.css"/>
+    <link rel="stylesheet" href="../../styles/common.css"/>
+    <link rel="stylesheet" href="../../styles/page.css"/>
+    <style>
+        #food-add-app .uploadImg .el-form-item__label::before {
+            content: '*';
+            color: #F56C6C;
+            margin-right: 4px;
+        }
+    </style>
+    <style>
+        .demo-table-expand {
+            font-size: 0;
+        }
+
+        .demo-table-expand label {
+            width: 90px;
+            color: #99a9bf;
+        }
+
+        .demo-table-expand .el-form-item {
+            margin-right: 0;
+            margin-bottom: 0;
+            width: 50%;
+        }
+    </style>
 </head>
+
 <body>
 <div class="addBrand-container" id="cotask-info-app">
-  <div class="container">
-    <el-form
-      ref="ruleForm"
-      :model="ruleForm"
-      :inline="true"
-      label-width="180px"
-      class="demo-ruleForm"
-    >
-      <el-row style="margin-top: 30px">
-        <el-col :span="12">
-          <el-form-item label="协同任务名：" prop="name" label-with="100px">
-            <el-input v-model="ruleForm.name" disabled/>
-          </el-form-item>
-        </el-col>
-      </el-row>
+    <div class="container">
+        <el-form ref="ruleForm" :model="ruleForm" :inline="true" label-width="180px" class="demo-ruleForm">
+            <el-row style="margin-top: 30px">
+                <el-col :span="12">
+                    <el-form-item label="协同任务名：" prop="name" label-with="100px">
+                        <el-input v-model="ruleForm.name" disabled/>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row :gutter="0">
+                <el-col :span="12">
+                    <el-form-item label="协同任务完成状态：" v-if="ruleForm.finished=='0'">
+                        <el-input disabled placeholder="进行中"/>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="协同任务完成状态：" v-if="ruleForm.finished=='1'">
+                        <el-input disabled placeholder="已完成"/>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-form-item label="协同任务描述：">
+                    <el-input v-model="ruleForm.description" type="textarea" :rows="3" maxlength="200" disabled/>
+                </el-form-item>
+            </el-row>
+        </el-form>
+        <h3>协同任务中所提供的情报</h3>
 
-      <el-row :gutter="0">
-        <el-col :span="12">
-          <el-form-item label="协同任务完成状态：" v-if="ruleForm.finished=='0'">
-            <el-input disabled placeholder="进行中"/>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="协同任务完成状态："  v-if="ruleForm.finished=='1'">
-            <el-input disabled placeholder="已完成"/>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-form-item
-          label="协同任务描述："
-          prop="name"
-        >
-          <el-input
-            v-model="ruleForm.description"
-            type="textarea"
-            :rows="3"
-            maxlength="200"
-            disabled
-          />
-        </el-form-item>
-      </el-row>
-      <el-row>
-        <el-col :span="12">
-          <el-form-item label="任务包含的情报：">
-            <el-select
-              v-model="ruleForm.intelligences"
-              :filterable="true"
-              multiple
-              readonly
-              size="small"
-              style="width: 200%;"
-            >
-              <el-option
-                v-for="item in ruleForm.intelligences"
-                :label="item"
-                :value="item"
-                style="width: 200px;"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
+        <el-table
+                :data="tableIntelligenceData"
+                style="width: 100%">
+            <el-table-column type="expand">
+                <template slot-scope="props">
+                    <el-form label-position="left" inline class="demo-table-expand">
+                        <el-form-item label="情报名称">
+                            <span>{{ props.row.name }}</span>
+                        </el-form-item>
+                        <el-form-item label="情报描述">
+                            <span>{{ props.row.description }}</span>
+                        </el-form-item>
+                        <el-form-item label="情报散列值">
+                            <span>{{ props.row.fileHash }}</span>
+                        </el-form-item>
+                        <el-form-item label="创建人ID">
+                            <span>{{ props.row.createUser }}</span>
+                        </el-form-item>
+                        <el-form-item label="情报状态">
+                            <span v-if="props.row.status === 1">起售</span>
+                            <span v-if="props.row.status === 0">停售</span>
+                        </el-form-item>
+                    </el-form>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    label="情报ID"
+                    prop="id">
+            </el-table-column>
+            <el-table-column
+                    label="情报名称"
+                    prop="name">
+            </el-table-column>
+            <el-table-column
+                    label="情报价值"
+                    prop="token">
+            </el-table-column>
+            <el-table-column label="操作" align="center">
+                <template slot-scope="scope">
+                    <el-button type="text" size="small" class="delBut non"
+                               @click="deleteHandle('单删', scope.row.id)">
+                        删除
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
 
-    </el-form>
-  </div>
+        <h3>协同任务中分配的研判任务</h3>
+        <el-table
+                :data="tableTaskData"
+                style="width: 100%">
+            <el-table-column type="expand">
+                <template slot-scope="props">
+                    <el-form label-position="left" inline class="demo-table-expand">
+                        <el-form-item label="任务主键">
+                            <span>{{ props.row.id }}</span>
+                        </el-form-item>
+                        <el-form-item label="任务分类id">
+                            <span>{{ props.row.taskCategoryId }}</span>
+                        </el-form-item>
+                        <el-form-item label="任务开始时间">
+                            <span>{{ props.row.beginTime }}</span>
+                        </el-form-item>
+                        <el-form-item label="任务结束时间">
+                            <span>{{ props.row.endTime }}</span>
+                        </el-form-item>
+                        <el-form-item label="领取策略">
+                            <span>{{ props.row.policy }}</span>
+                        </el-form-item>
+                        <el-form-item label="是否完成">
+                            <span v-if="props.row.finished === 1">完成</span>
+                            <span v-if="props.row.finished === 0">进行中</span>
+                        </el-form-item>
+                    </el-form>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    label="研判任务ID"
+                    prop="id">
+            </el-table-column>
+            <el-table-column
+                    label="简要需求"
+                    prop="name">
+            </el-table-column>
+            <el-table-column
+                    label="任务金额"
+                    prop="token">
+            </el-table-column>
+            <el-table-column label="操作" align="center">
+                <template slot-scope="scope">
+                    <el-button type="text" size="small" class="blueBug"
+                               @click="addToken(scope.row.id)">
+                        增加悬赏
+                    </el-button>
+                    <el-button type="text" size="small" class="delBut non"
+                               @click="deleteHandle('单删', scope.row.id)">
+                        删除
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+    </div>
 </div>
 <!-- 开发环境版本，包含了有帮助的命令行警告 -->
 <script src="../../plugins/vue/vue.js"></script>
@@ -99,50 +181,67 @@
 <script src="../../api/cotask.js"></script>
 
 <script>
-  new Vue({
-    el: '#cotask-info-app',
-    data() {
-      return {
-        id: '',
-        index: 0,
-        ruleForm: {
+    new Vue({
+        el: '#cotask-info-app',
+        data() {
+            return {
+                id: '',
+                index: 0,
+                ruleForm: {},
+                detailInfo: {},
+                tableIntelligenceData: [],
+                tableTaskData: [],
+                selectIntelligences: []
+            }
         },
-        selectIntelligences: []
-      }
-    },
-    created() {
-      this.id = requestUrlParam('id')
-      this.init()
-    },
-    mounted() {
-    },
-    methods: {
-      async init() {
-        queryCotaskById(this.id).then(res => {
-          console.log(res)
-          if (String(res.code) === '1') {
-            this.ruleForm = {...res.data}
-            this.ruleForm.intelligences = res.data.intelligenceNames
-            console.log(this.selectIntelligences)
-          } else {
-            this.$message.error(res.msg || '操作失败')
-          }
-        })
-      },
+        created() {
+            this.id = requestUrlParam('id')
+            this.init()
+        },
+        mounted() {
+        },
+        methods: {
+            async init() {
+                getCotaskById(this.id).then(res => {
+                    console.log(res)
+                    if (String(res.code) === '1') {
+                        this.ruleForm = {...res.data}
+                        // this.ruleForm.intelligences = res.data.intelligenceNames
+                        // console.log(this.selectIntelligences)
+                    } else {
+                        this.$message.error(res.msg || '操作失败')
+                    }
+                })
+                getIntelligencesInCotask(this.id).then(res => {
+                    if (String(res.code) === '1') {
+                        var arr = [];
+                        for (var key in res.data) {
+                            console.log("load... " + key);
+                            console.log("load... " + res.data[key]);
+                            arr.push(res.data[key]);
+                        }
+                        console.log(arr);
+                        this.tableIntelligenceData = arr || []
+                    } else {
+                        this.$message.error(res.msg || '操作失败')
+                    }
+                })
+            },
 
-      inputHandle(val, index) {
-        // this.selectFlavor(false,index)
-      },
+            inputHandle(val, index) {
+                // this.selectFlavor(false,index)
+            },
 
-      goBack() {
-        window.parent.menuHandle({
-          id: '7',
-          url: '/backend/page/cotask/list.html',
-          name: '协同任务'
-        }, false)
-      }
-    }
-  })
+            goBack() {
+                window.parent.menuHandle({
+                    id: '7',
+                    url: '/backend/page/cotask/list.html',
+                    name: '协同任务'
+                }, false)
+            }
+        }
+    })
 </script>
 </body>
+
 </html>

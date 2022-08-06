@@ -44,15 +44,13 @@ public class CotaskingIntelligenceController {
         }
         Page<CotaskingIntelligence> cotaskingIntelligencePage = new Page<>(page, pageSize);
         LambdaQueryWrapper<CotaskingIntelligence> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(CotaskingIntelligence::getCotaskingId, id);
+        queryWrapper.eq(CotaskingIntelligence::getCotaskingId, id).orderByDesc(CotaskingIntelligence::getCreateTime);
         Page<CotaskingIntelligence> page1 = cotaskingIntelligenceService.page(cotaskingIntelligencePage, queryWrapper);
         Map<Long, Intelligence> intelligenceHashMap = new HashMap<>();
 
-        // ArrayList<Intelligence> intelligences = new ArrayList<>();
         for (CotaskingIntelligence record : page1.getRecords()) {
             Intelligence intelligence = intelligenceService.getById(record.getIntelligenceId());
             intelligenceHashMap.put(record.getId(), intelligence);
-            // intelligences.add(intelligence);
         }
         return R.success(intelligenceHashMap);
     }

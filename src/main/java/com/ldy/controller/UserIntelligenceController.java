@@ -1,6 +1,7 @@
 package com.ldy.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.ldy.common.BaseContext;
 import com.ldy.common.R;
 import com.ldy.service.UserIntelligenceService;
 import com.ldy.vo.UserIntelligenceVo;
@@ -31,6 +32,8 @@ public class UserIntelligenceController {
      */
     @GetMapping("/page")
     public R<Page<UserIntelligenceVo>> page(int page, int pageSize, String name) {
+        Long userId = BaseContext.getCurrentId();
+
         return R.success(userIntelligenceService.pageQuery(page, pageSize, name));
     }
 

@@ -92,14 +92,13 @@ public class CotaskingController {
 
     @ApiOperation("逻辑删除协同任务")
     @DeleteMapping("/delete")
-    public R<String> deleteById(@RequestParam(value = "cotaskIds", required = false) Long[] cotaskIds) {
+    public R<String> deleteById(@RequestParam(value = "ids", required = false) Long[] ids) {
         boolean result = false;
-        if (cotaskIds.length == 1) {
-            result = cotaskingService.removeById(cotaskIds[0]);
-
+        if (ids.length == 1) {
+            result = cotaskingService.removeById(ids[0]);
         }
-        if (cotaskIds.length > 1) {
-            result = cotaskingService.removeByIds(Arrays.asList(cotaskIds));
+        if (ids.length > 1) {
+            result = cotaskingService.removeByIds(Arrays.asList(ids));
         }
         return result ? R.success("删除成功") : R.error("删除失败");
     }

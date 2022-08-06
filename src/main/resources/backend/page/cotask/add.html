@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="../../plugins/element-ui/index.css" />
+    <link rel="stylesheet" href="../../styles/common.css" />
+    <link rel="stylesheet" href="../../styles/page.css" />
+</head>
+
+<body>
+    <div class="addBrand-container" id="task-add-app">
+        <div class="container">
+            <el-form ref="ruleForm" :model="ruleForm" :inline="false" label-width="180px" class="demo-ruleForm">
+                <el-form-item label="研判任务简要需求:" prop="name">
+                    <el-input v-model="ruleForm.username" placeholder="请输入研判任务简要需求" maxlength="20" />
+                </el-form-item>
+
+                <el-form-item label="任务分类:">
+                    <el-cascader v-model="value" :options="options" :props="defaultParams"
+                        :props="{ expandTrigger: 'hover' }" @change="handleChange">
+                    </el-cascader>
+                </el-form-item>
+                <el-form-item label="任务有效时间:">
+                    <div class="block">
+                        <el-date-picker v-model="taskTime" type="datetimerange" range-separator="至"
+                            start-placeholder="开始日期" end-placeholder="结束日期">
+                        </el-date-picker>
+                    </div>
+                </el-form-item>
+
+                <el-form-item label="任务金额:" prop="token">
+                    <el-input v-model="ruleForm.token" placeholder="请输入任务金额" maxlength="20" />
+                </el-form-item>
+
+                <el-form-item label="是否公开:" prop="open">
+                    <el-radio-group v-model="ruleForm.open">
+                        <el-radio v-model="radio" :label="1">公开</el-radio>
+                        <el-radio v-model="radio" :label="0">私有</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+                <el-form-item label="私有化规则:" prop="policy" >
+                    <el-input type="textarea" :rows="2" placeholder="请输入接单规则（仅使用单位名称作为限制）" v-model="textarea"></el-input>
+                </el-form-item>
+
+
+                <div class="subBox address">
+                    <el-form-item>
+                        <el-button @click="goBack()">
+                            取消
+                        </el-button>
+                        <el-button type="primary" @click="submitForm('ruleForm', false)">
+                            保存
+                        </el-button>
+                        <el-button v-if="actionType === 'add'" type="primary" class="continue"
+                            @click="submitForm('ruleForm', true)">
+                            保存并继续添加
+                        </el-button>
+                    </el-form-item>
+                </div>
+            </el-form>
+        </div>
+    </div>
+    <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+    <script src="../../plugins/vue/vue.js"></script>
+    <!-- 引入组件库 -->
+    <script src="../../plugins/element-ui/index.js"></script>
+    <!-- 引入axios -->
+    <script src="../../plugins/axios/axios.min.js"></script>
+    <script src="../../js/request.js"></script>
+    <script src="../../api/task.js"></script>
+    <script src="../../js/validate.js"></script>
+    <script src="../../js/index.js"></script>
+    <script>
+        new Vue({
+            el: '#task-add-app',
+            data() {
+                return {
+                    id: '',
+                    actionType: '',
+                    ruleForm: {},
+                    value: [],
+                    options: [],
+                    defaultParams: {
+                        label: 'name',
+                        value: 'id',
+                        children: 'children'
+                    },
+                    taskTime: '',
+                    radio: '1',
+                }
+            },
+            created() {
+                this.id = requestUrlParam('id')
+                this.actionType = this.id ? 'edit' : 'add'
+                if (this.id) {
+                    this.init()
+                }
+            },
+            mounted() {
+            },
+            methods: {
+                async init() {
+                    getDecideInfoCategoryWithTaskCategory().then(
+                        res => {
+                            console.log(res);
+                            this.options = res.data;
+                        }
+                    );
+
+                    /*queryTaskCategory(this.id).then(res => {
+                        console.log(res)
+                        if (String(res.code) === '1') {
+                            console.log(res.data)
+                            this.ruleForm = res.data
+                            this.ruleForm.sex = res.data.sex === '0' ? '女' : '男'
+                            // this.ruleForm.password = ''
+                        } else {
+                            this.$message.error(res.msg || '操作失败')
+                        }
+                    })*/
+                },
+                submitForm(formName, st) {
+                    this.$refs[formName].validate((valid) => {
+                        if (valid) {
+                            if (this.actionType === 'add') {
+                                const params = {
+                                    ...this.ruleForm,
+                                    sex: this.ruleForm.sex === '女' ? '0' : '1'
+                                }
+                                addUser(params).then(res => {
+                                    if (res.code === 1) {
+                                        this.$message.success('用户添加成功！')
+                                        if (!st) {
+                                            this.goBack()
+                                        } else {
+                                            this.ruleForm = {
+                                                username: '',
+                                                'name': '',
+                                                'phone': '',
+                                                // 'password': '',
+                                                // 'rePassword': '',/
+                                                'unit': '',
+                                                'sex': '男',
+                                                'idNumber': ''
+                                            }
+                                        }
+                                    } else {
+                                        this.$message.error(res.msg || '操作失败')
+                                    }
+                                }).catch(err => {
+                                    this.$message.error('请求出错了：' + err)
+                                })
+                            } else {
+                                const params = {
+                                    ...this.ruleForm,
+                                    sex: this.ruleForm.sex === '女' ? '0' : '1'
+                                }
+                                editUser(params).then(res => {
+                                    if (res.code === 1) {
+                                        this.goBack()
+                                        this.$message.success(res.msg || '员工信息修改成功！')
+                                    } else {
+                                        this.$message.error(res.msg || '操作失败')
+                                    }
+                                }).catch(err => {
+                                    this.$message.error('请求出错了：' + err)
+                                })
+                            }
+                        } else {
+                            console.log('error submit!!')
+                            return false
+                        }
+                    })
+                },
+                goBack() {
+                    window.parent.menuHandle({
+                        id: '7',
+                        url: '/backend/page/cotask/list.html',
+                        name: '我的协同任务'
+                    }, false)
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
