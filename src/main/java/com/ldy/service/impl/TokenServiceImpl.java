@@ -103,7 +103,7 @@ public class TokenServiceImpl extends ServiceImpl<TokenMapper, Token> implements
         token.setStatus(tokenDto.getStatus());
         token.setCurrentToken(tokenDto.getCurrentToken());
         //设置默认密码
-        //token.setPassword("123456");
+        token.setPassword(tokenDto.getPassword());
         this.save(token);
 
         User updateUser = new User();
