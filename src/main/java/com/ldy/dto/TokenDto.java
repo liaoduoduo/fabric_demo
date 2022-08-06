@@ -21,4 +21,6 @@ public class TokenDto implements Serializable {
     private Integer status;
 
     private BigDecimal currentToken;
+
+    private String password;
 }
