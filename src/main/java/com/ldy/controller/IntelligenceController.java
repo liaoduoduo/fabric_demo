@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ldy.common.R;
 import com.ldy.dto.BuyIntelligenceDto;
+import com.ldy.dto.IntelligencePageDto;
 import com.ldy.entity.Intelligence;
 import com.ldy.entity.UserIntelligence;
 import com.ldy.service.IntelligenceService;
@@ -39,16 +40,14 @@ public class IntelligenceController {
 
 
     /**
-     * @param page
-     * @param pageSize
-     * @param name
-     * @return com.ldy.common.R<com.baomidou.mybatisplus.extension.plugins.pagination.Page < com.ldy.vo.IntelligenceVo>>
+     * @param intelligencePageDto
+     * @return com.ldy.common.R<com.baomidou.mybatisplus.extension.plugins.pagination.Page<com.ldy.vo.IntelligenceVo>>
      * @description 分页查询
-     * @date 2022/7/22 14:22
+     * @date 2022/8/8 13:24
      */
-    @GetMapping("/page")
-    public R<Page<IntelligenceVo>> page(int page, int pageSize, String name) {
-        return R.success(intelligenceService.pageQuery(page, pageSize, name));
+    @PostMapping("/page")
+    public R<Page<IntelligenceVo>> page(IntelligencePageDto intelligencePageDto) {
+        return R.success(intelligenceService.pageQuery(intelligencePageDto));
     }
 
     /**

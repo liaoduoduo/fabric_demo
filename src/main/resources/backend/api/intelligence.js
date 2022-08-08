@@ -2,8 +2,8 @@
 const getIntelligencePage = (params) => {
   return $axios({
     url: '/intelligence/page',
-    method: 'get',
-    params
+    method: 'post',
+    data : params
   })
 }
 

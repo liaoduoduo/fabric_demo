@@ -1,153 +1,203 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <!-- 引入样式 -->
-    <link rel="stylesheet" href="../../plugins/element-ui/index.css"/>
-    <link rel="stylesheet" href="../../styles/common.css"/>
-    <link rel="stylesheet" href="../../styles/page.css"/>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <!-- 引入样式 -->
+  <link rel="stylesheet" href="../../plugins/element-ui/index.css"/>
+  <link rel="stylesheet" href="../../styles/common.css"/>
+  <link rel="stylesheet" href="../../styles/page.css"/>
 </head>
 <body>
 <div class="dashboard-container" id="food-app">
-    <div class="container">
-        <div class="tableBar">
+  <div class="container">
+    <!--查询条件-->
+    <el-form ref="queryForm" :model="queryForm" label-width="100px" class="formBox">
+      <el-row :gutter="0">
+        <el-col :span="6">
+          <el-form-item label="情报名：">
             <el-input
-                    v-model="input"
-                    placeholder="请输入情报名称"
-                    style="width: 250px"
-                    clearable
-                    @keyup.enter.native="handleQuery"
+              v-model="queryForm.name"
+              placeholder="请输入情报名称"
             >
-                <i
-                        slot="prefix"
-                        class="el-input__icon el-icon-search"
-                        style="cursor: pointer"
-                        @click="init"
-                ></i>
             </el-input>
-            <div class="tableLab">
-                <span class="span-btn delBut non" v-if="user === 'admin'"
-                      @click="deleteHandle('批量', null)">批量删除</span>
-                <span class="span-btn blueBug non" v-if="user === 'admin'" @click="statusHandle('1')">批量启用</span>
-                <span style="border:none;" class="span-btn delBut non" v-if="user === 'admin'"
-                      @click="statusHandle('0')">批量停用</span>
-                <el-button
-                        type="primary"
-                        @click="addIntelligencetype('add')"
-                >
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="情报分类：">
+            <el-select
+              v-model="queryForm.intelligenceCategoryId"
+              :filterable="true"
+              placeholder="请选择"
+            >
+              <el-option label="全部" value=""></el-option>
+              <el-option
+                v-for="(item,index) in intelligenceCategories"
+                :label="item.name"
+                :value="item.id"
+              ></el-option>
+
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="发布人：">
+            <el-input v-model="queryForm.userName" placeholder="请输入发布人"/>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="单位：">
+            <el-input v-model="queryForm.unit" placeholder="请输入单位" />
+          </el-form-item>
+        </el-col>
+      </el-row >
+        <el-row type="flex" justify="right">
+          <el-col :span="6">
+            <el-form-item label="状态：">
+              <el-select v-model="queryForm.status" placeholder="请选择">
+                <el-option label="全部" value="" /></el-option>
+                <el-option label="启用" value="1" /></el-option>
+                <el-option label="禁用" value="0" /></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="18" align="right">
+            <el-form-item label-width="200px" >
+              <div class="tableBar" style="float: right">
+                <div class="tableLab">
+                <span class="span-btn delBut non"
+                  @click="deleteHandle('批量', null)" v-if="user === 'admin'">批量删除</span>
+                  <span class="span-btn blueBug non" v-if="user === 'admin'"  @click="statusHandle('1')">批量启用</span>
+                  <span style="border:none;" class="span-btn delBut non" v-if="user === 'admin'"
+                        @click="statusHandle('0')">批量停用</span>
+                  <el-button type="primary" icon="el-icon-search" @click="onSubmit">查 询</el-button>
+                  <el-button type="primary" icon="el-icon-refresh" @click="resetForm()">重置</el-button>
+                  <el-button
+                    type="primary"
+                    @click="addIntelligencetype('add')"
+                  >
                     + 发布情报
-                </el-button>
+                  </el-button>
+                </div>
+              </div>
+            </el-form-item>
+          </el-col>
+        </el-row>
+    </el-form>
+    <el-table
+      :data="tableData"
+      stripe
+      class="tableBox"
+      @selection-change="handleSelectionChange"
+    >
+      <el-table-column
+        type="selection"
+      ></el-table-column>
+      <el-table-column
+        width="150"
+        prop="name"
+        label="情报名称"
+      ></el-table-column>
+      <el-table-column
+        align="center"
+        width="100"
+        prop="userName"
+        label="发布人"
+      ></el-table-column>
+      <el-table-column
+        align="center"
+        width="100"
+        prop="unit"
+        label="单位"
+      ></el-table-column>
+      <el-table-column prop="image" label="图片" align="center">
+        <template slot-scope="{ row }">
+          <el-image style="width: 100px; height: 40px; border:none;cursor: pointer;"
+                    :src="getImage(row.image)"
+                    :preview-src-list="[ `/common/download?name=${row.image}` ]">
+            <div slot="error" class="image-slot">
+              <img src="./../../images/noImg.png" style="width: auto; height: 40px; border:none;">
             </div>
-        </div>
-        <el-table
-                :data="tableData"
-                stripe
-                class="tableBox"
-                @selection-change="handleSelectionChange"
-        >
-            <el-table-column
-                    type="selection"
-            ></el-table-column>
-            <el-table-column
-                    width="180"
-                    prop="name"
-                    label="情报名称"
-            ></el-table-column>
-            <el-table-column
-                    align="center"
-                    width="100"
-                    prop="userName"
-                    label="发布人"
-            ></el-table-column>
-            <el-table-column prop="image" label="图片" align="center">
-                <template slot-scope="{ row }">
-                    <el-image style="width: 100px; height: 40px; border:none;cursor: pointer;"
-                              :src="getImage(row.image)"
-                              :preview-src-list="[ `/common/download?name=${row.image}` ]">
-                        <div slot="error" class="image-slot">
-                            <img src="./../../images/noImg.png" style="width: auto; height: 40px; border:none;">
-                        </div>
-                    </el-image>
-                </template>
-            </el-table-column>
-            <el-table-column
-                    prop="categoryName"
-                    label="情报分类"
-            ></el-table-column>
-            <el-table-column label="情报价值">
-                <template slot-scope="scope">
-                    <span style="margin-right: 10px;">{{ scope.row.token }}</span>
-                </template>
-            </el-table-column>
-            <el-table-column label="情报状态" width="80">
-                <template slot-scope="scope">
-                    <span style="margin-right: 10px;">{{ scope.row.status == '0' ? '停用' : '启用' }}</span>
-                </template>
-            </el-table-column>
-            <el-table-column
-                    width="150"
-                    prop="updateTime"
-                    label="最后操作时间"
-            >
-            </el-table-column>
-            <el-table-column
-                    label="操作"
-                    width="200"
-                    align="center"
-            >
-                <template slot-scope="scope">
-                    <el-button
-                            type="text"
-                            size="small"
-                            class="blueBug"
-                            @click="buyIntelligence(scope.row.id)"
-                    >
-                        购买
-                    </el-button>
-                    <el-button
-                            type="text"
-                            size="small"
-                            class="blueBug"
-                            @click="addIntelligencetype(scope.row.id)"
-                            v-if="user === 'admin'"
-                    >
-                        修改
-                    </el-button>
-                    <el-button
-                            type="text"
-                            size="small"
-                            class="blueBug"
-                            @click="statusHandle(scope.row)"
-                            v-if="user === 'admin'"
-                    >
-                        {{ scope.row.status == '0' ? '启售' : '停售' }}
-                    </el-button>
-                    <el-button
-                            type="text"
-                            size="small"
-                            class="delBut non"
-                            @click="deleteHandle('单删', scope.row.id)"
-                            v-if="user === 'admin'"
-                    >
-                        删除
-                    </el-button>
-                </template>
-            </el-table-column>
-        </el-table>
-        <el-pagination
-                class="pageList"
-                :page-sizes="[10, 20, 30, 40]"
-                :page-size="pageSize"
-                layout="total, sizes, prev, pager, next, jumper"
-                :total="counts"
-                @size-change="handleSizeChange"
-                :current-page.sync="page"
-                @current-change="handleCurrentChange"
-        ></el-pagination>
-    </div>
+          </el-image>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="categoryName"
+        label="情报分类"
+      ></el-table-column>
+      <el-table-column label="情报价值">
+        <template slot-scope="scope">
+          <span style="margin-right: 10px;">{{ scope.row.token }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="情报状态" width="80">
+        <template slot-scope="scope">
+          <span style="margin-right: 10px;">{{ scope.row.status == '0' ? '停用' : '启用' }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        width="150"
+        prop="updateTime"
+        label="最后操作时间"
+      >
+      </el-table-column>
+      <el-table-column
+        label="操作"
+        width="200"
+        align="center"
+      >
+        <template slot-scope="scope">
+          <el-button
+            type="text"
+            size="small"
+            class="blueBug"
+            @click="buyIntelligence(scope.row.id)"
+          >
+            购买
+          </el-button>
+          <el-button
+            type="text"
+            size="small"
+            class="blueBug"
+            @click="addIntelligencetype(scope.row.id)"
+            v-if="user === 'admin'"
+          >
+            修改
+          </el-button>
+          <el-button
+            type="text"
+            size="small"
+            class="blueBug"
+            @click="statusHandle(scope.row)"
+            v-if="user === 'admin'"
+          >
+            {{ scope.row.status == '0' ? '启售' : '停售' }}
+          </el-button>
+          <el-button
+            type="text"
+            size="small"
+            class="delBut non"
+            @click="deleteHandle('单删', scope.row.id)"
+            v-if="user === 'admin'"
+          >
+            删除
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-pagination
+      class="pageList"
+      :page-sizes="[10, 20, 30, 40]"
+      :page-size="pageSize"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="counts"
+      @size-change="handleSizeChange"
+      :current-page.sync="page"
+      @current-change="handleCurrentChange"
+    ></el-pagination>
+  </div>
 </div>
 <!-- 开发环境版本，包含了有帮助的命令行警告 -->
 <script src="../../plugins/vue/vue.js"></script>
@@ -158,151 +208,189 @@
 <script src="../../js/request.js"></script>
 <script src="../../api/intelligence.js"></script>
 <script>
-    new Vue({
-        el: '#food-app',
-        data() {
-            return {
-                input: '',
-                counts: 0,
-                page: 1,
-                pageSize: 10,
-                tableData: [],
-                intelligenceState: '',
-                checkList: [],
-                user: ''
-            }
+  new Vue({
+    el: '#food-app',
+    data() {
+      return {
+        input: '',
+        counts: 0,
+        page: 1,
+        pageSize: 10,
+        tableData: [],
+        intelligenceState: '',
+        checkList: [],
+        user: '',
+        queryForm: {
+          name: '',
+          intelligenceCategoryId: '',
+          status: '',
+          userName: '',
+          unit: ''
         },
-        computed: {},
-        created() {
-            this.init()
-            this.user = JSON.parse(localStorage.getItem('userInfo')).username
-        },
-        mounted() {
-        },
-        methods: {
-            async init() {
-                const params = {
-                    page: this.page,
-                    pageSize: this.pageSize,
-                    name: this.input ? this.input : undefined
-                }
-                await getIntelligencePage(params).then(res => {
-                    if (String(res.code) === '1') {
-                        this.tableData = res.data.records || []
-                        this.counts = res.data.total
-                    }
-                }).catch(err => {
-                    this.$message.error('请求出错了：' + err)
-                })
-            },
-            getImage(image) {
-                return `/common/download?name=${image}`
-            },
-            handleQuery() {
-                this.page = 1;
-                this.init();
-            },
-            // 添加
-            addIntelligencetype(st) {
-                if (st === 'add') {
-                    window.parent.menuHandle({
-                        id: '4',
-                        url: '/backend/page/intelligence/add.html',
-                        name: '新增情报'
-                    }, true)
-                } else {
-                    window.parent.menuHandle({
-                        id: '4',
-                        url: '/backend/page/intelligence/add.html?id=' + st,
-                        name: '修改情报'
-                    }, true)
-                }
-            },
+        intelligenceCategories: ''
+      }
+    },
+    computed: {},
+    created() {
+      this.initIntelligenceCategory()
+      this.init()
+      this.user = JSON.parse(localStorage.getItem('userInfo')).username
+    },
+    mounted() {
+    },
+    methods: {
+      initIntelligenceCategory() {
+        getCategoryList().then(res=>{
+          if (res.code ===1) {
+            this.intelligenceCategories = res.data;
+          } else {
+            this.$message.error(res.msg || '操作失败')
+          }
+        })
+      },
+      async init() {
 
-            buyIntelligence(st) {
-                window.parent.menuHandle({
-                    id: '4',
-                    url: '/backend/page/intelligence/buy.html?id=' + st,
-                    name: '购买情报'
-                }, true)
-            },
-
-            // 删除
-            deleteHandle(type, id) {
-                if (type === '批量' && id === null) {
-                    if (this.checkList.length === 0) {
-                        return this.$message.error('请选择删除对象')
-                    }
-                }
-                this.$confirm('确认删除该情报, 是否继续?', '确定删除', {
-                    'confirmButtonText': '确定',
-                    'cancelButtonText': '取消',
-                }).then(() => {
-                    deleteIntelligence(type === '批量' ? this.checkList.join(',') : id).then(res => {
-                        if (res.code === 1) {
-                            this.$message.success('删除成功！')
-                            this.handleQuery()
-                        } else {
-                            this.$message.error(res.msg || '操作失败')
-                        }
-                    }).catch(err => {
-                        this.$message.error('请求出错了：' + err)
-                    })
-                })
-            },
-
-            //状态更改
-            statusHandle(row) {
-                let params = {}
-                if (typeof row === 'string') {
-                    if (this.checkList.length === 0) {
-                        this.$message.error('批量操作，请先勾选操作情报！')
-                        return false
-                    }
-                    params.id = this.checkList.join(',')
-                    params.status = row
-                } else {
-                    params.id = row.id
-                    params.status = row.status ? '0' : '1'
-                }
-                this.intelligenceState = params
-                this.$confirm('确认更改该情报状态?', '提示', {
-                    'confirmButtonText': '确定',
-                    'cancelButtonText': '取消',
-                    'type': 'warning'
-                }).then(() => {
-                    // 起售停售---批量起售停售接口
-                    intelligenceStatusByStatus(this.intelligenceState).then(res => {
-                        if (res.code === 1) {
-                            this.$message.success('情报状态已经更改成功！')
-                            this.handleQuery()
-                        } else {
-                            this.$message.error(res.msg || '操作失败')
-                        }
-                    }).catch(err => {
-                        this.$message.error('请求出错了：' + err)
-                    })
-                })
-            },
-
-            // 全部操作
-            handleSelectionChange(val) {
-                let checkArr = []
-                val.forEach((n) => {
-                    checkArr.push(n.id)
-                })
-                this.checkList = checkArr
-            },
-            handleSizeChange(val) {
-                this.pageSize = val
-                this.init()
-            },
-            handleCurrentChange(val) {
-                this.page = val
-                this.init()
-            }
+        const formData = this.initSearchData()
+        await getIntelligencePage(formData).then(res => {
+          if (String(res.code) === '1') {
+            this.tableData = res.data.records || []
+            this.counts = res.data.total
+          }
+        }).catch(err => {
+          this.$message.error('请求出错了：' + err)
+        })
+      },
+      getImage(image) {
+        return `/common/download?name=${image}`
+      },
+      handleQuery() {
+        this.page = 1;
+        this.init();
+      },
+      // 添加
+      addIntelligencetype(st) {
+        if (st === 'add') {
+          window.parent.menuHandle({
+            id: '4',
+            url: '/backend/page/intelligence/add.html',
+            name: '发布情报'
+          }, true)
+        } else {
+          window.parent.menuHandle({
+            id: '4',
+            url: '/backend/page/intelligence/add.html?id=' + st,
+            name: '修改情报'
+          }, true)
         }
-    })
+      },
+
+      buyIntelligence(st) {
+        window.parent.menuHandle({
+          id: '4',
+          url: '/backend/page/intelligence/buy.html?id=' + st,
+          name: '购买情报'
+        }, true)
+      },
+
+      // 删除
+      deleteHandle(type, id) {
+        if (type === '批量' && id === null) {
+          if (this.checkList.length === 0) {
+            return this.$message.error('请选择删除对象')
+          }
+        }
+        this.$confirm('确认删除该情报, 是否继续?', '确定删除', {
+          'confirmButtonText': '确定',
+          'cancelButtonText': '取消',
+        }).then(() => {
+          deleteIntelligence(type === '批量' ? this.checkList.join(',') : id).then(res => {
+            if (res.code === 1) {
+              this.$message.success('删除成功！')
+              this.handleQuery()
+            } else {
+              this.$message.error(res.msg || '操作失败')
+            }
+          }).catch(err => {
+            this.$message.error('请求出错了：' + err)
+          })
+        })
+      },
+
+      //状态更改
+      statusHandle(row) {
+        let params = {}
+        if (typeof row === 'string') {
+          if (this.checkList.length === 0) {
+            this.$message.error('批量操作，请先勾选操作情报！')
+            return false
+          }
+          params.id = this.checkList.join(',')
+          params.status = row
+        } else {
+          params.id = row.id
+          params.status = row.status ? '0' : '1'
+        }
+        this.intelligenceState = params
+        this.$confirm('确认更改该情报状态?', '提示', {
+          'confirmButtonText': '确定',
+          'cancelButtonText': '取消',
+          'type': 'warning'
+        }).then(() => {
+          // 起售停售---批量起售停售接口
+          intelligenceStatusByStatus(this.intelligenceState).then(res => {
+            if (res.code === 1) {
+              this.$message.success('情报状态已经更改成功！')
+              this.handleQuery()
+            } else {
+              this.$message.error(res.msg || '操作失败')
+            }
+          }).catch(err => {
+            this.$message.error('请求出错了：' + err)
+          })
+        })
+      },
+
+      // 全部操作
+      handleSelectionChange(val) {
+        let checkArr = []
+        val.forEach((n) => {
+          checkArr.push(n.id)
+        })
+        this.checkList = checkArr
+      },
+      handleSizeChange(val) {
+        this.pageSize = val
+        this.init()
+      },
+      handleCurrentChange(val) {
+        this.page = val
+        this.init()
+      },
+      onSubmit() {
+        this.page = 1
+        this.init()
+      },
+      initSearchData() {
+        const formData = new FormData()
+        formData.append('page', this.page)
+        formData.append('pageSize', this.pageSize)
+        formData.append('name', this.queryForm.name)
+        formData.append('status', this.queryForm.status)
+        formData.append('userName', this.queryForm.userName)
+        formData.append('intelligenceCategoryId', this.queryForm.intelligenceCategoryId)
+        formData.append('unit', this.queryForm.unit)
+        return formData
+      },
+      resetForm() {
+        this.queryForm.name = ''
+        this.queryForm.intelligenceCategoryId = ''
+        this.queryForm.status = ''
+        this.queryForm.userName = ''
+        this.queryForm.unit = ''
+      }
+
+    }
+  })
 </script>
 </body>
 </html>

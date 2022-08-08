@@ -15,5 +15,6 @@ public class IntelligenceVo extends Intelligence {
 
     private String categoryName;
     private String userName;
+    private String unit;
 
 }

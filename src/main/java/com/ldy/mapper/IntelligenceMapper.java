@@ -1,7 +1,10 @@
 package com.ldy.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.ldy.dto.IntelligencePageDto;
 import com.ldy.entity.Intelligence;
+import com.ldy.vo.IntelligenceVo;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -13,4 +16,5 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface IntelligenceMapper extends BaseMapper<Intelligence> {
+    Page<IntelligenceVo> pageQuery(Page<IntelligenceVo> intelligenceVoPage, IntelligencePageDto intelligencePageDto);
 }

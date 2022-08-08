@@ -3,10 +3,39 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ldy.mapper.IntelligenceMapper">
-
-
-
-
-
+    <select id="pageQuery" resultType="com.ldy.vo.IntelligenceVo">
+        select
+        i.id id,
+        i.name name,
+        i.image image,
+        i.description description,
+        i.status status,
+        i.token token,
+        u.name userName,
+        u.unit unit,
+        ic.name categoryName,
+        i.update_time updateTime
+        from intelligence i
+        inner join user u on i.user_id = u.id
+        inner join intelligence_category ic on i.intelligence_category_id = ic.id
+        <where>
+            <if test="intelligencePageDto.name!=null and intelligencePageDto.name!=''">
+                i.name like concat('%',#{intelligencePageDto.name},'%')
+            </if>
+            <if test="intelligencePageDto.intelligenceCategoryId!=null and intelligencePageDto.IntelligenceCategoryId!=''">
+                and ic.id = #{intelligencePageDto.intelligenceCategoryId}
+            </if>
+            <if test="intelligencePageDto.userName!=null and intelligencePageDto.userName!=''">
+                and u.name like concat('%',#{intelligencePageDto.userName},'%')
+            </if>
+            <if test="intelligencePageDto.status!=null and intelligencePageDto.status!='' or intelligencePageDto.status==0" >
+                and i.status = #{intelligencePageDto.status}
+            </if>
+            <if test="intelligencePageDto.unit!=null and intelligencePageDto.unit!=''">
+                and u.unit like concat('%',#{intelligencePageDto.unit},'%')
+            </if>
+        </where>
+        order by i.update_time desc
+    </select>
 </mapper>
 

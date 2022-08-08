@@ -3,6 +3,7 @@ package com.ldy.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ldy.common.R;
+import com.ldy.dto.IntelligencePageDto;
 import com.ldy.entity.Intelligence;
 import com.ldy.vo.IntelligenceVo;
 
@@ -23,7 +24,7 @@ public interface IntelligenceService extends IService<Intelligence> {
 
     R<String> buy(Long intelligenceId, String password);
 
-    Page<IntelligenceVo> pageQuery(int page, int pageSize, String name);
+    Page<IntelligenceVo> pageQuery(IntelligencePageDto intelligencePageDto);
 
     R<String> deleteBatch(List<Long> ids);
 

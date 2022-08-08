@@ -5,8 +5,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ldy.common.BaseContext;
 import com.ldy.common.R;
+import com.ldy.dto.IntelligencePageDto;
 import com.ldy.entity.*;
 import com.ldy.mapper.IntelligenceMapper;
+import com.ldy.mapper.UserMapper;
 import com.ldy.service.*;
 import com.ldy.vo.IntelligenceVo;
 import org.springframework.beans.BeanUtils;
@@ -43,7 +45,10 @@ public class IntelligenceServiceImpl extends ServiceImpl<IntelligenceMapper, Int
     @Autowired
     private TokenLogService tokenLogService;
 
-    @Override
+    @Autowired
+    private IntelligenceMapper intelligenceMapper;
+
+/*    @Override
     public Page<IntelligenceVo> pageQuery(int page, int pageSize, String name) {
         Page<Intelligence> intelligencePage = new Page<>(page, pageSize);
         Page<IntelligenceVo> intelligenceVoPage = new Page<>();
@@ -71,6 +76,14 @@ public class IntelligenceServiceImpl extends ServiceImpl<IntelligenceMapper, Int
 
         }
         intelligenceVoPage.setRecords(list);
+        return intelligenceVoPage;
+    }*/
+
+    @Override
+    public Page<IntelligenceVo> pageQuery(IntelligencePageDto intelligencePageDto) {
+        int page = intelligencePageDto.getPage();
+        int pageSize = intelligencePageDto.getPageSize();
+        Page<IntelligenceVo> intelligenceVoPage = intelligenceMapper.pageQuery(new Page<>(page, pageSize), intelligencePageDto);
         return intelligenceVoPage;
     }
 
