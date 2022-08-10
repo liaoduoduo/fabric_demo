@@ -1,6 +1,8 @@
 package com.ldy.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.ldy.common.R;
+import com.ldy.dto.CotaskingIntelligenceDto;
 import com.ldy.entity.CotaskingIntelligence;
 import com.ldy.vo.CotaskIntelligenceVo;
 
@@ -17,4 +19,6 @@ import java.util.List;
 public interface ICotaskingIntelligenceService extends IService<CotaskingIntelligence> {
 
     List<CotaskIntelligenceVo> getIntelligencesInCotask(Long id);
+
+    R<String> addBatchCotaskingIntelligence(CotaskingIntelligenceDto cotaskingIntelligenceDto);
 }

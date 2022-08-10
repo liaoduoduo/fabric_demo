@@ -1,13 +1,11 @@
 package com.ldy.dto;
 
 import com.ldy.entity.Cotasking;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.io.Serializable;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @ToString(callSuper = true)
 @NoArgsConstructor

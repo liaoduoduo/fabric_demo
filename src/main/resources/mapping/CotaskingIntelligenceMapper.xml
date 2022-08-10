@@ -15,7 +15,7 @@
                  LEFT JOIN intelligence i ON ci.intelligence_id = i.id
                  LEFT JOIN intelligence_category ic ON ic.id = i.intelligence_category_id
                  LEFT JOIN `user` u ON i.create_user = u.id
-        WHERE ci.cotasking_id = #{id}
+        WHERE ci.cotasking_id = #{id} and ci.deleted = 0
     </select>
     <resultMap id="cotaskingIntelligenceVo" type="com.ldy.vo.CotaskIntelligenceVo">
         <result property="id" column="id"/>
@@ -31,9 +31,6 @@
         <result property="createTime" column="create_time"/>
     </resultMap>
     <insert id="addBatchCotaskingIntelligence" parameterType="java.util.List">
-<!--        <selectKey keyProperty="id" resultType="java.lang.Long" order="BEFORE" keyColumn="id">-->
-<!--            SELECT my_seq.nextval FROM DUAL-->
-<!--        </selectKey>-->
         insert into
         cotasking_intelligence(id,cotasking_id,intelligence_id,create_time,create_user,update_user,update_time,deleted)
         values

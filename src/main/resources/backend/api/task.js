@@ -1,4 +1,4 @@
-// 获取协同任务详细信息
+// 获取研判任务分类信息
 const getDecideInfoCategoryWithTaskCategory = id => {
     return $axios({
         url: '/decide-info-category/getDecideInfoCategoryWithTaskCategory',

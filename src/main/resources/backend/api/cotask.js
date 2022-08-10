@@ -7,12 +7,27 @@ const getCotaskPage = params => {
     });
 };
 
-// （批量）添加情报至协同任务，添加
+// 新增协同任务并添加情报至协同任务
 const addCoTask = params => {
     return $axios({
         url: '/cotasking/save',
         method: 'post',
         data: params,
+    });
+};
+// 添加情报至已有协同任务
+const addIntelligenceToCotask = params => {
+    return $axios({
+        url: '/cotasking-intelligence/addIntelligenceToCotask',
+        method: 'post',
+        data: params,
+    });
+};
+// 解除情报与协同任务的关联
+const deleteCotaskIntelligenceById = id => {
+    return $axios({
+        url: '/cotasking-intelligence/delete/' + id,
+        method: 'delete',
     });
 };
 // 获取协同任务详细信息

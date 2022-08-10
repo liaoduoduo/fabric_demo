@@ -86,19 +86,28 @@
                 <div class="container">
                     <el-form ref="ruleForm" :model="ruleForm" :inline="true" label-width="180px" class="demo-ruleForm">
                         <div>
-                            <el-form-item label="协同任务名:" prop="name" label-width="100px">
-                                <el-input v-model="ruleForm.name" placeholder="请填写任务名称" maxlength="20" />
+                            <el-form-item>
+                                <el-switch v-model="saveOrAdd" active-text="新增协同任务" inactive-text="添加至协同任务"></el-switch>
                             </el-form-item>
-                            <el-form-item label="任务描述:" prop="name" label-width="100px">
-                                <el-input v-model="ruleForm.description" type="textarea" :rows="3" placeholder="情报描述, 最长200字" maxlength="200" />
-                            </el-form-item>
+                            <template v-if="this.saveOrAdd">
+                                <el-form-item label="协同任务名称:" prop="name" label-width="100px">
+                                    <el-input v-model="ruleForm.name" placeholder="请填写任务名称" maxlength="20" />
+                                </el-form-item>
+                                <el-form-item label="任务描述:" prop="name" label-width="100px">
+                                    <el-input v-model="ruleForm.description" type="textarea" :rows="3" placeholder="情报描述, 最长200字" maxlength="200" />
+                                </el-form-item>
+                            </template>
+                            <template v-else>
+                                <el-form-item label="协同任务Id" prop="cotaskingId" label-width="100px">
+                                    <el-input v-model="ruleForm.cotaskingId" placeholder="请填写任务ID"></el-input>
+                                </el-form-item>
+                            </template>
                         </div>
                     </el-form>
                 </div>
-
                 <span slot="footer" class="dialog-footer">
                     <el-button size="medium" @click="submitCoTask()">确 定</el-button>
-                    <el-button size="medium" @click="classData.dialogVisible = false">取消</el-button>
+                    <el-button size="medium" @click="coTaskData.dialogVisible = false">取消</el-button>
                 </span>
             </el-dialog>
 
@@ -139,12 +148,15 @@
                             title: '查看情报Hash值',
                             dialogVisible: false,
                         },
+                        // 用于判断是新增协同任务还是添加情报到已有协同任务中
+                        saveOrAdd: true,
                         ruleForm: {
+                            cotaskingId: '',
                             name: '',
                             description: '',
                         },
                         coTaskData: {
-                            title: '添加协同任务',
+                            title: '新增/添加协同任务',
                             dialogVisible: false,
                             intelligenceId: '',
                             type: '',
@@ -187,11 +199,11 @@
                     addCoTaskHandle(type, id) {
                         if (type === '批量' && id === null) {
                             if (this.checkList.length === 0) {
-                                return this.$message.error('请选择要添加至协同任务的情报！');
+                                return this.$message.error('请选择要新增/添加至协同任务的情报！');
                             }
                         }
                         console.log(id);
-                        this.$confirm('确认将所选情报生成协同任务, 是否继续?', '确定添加', {
+                        this.$confirm('确认将所选情报添加至协同任务, 是否继续?', '确定添加', {
                             confirmButtonText: '确定',
                             cancelButtonText: '取消',
                         }).then(() => {
@@ -201,30 +213,56 @@
                         });
                     },
                     submitCoTask() {
-                        let params = {
-                            name: this.ruleForm.name,
-                            description: this.ruleForm.description,
-                            intelligenceIds: [],
-                        };
-                        if (this.coTaskData.type === '批量') {
-                            params.intelligenceIds = this.checkList.join(',');
+                        // 新增
+                        if (this.saveOrAdd) {
+                            let params = {
+                                name: this.ruleForm.name,
+                                description: this.ruleForm.description,
+                                intelligenceIds: [],
+                            };
+                            if (this.coTaskData.type === '批量') {
+                                params.intelligenceIds = this.checkList.join(',');
+                            } else {
+                                params.intelligenceIds = this.coTaskData.intelligenceId;
+                            }
+                            console.log(params);
+                            addCoTask(params)
+                                .then(res => {
+                                    if (res.code === 1) {
+                                        this.$message.success('生成研判任务成功！');
+                                        this.handleQuery();
+                                        this.coTaskData.dialogVisible = false;
+                                    } else {
+                                        this.$message.error(res.msg || '操作失败');
+                                        this.coTaskData.dialogVisible = false;
+                                    }
+                                })
+                                .catch(err => {
+                                    this.$message.error('请求出错了：' + err);
+                                });
                         } else {
-                            params.intelligenceIds = this.coTaskData.intelligenceId;
-                        }
-                        addCoTask(params)
-                            .then(res => {
+                            // 添加
+                            let params = {
+                                cotaskingId: this.ruleForm.cotaskingId,
+                                intelligenceIds: [],
+                            };
+                            if (this.coTaskData.type === '批量') {
+                                params.intelligenceIds = this.checkList.join(',');
+                            } else {
+                                params.intelligenceIds = this.coTaskData.intelligenceId;
+                            }
+                            console.log(params);
+                            addIntelligenceToCotask(params).then(res => {
                                 if (res.code === 1) {
-                                    this.$message.success('生成研判任务成功！');
+                                    this.$message.success('添加情报至研判任务成功！');
                                     this.handleQuery();
                                     this.coTaskData.dialogVisible = false;
                                 } else {
                                     this.$message.error(res.msg || '操作失败');
                                     this.coTaskData.dialogVisible = false;
                                 }
-                            })
-                            .catch(err => {
-                                this.$message.error('请求出错了：' + err);
                             });
+                        }
                     },
                     queryFileHashHandle(row) {
                         this.$set(this.fileTable, 0, { name: row.name, fileHash: row.fileHash });

@@ -93,12 +93,12 @@
                             </el-form>
                         </template>
                     </el-table-column>
-                    <el-table-column label="情报ID" prop="id"></el-table-column>
+                    <el-table-column label="情报ID" prop="intelligenceId"></el-table-column>
                     <el-table-column label="情报名称" prop="intelligenceName"></el-table-column>
                     <el-table-column label="情报价值" prop="token"></el-table-column>
                     <el-table-column label="操作">
                         <template slot-scope="scope">
-                            <el-button type="text" size="small" class="delBut non" :disable="dis" @click="deleteIntelligenceInCotask('单删', scope.row.id)">
+                            <el-button type="text" size="small" class="delBut non" :disable="dis" @click="deleteIntelligenceInCotask(scope.row.id)">
                                 删除
                             </el-button>
                         </template>
@@ -156,7 +156,7 @@
                     <el-table-column label="操作">
                         <template slot-scope="scope">
                             <el-button type="text" size="small" class="blueBug" @click="getTaskDetail(scope.row.id)">查看详情</el-button>
-                            <el-button type="text" size="small" class="delBut non" :disable="dis" @click="deleteHandle('单删', scope.row.id)" :disable="dis">
+                            <el-button type="text" size="small" class="delBut non" :disable="dis" @click="deleteHandle(scope.row.id)" v-if="false">
                                 删除
                             </el-button>
                         </template>
@@ -201,7 +201,7 @@
                     return {
                         // 协同任务的id
                         id: '',
-                        index: 0,
+                        // index: 0,
                         // 协同任务详细信息
                         detailInfo: {},
                         // 协同任务中情报数据
@@ -244,6 +244,7 @@
                         getIntelligencesInCotask(this.id).then(res => {
                             if (String(res.code) === '1') {
                                 this.tableIntelligenceData = res.data || [];
+                                console.log(this.tableIntelligenceData);
                             } else {
                                 this.$message.error(res.msg || '操作失败');
                             }
@@ -274,10 +275,9 @@
                             }
                         });
                     },
-                    // handleQuery() {
-                    //     this.page = 1;
-                    //     this.init();
-                    // },
+                    handleQuery() {
+                        this.init();
+                    },
                     // 用于当前任务是否存在失效任务中
                     isInclude: function (id) {
                         return this.uselessArr.includes(id);
@@ -323,7 +323,7 @@
                             .then(res => {
                                 if (res.code === 1) {
                                     this.$message.success('修改研判任务成功！');
-                                    // this.handleQuery();
+                                    this.handleQuery();
                                     this.coTaskData.dialogVisible = false;
                                 } else {
                                     this.$message.error(res.msg || '操作失败');
@@ -333,6 +333,29 @@
                             .catch(err => {
                                 this.$message.error('请求出错了：' + err);
                             });
+                    },
+                    // 取消该情报与协同任务的关联
+                    deleteIntelligenceInCotask(id) {
+                        this.$confirm('确认在该协同任务中删除该情报, 是否继续?', '确定删除', {
+                            confirmButtonText: '确定',
+                            cancelButtonText: '取消',
+                        }).then(() => {
+                            if (this.detailInfo.status === 0 || this.detailInfo.finished === 1) {
+                                this.$message.error('协同任务未激活或已完成');
+                            }
+                            deleteCotaskIntelligenceById(id)
+                                .then(res => {
+                                    if (res.code === 1) {
+                                        this.$message.success('删除成功！');
+                                        this.handleQuery();
+                                    } else {
+                                        this.$message.error(res.msg || '操作失败');
+                                    }
+                                })
+                                .catch(err => {
+                                    this.$message.error('请求出错了：' + err);
+                                });
+                        });
                     },
                     goBack() {
                         window.parent.menuHandle(

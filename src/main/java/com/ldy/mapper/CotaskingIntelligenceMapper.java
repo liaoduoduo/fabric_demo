@@ -1,6 +1,8 @@
 package com.ldy.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.ldy.common.R;
+import com.ldy.dto.CotaskingIntelligenceDto;
 import com.ldy.entity.CotaskingIntelligence;
 import com.ldy.vo.CotaskIntelligenceVo;
 import org.apache.ibatis.annotations.Mapper;
@@ -21,4 +23,5 @@ public interface CotaskingIntelligenceMapper extends BaseMapper<CotaskingIntelli
     List<CotaskIntelligenceVo> getIntelligencesInCotask(Long id);
 
     Integer addBatchCotaskingIntelligence(List<CotaskingIntelligence> list);
+
 }

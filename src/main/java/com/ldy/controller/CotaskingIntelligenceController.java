@@ -1,6 +1,9 @@
 package com.ldy.controller;
 
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.ldy.common.R;
+import com.ldy.dto.CotaskingDto;
+import com.ldy.dto.CotaskingIntelligenceDto;
 import com.ldy.entity.CotaskingIntelligence;
 import com.ldy.service.ICotaskingIntelligenceService;
 import com.ldy.service.IntelligenceService;
@@ -47,22 +50,12 @@ public class CotaskingIntelligenceController {
 
     @ApiOperation("为已存在的协同任务中增加情报")
     @PostMapping("/addIntelligenceToCotask")
-    public R<String> addIntelligenceToCotask(@RequestParam(value = "intelligenceIds", required = false) Long[] intelligenceIds,
-                                             @RequestParam("id") Long id) {
+    public R<String> addIntelligenceToCotask(@RequestBody CotaskingIntelligenceDto cotaskingIntelligenceDto) {
 
-        if (id == 0 || intelligenceIds.length == 0){
+        if (cotaskingIntelligenceDto.getCotaskingId() == 0 || StringUtils.isBlank(cotaskingIntelligenceDto.getIntelligenceIds())){
             return R.error("添加异常");
         }
-        ArrayList<CotaskingIntelligence> cotaskingIntelligences = new ArrayList<>();
-        for (Long intelligenceId : intelligenceIds) {
-            CotaskingIntelligence cotaskingIntelligence = new CotaskingIntelligence();
-            cotaskingIntelligence.setCotaskingId(id);
-            cotaskingIntelligence.setIntelligenceId(intelligenceId);
-            cotaskingIntelligence.setDeleted(0);
-            cotaskingIntelligences.add(cotaskingIntelligence);
-        }
-        boolean save = cotaskingIntelligenceService.saveBatch(cotaskingIntelligences);
-        return save ? R.success("成功添加") : R.error("添加异常");
+        return cotaskingIntelligenceService.addBatchCotaskingIntelligence(cotaskingIntelligenceDto);
     }
 
 }
