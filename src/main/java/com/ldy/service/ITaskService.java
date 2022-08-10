@@ -1,7 +1,11 @@
 package com.ldy.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.ldy.common.R;
 import com.ldy.entity.Task;
+import com.ldy.vo.TaskVo;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +17,7 @@ import com.ldy.entity.Task;
  */
 public interface ITaskService extends IService<Task> {
 
+    R<String> saveTaskAndBlockToken(Task task);
+
+    List<TaskVo> getTaskWithCategoryByCotaskId(Long id);
 }

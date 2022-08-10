@@ -12,13 +12,16 @@ import com.ldy.service.ITaskService;
 import com.ldy.service.IUserTaskService;
 import com.ldy.service.TokenService;
 import com.ldy.service.UserService;
+import com.ldy.vo.TaskVo;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * <p>
@@ -28,6 +31,7 @@ import java.util.Arrays;
  * @author sunqing
  * @since 2022-07-24
  */
+@Slf4j
 @RestController
 @RequestMapping("/task")
 public class TaskController {
@@ -37,6 +41,7 @@ public class TaskController {
 
     @Autowired
     UserService userService;
+
     @Autowired
     TokenService tokenService;
 
@@ -47,40 +52,13 @@ public class TaskController {
     @PostMapping("/addTask")
     @Transactional
     public R<String> addTask(@RequestBody Task task) {
-
-        // 需要判断用户的token值是否足够支付该任务的悬赏，并进行冻结
-        Long currentUser = BaseContext.getCurrentId();
-        User user = userService.getById(currentUser);
-        Token token = tokenService.getById(user.getTokenId());
-        int compare = task.getToken().compareTo(token.getCurrentToken());
-        boolean save;
-        if (compare > 0) {
-            return R.error("已有Token值不足以支付该任务");
-        }
-        token.setCurrentToken(token.getCurrentToken().subtract(task.getToken()));
-        token.setBlockToken(token.getBlockToken().add(task.getToken()));
-        tokenService.updateById(token);
-        if (task.getOpen() > 0) {
-            task.setPolicy(null);
-        }
-        task.setStatus(1);
-        task.setFinished(0);
-        task.setEvaluation("");
-        task.setDeleted(0);
-        save = taskService.save(task);
-        return save ? R.success("添加成功") : R.error("添加失败");
+        return taskService.saveTaskAndBlockToken(task);
     }
 
     @ApiOperation("根据协同任务查询对应的研判任务")
     @GetMapping("getTaskByCotaskId/{id}")
-    public R<Page<Task>> getTaskByCotaskId(@RequestParam(value = "page", defaultValue = "1") int page,
-                                           @RequestParam(value = "pageSize", defaultValue = "5") int pageSize,
-                                           @PathVariable("id") Long id) {
-        Page<Task> taskPage = new Page<>(page, pageSize);
-        LambdaQueryWrapper<Task> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Task::getCotaskingId, id);
-        taskPage = taskService.page(taskPage, queryWrapper);
-        return R.success(taskPage);
+    public R<List<TaskVo>> getTaskByCotaskId(@PathVariable("id") Long id) {
+        return R.success(taskService.getTaskWithCategoryByCotaskId(id));
     }
 
     @ApiOperation("获取悬赏任务分页，根据用户做定制,有很大的提升空间，这里为了简便，仅把单位作为策略")

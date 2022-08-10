@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ldy.mapper.TaskMapper">
+
+    <select id="getTaskWithCategoryByCotaskId" parameterType="java.lang.Long" resultMap="taskVo">
+        SELECT t1.*,
+               t2.`name` as 'taskCategoryName', t3.`name` as 'decideInfoCategoryName'
+        FROM task t1
+                 LEFT JOIN task_category t2 ON t1.task_category_id = t2.id
+                 LEFT JOIN decide_info_category t3 ON t1.decide_info_category_id = t3.id
+        WHERE t1.cotasking_id = #{id}
+    </select>
+    <resultMap id="taskVo" type="com.ldy.vo.TaskVo">
+        <result property="taskCategoryName" column="taskCategoryName"/>
+        <result property="decideInfoCategoryName" column="decideInfoCategoryName"/>
+    </resultMap>
+</mapper>
