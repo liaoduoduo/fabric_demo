@@ -56,12 +56,12 @@ public class UserTaskController {
 
         UserTask userTask = new UserTask();
         userTask.setTaskId(id);
-        userTask.setName(task.getName());
         userTask.setUserId(userId);
         userTask.setAccepted(0);
         userTask.setContribution(BigDecimal.valueOf(0));
         userTask.setSubmitTime(null);
         userTask.setDeleted(0);
+
         boolean save = userTaskService.save(userTask);
         return save ? R.success("成功添加") : R.error("添加异常");
     }
@@ -74,7 +74,8 @@ public class UserTaskController {
         Page<UserTask> userTaskPage = new Page<>(page, pageSize);
         LambdaQueryWrapper<UserTask> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(UserTask::getUserId, BaseContext.getCurrentId());
-        queryWrapper.like(StringUtils.isBlank(name), UserTask::getName, name).orderByDesc(UserTask::getUpdateTime);
+        // .like(StringUtils.isBlank(name), UserTask::getName, name)
+        queryWrapper.orderByDesc(UserTask::getUpdateTime);
         userTaskPage = userTaskService.page(userTaskPage, queryWrapper);
         return R.success(userTaskPage);
     }

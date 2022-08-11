@@ -70,8 +70,10 @@ public class TaskController {
         User user = userService.getById(userId);
         Page<Task> taskPage = new Page<>(page, pageSize);
         LambdaQueryWrapper<Task> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.like(name != null, Task::getName, name).ne(Task::getFinished, 1);
-        queryWrapper.and(i -> i.eq(Task::getStatus, 1).eq(Task::getOpen, 1).or().eq(Task::getPolicy, user.getUnit()));
+        queryWrapper.like(name != null, Task::getName, name)
+                .ne(Task::getFinished, 1)
+                .eq(Task::getStatus, 1)
+                .or().eq(Task::getPolicy, user.getUnit());
         taskPage = taskService.page(taskPage, queryWrapper);
         return R.success(taskPage);
     }

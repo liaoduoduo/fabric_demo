@@ -87,37 +87,38 @@ public class CotaskingController {
         return result ? R.success("修改成功") : R.error("修改失败");
     }
 
-
-
-
-
-    @ApiOperation("逻辑删除协同任务")
+    @ApiOperation("逻辑删除协同任务,并级联删除其中未被领取的研判任务与解除与情报的关联")
     @DeleteMapping("/delete")
-    public R<String> deleteById(@RequestParam(value = "ids", required = false) Long[] ids) {
-        boolean result = false;
-        if (ids.length == 1) {
-            result = cotaskingService.removeById(ids[0]);
+    @Transactional
+    public R<String> deleteByIds(@RequestParam(value = "ids", required = false) Long[] ids) {
+        if (ids.length < 1) {
+            return R.error("未选择协同任务数据");
         }
-        if (ids.length > 1) {
-            result = cotaskingService.removeByIds(Arrays.asList(ids));
-        }
-        return result ? R.success("删除成功") : R.error("删除失败");
+        return cotaskingService.removeCotaskByIds(ids);
     }
 
-    @ApiOperation("修改协同任务的激活状态")
+    @ApiOperation("修改协同任务的激活状态，并级联修改其中所有的研判任务，已被领取不受影响")
     @PutMapping("/updateStatus")
-    public R<String> updateStatus(@RequestBody Cotasking cotasking) {
-        boolean b = cotaskingService.updateById(cotasking);
-        return b ? R.success("修改成功") : R.error("修改失败");
+    @Transactional
+    public R<String> updateStatus(@RequestBody CotaskingDto cotaskingDto) {
+        String regex = ",";
+        String[] split = cotaskingDto.getIds().split(regex);
+        Long[] ids = new Long[split.length];
+        int count = 0;
+        for (String s : split) {
+            ids[count] = Long.parseLong(s);
+            count++;
+        }
+        return cotaskingService.updateStatus(ids, cotaskingDto.getStatus());
     }
 
-    @ApiOperation("修改协同任务的完成状态，并设置不可更改--未激活")
-    @PutMapping("/updateFinished/{id}")
-    public R<String> updateFinished(@PathVariable("id") Long id) {
+    @ApiOperation("修改协同任务达到立案标准，并设置不可更改--未激活")
+    @PutMapping("/liAn/{id}")
+    public R<String> liAn(@PathVariable("id") Long id) {
         Cotasking cotasking = new Cotasking();
         cotasking.setId(id);
         cotasking.setStatus(0);
-        cotasking.setFinished(1);
+        cotasking.setLiAn(1);
         boolean b = cotaskingService.updateById(cotasking);
         return b ? R.success("修改成功") : R.error("修改失败");
     }

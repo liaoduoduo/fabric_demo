@@ -60,21 +60,22 @@ const updateCotask = params => {
     });
 };
 
-// 暂不开发，主要原因在于，协同任务的修改需要判断其下是否有子任务，若有子任务被领取或未完成则不予修改
-// 修改协同任务状态
-const updateCotaskingStatus = params => {
-    return $axios({
-        url: '',
-        method: 'put',
-        data: params,
-    });
-};
-// 删除
-const deleteById = ids => {
+// 批量删除
+const deleteCotaskByIds = ids => {
     return $axios({
         url: '/cotasking/delete',
         method: 'delete',
         // get会将请求参数拼接在url上
         params: { ids },
+    });
+};
+
+// 暂不开发，主要原因在于，协同任务的修改需要判断其下是否有子任务，若有子任务被领取或未完成则不予修改
+// 修改协同任务状态
+const updateCotaskingStatus = params => {
+    return $axios({
+        url: '/cotasking/updateStatus',
+        method: 'put',
+        data: params,
     });
 };

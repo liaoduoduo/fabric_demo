@@ -32,9 +32,6 @@ public class UserTask implements Serializable {
     @ApiModelProperty(value = "研判任务id")
     private Long taskId;
 
-    @ApiModelProperty(value = "研判任务简要需求")
-    private String name;
-
     @ApiModelProperty(value = "用户id")
     private Long userId;
 

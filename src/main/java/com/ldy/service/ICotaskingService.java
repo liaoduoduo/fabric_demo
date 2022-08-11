@@ -16,4 +16,8 @@ import com.ldy.entity.Cotasking;
 public interface ICotaskingService extends IService<Cotasking> {
 
     R<String> addCotakAndBindIntelligences(CotaskingDto cotaskingDto);
+
+    R<String> removeCotaskByIds(Long[] ids);
+
+    R<String> updateStatus(Long[] ids, Integer status);
 }

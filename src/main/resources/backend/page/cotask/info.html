@@ -46,17 +46,17 @@
                         <el-descriptions-item label="协同任务描述">{{this.detailInfo.description}}</el-descriptions-item>
 
                         <el-descriptions-item label="激活状态">
-                            <el-tag size="small" label="0" v-if="this.detailInfo.status=='0'">冻结</el-tag>
-                            <el-tag size="small" type="success" label="1" v-if="this.detailInfo.status=='1'">激活</el-tag>
+                            <el-tag size="small" label="0" v-if="this.detailInfo.status===0">冻结</el-tag>
+                            <el-tag size="small" type="success" label="1" v-if="this.detailInfo.status===1">激活</el-tag>
                         </el-descriptions-item>
 
                         <el-descriptions-item label="创建时间">{{this.detailInfo.createTime}}</el-descriptions-item>
 
                         <el-descriptions-item label="最新修改时间">{{this.detailInfo.updateTime}}</el-descriptions-item>
 
-                        <el-descriptions-item label="是否完成">
-                            <el-tag size="small" label="0" v-if="this.detailInfo.finished=='0'">进行中</el-tag>
-                            <el-tag size="small" type="success" label="1" v-if="this.detailInfo.finished=='1'">已完成</el-tag>
+                        <el-descriptions-item label="是否达到立案标准">
+                            <el-tag size="small" label="0" v-if="this.detailInfo.liAn=='0'">进行中</el-tag>
+                            <el-tag size="small" type="success" label="1" v-if="this.detailInfo.liAn=='1'">已立案</el-tag>
                         </el-descriptions-item>
                     </el-descriptions>
                 </template>
@@ -98,9 +98,10 @@
                     <el-table-column label="情报价值" prop="token"></el-table-column>
                     <el-table-column label="操作">
                         <template slot-scope="scope">
-                            <el-button type="text" size="small" class="delBut non" :disable="dis" @click="deleteIntelligenceInCotask(scope.row.id)">
-                                删除
-                            </el-button>
+                            <el-button type="text" size="small" class="blueBug" @click="toAddIntelligence">查看详情</el-button>
+                            <template v-if="detailInfo.status">
+                                <el-button type="text" size="small" class="delBut non" @click="deleteIntelligenceInCotask(scope.row.id)">删除</el-button>
+                            </template>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -110,7 +111,7 @@
                         <span><b>协同任务中分配的研判任务</b></span>
                     </el-col>
                     <el-col :span="4">
-                        <el-button type="primary" size="mini" style="margin-right: 5px" @click="toAddTaskPage()">去新增</el-button>
+                        <el-button type="primary" size="mini" style="margin-right: 5px" @click="toAddTaskPage()">发布任务</el-button>
                     </el-col>
                 </el-row>
                 <el-table :data="tableTaskData" style="width: 100%" style="margin-top: auto" height="300">
@@ -156,16 +157,17 @@
                     <el-table-column label="操作">
                         <template slot-scope="scope">
                             <el-button type="text" size="small" class="blueBug" @click="getTaskDetail(scope.row.id)">查看详情</el-button>
-                            <el-button type="text" size="small" class="delBut non" :disable="dis" @click="deleteHandle(scope.row.id)" v-if="false">
-                                删除
-                            </el-button>
+                            <template v-if="scope.row.status===1">
+                                <el-button type="text" size="small" class="blueBug" @click="addTaskToken(scope.row.id,scope.row.token)">增加悬赏</el-button>
+                                <el-button type="text" size="small" class="delBut non" @click="deleteHandle(scope.row.id)">删除</el-button>
+                            </template>
                         </template>
                     </el-table-column>
                 </el-table>
             </div>
 
-            <el-dialog :title="coTaskData.title" :visible.sync="coTaskData.dialogVisible" width="30%" height="30%" :before-close="handleClose">
-                <div class="container">
+            <el-dialog :title="coTaskData.title" :visible.sync="coTaskData.dialogVisible" width="30%" :before-close="handleClose">
+                <div>
                     <el-form ref="updateCotaskInfo" :model="updateCotaskInfo" :inline="true" label-width="180px" class="demo-ruleForm">
                         <div>
                             <el-form-item label="协同任务名:" prop="name" label-width="100px">
@@ -180,6 +182,22 @@
                 <span slot="footer" class="dialog-footer">
                     <el-button size="medium" @click="submitUpdateCoTask">确 定</el-button>
                     <el-button size="medium" @click="coTaskData.dialogVisible = false">取消</el-button>
+                </span>
+            </el-dialog>
+
+            <el-dialog :title="taskTokenWin.title" :visible.sync="taskTokenWin.dialogVisible" width="30%" :before-close="handleClose">
+                <div>
+                    <el-form :inline="true" label-width="180px" class="demo-ruleForm">
+                        <div>
+                            <el-form-item label="新任务悬赏Token:" label-width="100px">
+                                <el-input v-model="this.newToken" maxlength="20" va />
+                            </el-form-item>
+                        </div>
+                    </el-form>
+                </div>
+                <span slot="footer" class="dialog-footer">
+                    <el-button size="medium" @click="submitUpdateCoTask">确 定</el-button>
+                    <el-button size="medium" @click="taskTokenWin.dialogVisible = false">取消</el-button>
                 </span>
             </el-dialog>
         </div>
@@ -203,13 +221,20 @@
                         id: '',
                         // index: 0,
                         // 协同任务详细信息
-                        detailInfo: {},
+                        detailInfo: {
+                            id: '',
+                            name: '',
+                            description: '',
+                            createTime: '',
+                            updateTime: '',
+                            status: '',
+                            liAn: '',
+                        },
+                        // cotaskStatus: true,
                         // 协同任务中情报数据
                         tableIntelligenceData: [],
                         // 协同任务中研判任务数据
                         tableTaskData: [],
-                        // 判断按钮是否可用
-                        dis: false,
                         // 记录因截止时间已过导致失效的任务主键
                         uselessArr: [],
                         // 修改协同任务弹窗
@@ -219,6 +244,12 @@
                         },
                         //  待修改的信息
                         updateCotaskInfo: {},
+                        // 新悬赏金额
+                        newToken: '',
+                        taskTokenWin: {
+                            title: '增加悬赏',
+                            dialogVisible: false,
+                        },
                     };
                 },
                 created() {
@@ -232,9 +263,19 @@
                         getCotaskById(this.id).then(res => {
                             console.log(res);
                             if (String(res.code) === '1') {
-                                this.detailInfo = { ...res.data };
-                                if (this.detailInfo.status === 0 || this.detailInfo.finished === 1) {
-                                    this.dis = false;
+                                // this.detailInfo = { ...res.data };
+                                this.detailInfo.id = res.data.id;
+                                this.detailInfo.name = res.data.name;
+                                this.detailInfo.description = res.data.description;
+                                this.detailInfo.status = res.data.status;
+                                this.detailInfo.createTime = res.data.createTime;
+                                this.detailInfo.updateTime = res.data.updateTime;
+                                this.detailInfo.liAn = res.data.liAn;
+                                console.log('detailInfo == ' + this.detailInfo);
+                                if (res.data.status === '0') {
+                                    this.cotaskStatus = false;
+                                } else {
+                                    this.cotaskStatus = true;
                                 }
                             } else {
                                 this.$message.error(res.msg || '操作失败');
@@ -300,6 +341,7 @@
                                 id: '6',
                                 url: '/backend/page/userIntelligence/list.html',
                                 name: '我的情报',
+                                icon: 'icon-renfangqingbao',
                             },
                             true
                         );
@@ -307,6 +349,7 @@
                     // 关闭弹窗
                     handleClose: function () {
                         this.coTaskData.dialogVisible = false;
+                        this.taskTokenWin.dialogVisible = false;
                     },
                     // 打开修改协同任务弹窗，并填写信息
                     openUpdateCotask: function () {
@@ -340,7 +383,7 @@
                             confirmButtonText: '确定',
                             cancelButtonText: '取消',
                         }).then(() => {
-                            if (this.detailInfo.status === 0 || this.detailInfo.finished === 1) {
+                            if (this.detailInfo.status === 0) {
                                 this.$message.error('协同任务未激活或已完成');
                             }
                             deleteCotaskIntelligenceById(id)
@@ -357,6 +400,14 @@
                                 });
                         });
                     },
+
+                    // 增加任务悬赏
+                    addTaskToken(id, oldToken) {
+                        this.taskTokenWin.dialogVisible = true;
+                        this.newToken = oldToken;
+                        console.log(this.newToken);
+                    },
+
                     goBack() {
                         window.parent.menuHandle(
                             {

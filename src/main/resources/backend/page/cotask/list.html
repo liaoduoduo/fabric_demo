@@ -18,10 +18,10 @@
                     <el-input v-model="input" placeholder="请输入协同任务名称" style="width: 250px" clearable @keyup.enter.native="handleQuery">
                         <i slot="prefix" class="el-input__icon el-icon-search" style="cursor: pointer" @click="init"></i>
                     </el-input>
-                    <div class="tableLab" v-if="false">
-                        <span class="span-btn delBut non" @click="deleteHandle('批量', null)">批量删除</span>
+                    <div class="tableLab">
+                        <span class="span-btn delBut non" @click="deleteHandle('批量', null)" title="仅无人认领任务可撤销">批量撤销</span>
                         <span class="span-btn blueBug non" @click="statusHandle('1')">批量启用</span>
-                        <span style="border: none" class="span-btn delBut non" @click="statusHandle('0')">批量停用</span>
+                        <span style="border: none" class="span-btn delBut non" @click="statusHandle('0')" title="仅无人认领任务可暂时冻结任务">批量停用</span>
                     </div>
                 </div>
                 <el-table :data="tableData" stripe class="tableBox" @selection-change="handleSelectionChange">
@@ -29,9 +29,9 @@
                     <el-table-column prop="id" label="协同任务Id" width="160px"></el-table-column>
                     <el-table-column prop="name" label="任务名称"></el-table-column>
                     <el-table-column align="center" prop="description" label="任务描述"></el-table-column>
-                    <el-table-column prop="finished" label="完成情况">
+                    <el-table-column prop="liAn" label="完成情况">
                         <template slot-scope="scope">
-                            <span style="margin-right: 10px">{{ scope.row.finished == '0' ? '进行中' : '已完成' }}</span>
+                            <span style="margin-right: 10px">{{ scope.row.liAn == '0' ? '进行中' : '立案' }}</span>
                         </template>
                     </el-table-column>
                     <el-table-column prop="createTime" label="发布时间"></el-table-column>
@@ -40,12 +40,16 @@
                     <el-table-column label="操作" align="center">
                         <template slot-scope="scope">
                             <el-button type="text" size="small" class="blueBug" @click="goDetail(scope.row.id)">查看详情</el-button>
-                            <el-button type="text" size="small" class="blueBug" @click="addTask(scope.row.id)">分配任务</el-button>
-
-                            <el-button type="text" size="small" class="blueBug" @click="statusHandle(scope.row)" v-if="false">
+                            <el-button type="text" size="small" class="blueBug" @click="addTask(scope.row.id)" v-if="scope.row.status === 1">
+                                分配任务
+                            </el-button>
+                            <el-button type="text" size="small" class="blueBug" @click="statusHandle(scope.row)">
                                 {{ scope.row.status == '0' ? '启用' : '停用' }}
                             </el-button>
-                            <el-button type="text" size="small" class="delBut non" @click="deleteHandle('单删', scope.row.id)" v-if="false">删除</el-button>
+                            <el-button type="text" size="small" class="delBut non" @click="deleteHandle('单删', scope.row.id)" title="仅无人认领任务可撤销">
+                                撤销
+                            </el-button>
+                            <el-button type="text" size="small" class="blueBug" @click="" disabled>立案</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -138,17 +142,17 @@
                     deleteHandle(type, id) {
                         if (type === '批量' && id === null) {
                             if (this.checkList.length === 0) {
-                                return this.$message.error('请选择删除对象');
+                                return this.$message.error('请选择撤销对象');
                             }
                         }
-                        this.$confirm('确认删除该情报, 是否继续?', '确定删除', {
+                        this.$confirm('确认撤销该协同任务, 是否继续?', '确定删除', {
                             confirmButtonText: '确定',
                             cancelButtonText: '取消',
                         }).then(() => {
-                            deleteById(type === '批量' ? this.checkList.join(',') : id)
+                            deleteCotaskByIds(type === '批量' ? this.checkList.join(',') : id)
                                 .then(res => {
                                     if (res.code === 1) {
-                                        this.$message.success('删除成功！');
+                                        this.$message.success('撤销成功！');
                                         this.handleQuery();
                                     } else {
                                         this.$message.error(res.msg || '操作失败');
@@ -168,10 +172,10 @@
                                 this.$message.error('批量操作，请先勾选协同任务！');
                                 return false;
                             }
-                            params.id = this.checkList.join(',');
+                            params.ids = this.checkList.join(',');
                             params.status = row;
                         } else {
-                            params.id = row.id;
+                            params.ids = row.id;
                             params.status = row.status ? '0' : '1';
                         }
                         this.cotaskingState = params;
@@ -180,18 +184,18 @@
                             cancelButtonText: '取消',
                             type: 'warning',
                         }).then(() => {
-                            // updateCotaskingStatus(this.cotaskingState)
-                            //     .then(res => {
-                            //         if (res.code === 1) {
-                            //             this.$message.success('协同任务状态已经更改成功！');
-                            //             this.handleQuery();
-                            //         } else {
-                            //             this.$message.error(res.msg || '操作失败');
-                            //         }
-                            //     })
-                            //     .catch(err => {
-                            //         this.$message.error('请求出错了：' + err);
-                            //     });
+                            updateCotaskingStatus(this.cotaskingState)
+                                .then(res => {
+                                    if (res.code === 1) {
+                                        this.$message.success('协同任务状态已经更改成功！');
+                                        this.handleQuery();
+                                    } else {
+                                        this.$message.error(res.msg || '操作失败');
+                                    }
+                                })
+                                .catch(err => {
+                                    this.$message.error('请求出错了：' + err);
+                                });
                             // alert(this.cotaskingState.status);
                             console.log(this.cotaskingState.id);
                             console.log(this.cotaskingState.status);

@@ -59,8 +59,8 @@ public class Cotasking implements Serializable {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updateUser;
 
-    @ApiModelProperty(value = "是否完成")
-    private Integer finished;
+    @ApiModelProperty(value = "是否达到立案标准")
+    private Integer liAn;
 
     @ApiModelProperty(value = "逻辑删除")
     private Integer deleted;

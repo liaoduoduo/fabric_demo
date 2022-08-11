@@ -11,5 +11,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CotaskingDto extends Cotasking implements Serializable {
+    private String ids;
     private String intelligenceIds;
 }
