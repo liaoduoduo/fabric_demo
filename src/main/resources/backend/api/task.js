@@ -13,3 +13,11 @@ const addTask = params => {
         data: params,
     });
 };
+// 增加悬赏
+const updateTaskTokenMethod = params => {
+    return $axios({
+        url: '/task/updateToken',
+        method: 'put',
+        data: params,
+    });
+};

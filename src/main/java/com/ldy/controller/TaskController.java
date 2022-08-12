@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ldy.common.BaseContext;
 import com.ldy.common.R;
+import com.ldy.dto.TaskDto;
 import com.ldy.entity.Task;
 import com.ldy.entity.Token;
 import com.ldy.entity.User;
@@ -101,33 +102,8 @@ public class TaskController {
     @ApiOperation("研判任务增加悬赏")
     @PutMapping("/updateToken")
     @Transactional
-    public R<String> updateToken(@RequestBody Task oldTask) {
-        Long userId = BaseContext.getCurrentId();
-        User user = userService.getById(userId);
-        Token token = tokenService.getById(user.getTokenId());
-        Task task = taskService.getById(oldTask.getId());
-        BigDecimal oldToken = task.getToken();
-        BigDecimal newToken = oldTask.getToken();
-        int i = oldToken.compareTo(newToken);
-        if (i == 0) {
-            return R.success("未改变悬赏值");
-        }
-        if (i < 0) {
-            BigDecimal num = newToken.subtract(oldToken);
-            if (num.compareTo(token.getCurrentToken()) > 0) {
-                return R.error("超过已有token值");
-            }
-            token.setCurrentToken(token.getCurrentToken().subtract(num));
-            token.setBlockToken(token.getBlockToken().add(num));
-        } else {
-            BigDecimal num = oldToken.subtract(newToken);
-            token.setBlockToken(token.getBlockToken().subtract(num));
-            token.setCurrentToken(token.getCurrentToken().add(num));
-        }
-        tokenService.updateById(token);
-        task.setToken(newToken);
-        boolean save = taskService.updateById(task);
-        return save ? R.success("成功添加") : R.error("添加异常");
+    public R<String> updateToken(@RequestBody TaskDto taskDto) {
+        return taskService.updateToken(taskDto);
     }
 
     @ApiOperation("根据任务id查看任务详情")

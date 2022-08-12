@@ -15,4 +15,9 @@
         </where>
         order by t.update_time desc
     </select>
+
+    <select id="selectTokenValueByUserId" resultType="com.ldy.entity.Token" parameterType="java.lang.Long">
+        SELECT * from token LEFT JOIN user on token.id = user.token_id where `user`.id = #{id}
+    </select>
+
 </mapper>

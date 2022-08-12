@@ -69,8 +69,6 @@ const deleteCotaskByIds = ids => {
         params: { ids },
     });
 };
-
-// 暂不开发，主要原因在于，协同任务的修改需要判断其下是否有子任务，若有子任务被领取或未完成则不予修改
 // 修改协同任务状态
 const updateCotaskingStatus = params => {
     return $axios({

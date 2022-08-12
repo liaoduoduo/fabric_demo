@@ -5,18 +5,15 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ldy.common.BaseContext;
 import com.ldy.common.R;
 import com.ldy.dto.CotaskingDto;
-import com.ldy.entity.Cotasking;
-import com.ldy.entity.CotaskingIntelligence;
-import com.ldy.entity.Task;
-import com.ldy.mapper.CotaskingIntelligenceMapper;
-import com.ldy.mapper.CotaskingMapper;
-import com.ldy.mapper.TaskMapper;
-import com.ldy.mapper.UserTaskMapper;
+import com.ldy.entity.*;
+import com.ldy.mapper.*;
 import com.ldy.service.ICotaskingService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.LifecycleState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,6 +27,7 @@ import java.util.List;
  * @author sunqing
  * @since 2022-07-24
  */
+@Slf4j
 @Service
 public class CotaskingServiceImpl extends ServiceImpl<CotaskingMapper, Cotasking> implements ICotaskingService {
 
@@ -39,9 +37,12 @@ public class CotaskingServiceImpl extends ServiceImpl<CotaskingMapper, Cotasking
     CotaskingIntelligenceMapper cotaskingIntelligenceMapper;
     @Autowired
     UserTaskMapper userTaskMapper;
-
     @Autowired
     TaskMapper taskMapper;
+    @Autowired
+    TokenMapper tokenMapper;
+    @Autowired
+    TokenLogMapper tokenLogMapper;
 
     @Override
     public R<String> addCotakAndBindIntelligences(CotaskingDto cotaskingDto) {
@@ -82,11 +83,36 @@ public class CotaskingServiceImpl extends ServiceImpl<CotaskingMapper, Cotasking
         }
         // 逻辑删除协同任务
         int i = cotaskingMapper.deleteBatchIds(Arrays.asList(ids));
-        // 逻辑删除协同任务中的未被人接单的研判任务
+        // 逻辑删除协同任务中的未被人接单的研判任务,同时需要退还已冻结的Token值
         LambdaQueryWrapper<Task> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.in(Task::getCotaskingId, ids);
-        Integer taskCount = taskMapper.selectCount(queryWrapper);
-        if (taskCount > 0) {
+        List<Task> tasks = taskMapper.selectList(queryWrapper);
+        // Integer taskCount = taskMapper.selectCount(queryWrapper);
+        // 记录总冻结的Token值
+        BigDecimal totalBlockToken = new BigDecimal(0);
+        if (tasks.size() > 0) {
+            // 遍历已生成的研判任务，并退还已冻结的Token值
+            for (Task task : tasks) {
+                totalBlockToken = totalBlockToken.add(task.getToken());
+            }
+            // 获取当前用户的Token钱包，
+            Token token = tokenMapper.selectTokenValueByUserId(BaseContext.getCurrentId());
+            BigDecimal blockToken = token.getBlockToken().subtract(totalBlockToken);
+            token.setBlockToken(blockToken);
+            BigDecimal currentToken = token.getCurrentToken().add(totalBlockToken);
+            token.setCurrentToken(currentToken);
+            // 保存新钱包Token值
+            tokenMapper.updateById(token);
+            // 新增Token变化记录
+            TokenLog tokenLog = new TokenLog();
+            tokenLog.setTokenId(token.getId());
+            tokenLog.setCurrentChange(totalBlockToken);
+            tokenLog.setBlockChange(totalBlockToken.negate());
+            tokenLog.setCurrentToken(currentToken);
+            tokenLog.setBlockToken(blockToken);
+            tokenLog.setContent("删除协同任务"+ids+"后退还已生成悬赏任务所冻结的Token");
+            // 新增Token变化记录
+            tokenLogMapper.insert(tokenLog);
             taskMapper.delete(queryWrapper);
         }
         // 逻辑删除协同任务中的情报
@@ -112,7 +138,7 @@ public class CotaskingServiceImpl extends ServiceImpl<CotaskingMapper, Cotasking
         LambdaQueryWrapper<Task> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.in(Task::getCotaskingId, ids);
         Integer taskCount = taskMapper.selectCount(queryWrapper);
-        if (taskCount > 0){
+        if (taskCount > 0) {
             Task task = new Task();
             task.setStatus(status);
             taskMapper.update(task, queryWrapper);

@@ -158,7 +158,7 @@
                         <template slot-scope="scope">
                             <el-button type="text" size="small" class="blueBug" @click="getTaskDetail(scope.row.id)">查看详情</el-button>
                             <template v-if="scope.row.status===1">
-                                <el-button type="text" size="small" class="blueBug" @click="addTaskToken(scope.row.id,scope.row.token)">增加悬赏</el-button>
+                                <el-button type="text" size="small" class="blueBug" @click="addTaskToken(scope.row)">增加悬赏</el-button>
                                 <el-button type="text" size="small" class="delBut non" @click="deleteHandle(scope.row.id)">删除</el-button>
                             </template>
                         </template>
@@ -190,13 +190,13 @@
                     <el-form :inline="true" label-width="180px" class="demo-ruleForm">
                         <div>
                             <el-form-item label="新任务悬赏Token:" label-width="100px">
-                                <el-input v-model="this.newToken" maxlength="20" va />
+                                <el-input v-model="updateTaskToken.newToken" maxlength="20" />
                             </el-form-item>
                         </div>
                     </el-form>
                 </div>
                 <span slot="footer" class="dialog-footer">
-                    <el-button size="medium" @click="submitUpdateCoTask">确 定</el-button>
+                    <el-button size="medium" @click="submitTaskTokenUpdate">确 定</el-button>
                     <el-button size="medium" @click="taskTokenWin.dialogVisible = false">取消</el-button>
                 </span>
             </el-dialog>
@@ -211,6 +211,7 @@
         <script src="../../js/validate.js"></script>
         <script src="../../js/index.js"></script>
         <script src="../../api/cotask.js"></script>
+        <script src="../../api/task.js"></script>
 
         <script>
             new Vue({
@@ -244,11 +245,16 @@
                         },
                         //  待修改的信息
                         updateCotaskInfo: {},
-                        // 新悬赏金额
-                        newToken: '',
+                        // 设置悬赏修改窗口
                         taskTokenWin: {
                             title: '增加悬赏',
                             dialogVisible: false,
+                        },
+                        // 新修改的token值
+                        updateTaskToken: {
+                            id: '',
+                            token: '',
+                            newToken: '',
                         },
                     };
                 },
@@ -264,6 +270,7 @@
                             console.log(res);
                             if (String(res.code) === '1') {
                                 // this.detailInfo = { ...res.data };
+
                                 this.detailInfo.id = res.data.id;
                                 this.detailInfo.name = res.data.name;
                                 this.detailInfo.description = res.data.description;
@@ -300,7 +307,7 @@
                                         var now = new Date().getTime();
                                         if (endTime < now) {
                                             // 如果判断为true。则将对应任务的Id告知用户。用于修改
-                                            this.uselessArr.push(res.data[key].id);
+                                            this.uselessArr.push(this.tableTaskData[key].id);
                                         }
                                     }
                                     if (this.uselessArr != undefined && this.uselessArr.length > 0) {
@@ -402,12 +409,32 @@
                     },
 
                     // 增加任务悬赏
-                    addTaskToken(id, oldToken) {
+                    addTaskToken(task) {
                         this.taskTokenWin.dialogVisible = true;
-                        this.newToken = oldToken;
-                        console.log(this.newToken);
+                        this.updateTaskToken.newToken = task.token;
+                        console.log(task);
+                        console.log(this.updateTaskToken.newToken);
+                        this.updateTaskToken.id = task.id;
+                        this.updateTaskToken.token = task.token;
                     },
-
+                    submitTaskTokenUpdate() {
+                        this.taskTokenWin.dialogVisible = false;
+                        const params = {
+                            ...this.updateTaskToken,
+                        };
+                        updateTaskTokenMethod(params)
+                            .then(res => {
+                                if (res.code === 1) {
+                                    this.$message.success('修改成功！');
+                                    this.handleQuery();
+                                } else {
+                                    this.$message.error(res.msg || '操作失败');
+                                }
+                            })
+                            .catch(err => {
+                                this.$message.error('请求出错了：' + err);
+                            });
+                    },
                     goBack() {
                         window.parent.menuHandle(
                             {

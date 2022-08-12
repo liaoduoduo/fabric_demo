@@ -16,4 +16,6 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface TokenMapper extends BaseMapper<Token> {
     Page<TokenVo> pageByName(Page<TokenVo> tokenVoPage, String name);
+
+    Token selectTokenValueByUserId(Long userId);
 }
