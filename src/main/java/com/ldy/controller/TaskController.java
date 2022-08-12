@@ -56,7 +56,7 @@ public class TaskController {
         return taskService.saveTaskAndBlockToken(task);
     }
 
-    @ApiOperation("根据协同任务查询对应的研判任务")
+    @ApiOperation("根据协同任务查询对应的悬赏任务")
     @GetMapping("getTaskByCotaskId/{id}")
     public R<List<TaskVo>> getTaskByCotaskId(@PathVariable("id") Long id) {
         return R.success(taskService.getTaskWithCategoryByCotaskId(id));
@@ -79,17 +79,14 @@ public class TaskController {
         return R.success(taskPage);
     }
 
-    @ApiOperation("任务撤销")
+    @ApiOperation("任务撤销,同时需要退还冻结token")
     @DeleteMapping("/deleteTask")
-    public R<String> deleteTaskById(@RequestParam("ids") Long[] ids) {
-        boolean result = false;
-        if (ids.length == 1) {
-            result = taskService.removeById(ids[0]);
+    @Transactional
+    public R<String> deleteTaskById(@RequestBody Long[] ids) {
+        if (ids.length < 1){
+            return R.error("数据传递异常");
         }
-        if (ids.length > 1) {
-            result = taskService.removeByIds(Arrays.asList(ids));
-        }
-        return result ? R.success("删除成功") : R.error("删除失败");
+        return taskService.removeTaskByIds(ids);
     }
 
     @ApiOperation("研判任务常规信息修改")

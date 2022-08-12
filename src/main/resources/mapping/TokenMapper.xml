@@ -5,7 +5,8 @@
 
 <mapper namespace="com.ldy.mapper.TokenMapper">
     <select id="pageByName" resultType="com.ldy.vo.TokenVo">
-        select t.id id,u.name name, t.current_token currentToken, t.block_token blockToken, t.status status, t.update_time updateTime
+        select t.id id,u.name name, t.current_token currentToken, t.block_token blockToken, t.status status,
+        t.update_time updateTime
         from token t
         inner join user u on t.id = u.token_id
         <where>
@@ -17,7 +18,12 @@
     </select>
 
     <select id="selectTokenValueByUserId" resultType="com.ldy.entity.Token" parameterType="java.lang.Long">
-        SELECT * from token LEFT JOIN user on token.id = user.token_id where `user`.id = #{id}
+        SELECT *
+        from token
+                 LEFT JOIN user on token.id = user.token_id
+        where `user`.id = #{id}
+          and user.deleted = 0
+          and token.deleted = 0
     </select>
 
 </mapper>

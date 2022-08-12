@@ -23,4 +23,6 @@ public interface ITaskService extends IService<Task> {
     List<TaskVo> getTaskWithCategoryByCotaskId(Long id);
 
     R<String> updateToken(TaskDto taskDto);
+
+    R<String> removeTaskByIds(Long[] ids);
 }

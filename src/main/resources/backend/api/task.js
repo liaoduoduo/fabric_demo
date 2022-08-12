@@ -1,3 +1,4 @@
+// import qs from '../plugins/qs';
 // 获取研判任务分类信息
 const getDecideInfoCategoryWithTaskCategory = id => {
     return $axios({
@@ -19,5 +20,16 @@ const updateTaskTokenMethod = params => {
         url: '/task/updateToken',
         method: 'put',
         data: params,
+    });
+};
+// 撤销悬赏任务
+const deleteTaskByIdsMethod = ids => {
+    // var ids = window.Qs.stringify({ ids: params }, { indices: false });
+    // console.log(ids);
+    return $axios({
+        url: '/task/deleteTask',
+        method: 'delete',
+        // params: params,
+        data: ids,
     });
 };

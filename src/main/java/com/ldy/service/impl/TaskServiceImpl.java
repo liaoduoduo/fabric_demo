@@ -5,14 +5,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ldy.common.BaseContext;
 import com.ldy.common.R;
 import com.ldy.dto.TaskDto;
-import com.ldy.entity.Task;
-import com.ldy.entity.Token;
-import com.ldy.entity.TokenLog;
-import com.ldy.entity.User;
-import com.ldy.mapper.TaskMapper;
-import com.ldy.mapper.TokenLogMapper;
-import com.ldy.mapper.TokenMapper;
-import com.ldy.mapper.UserMapper;
+import com.ldy.entity.*;
+import com.ldy.mapper.*;
 import com.ldy.service.ITaskService;
 import com.ldy.vo.TaskVo;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -42,6 +37,8 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements IT
     TokenMapper tokenMapper;
     @Autowired
     TokenLogMapper tokenLogMapper;
+    @Autowired
+    UserTaskMapper userTaskMapper;
 
     @Override
     public R<String> saveTaskAndBlockToken(Task task) {
@@ -143,5 +140,49 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements IT
         task.setToken(newToken);
         int save = taskMapper.updateById(task);
         return save > 0 ? R.success("修改成功") : R.error("修改失败");
+    }
+
+    @Override
+    public R<String> removeTaskByIds(Long[] ids) {
+        // 1. 首先判断该悬赏任务是否被人接单
+        LambdaQueryWrapper<UserTask> userTaskLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        userTaskLambdaQueryWrapper.in(UserTask::getTaskId, ids);
+        Integer userTaskCount = userTaskMapper.selectCount(userTaskLambdaQueryWrapper);
+        if (userTaskCount > 0) {
+            return R.error("悬赏任务已被接单，无法撤销");
+        }
+        // 2. 获取当前用户钱包
+        Token token = tokenMapper.selectTokenValueByUserId(BaseContext.getCurrentId());
+        TokenLog tokenLog = new TokenLog();
+        tokenLog.setTokenId(token.getId());
+        tokenLog.setContent("撤销悬赏任务" + Arrays.toString(ids));
+        tokenLog.setDeleted(0);
+        int result = 0;
+        BigDecimal totalBlockToken = new BigDecimal(0);
+        // 3. 判断是单删还是批量
+        if (ids.length == 1) {
+            Task task = taskMapper.selectById(ids[0]);
+            totalBlockToken = task.getToken();
+            result = taskMapper.deleteById(ids[0]);
+        }
+        if (ids.length > 1) {
+            LambdaQueryWrapper<Task> taskLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            taskLambdaQueryWrapper.in(Task::getId, ids);
+            List<Task> tasks = taskMapper.selectList(taskLambdaQueryWrapper);
+            for (Task task : tasks) {
+                totalBlockToken = totalBlockToken.add(task.getToken());
+            }
+            result = taskMapper.deleteBatchIds(Arrays.asList(ids));
+        }
+        token.setCurrentToken(token.getCurrentToken().add(totalBlockToken));
+        token.setBlockToken(token.getBlockToken().subtract(totalBlockToken));
+        tokenMapper.updateById(token);
+        tokenLog.setCurrentChange(totalBlockToken);
+        tokenLog.setBlockChange(totalBlockToken.negate());
+        tokenLog.setCurrentToken(token.getCurrentToken());
+        tokenLog.setBlockToken(token.getBlockToken());
+        tokenLogMapper.insert(tokenLog);
+
+        return result > 0 ? R.success("删除成功") : R.error("删除失败");
     }
 }

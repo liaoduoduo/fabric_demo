@@ -108,7 +108,7 @@
 
                 <el-row :gutter="24" style="margin-top: 10px">
                     <el-col :span="20">
-                        <span><b>协同任务中分配的研判任务</b></span>
+                        <span><b>协同任务中分配的悬赏任务</b></span>
                     </el-col>
                     <el-col :span="4">
                         <el-button type="primary" size="mini" style="margin-right: 5px" @click="toAddTaskPage()">发布任务</el-button>
@@ -151,7 +151,7 @@
                             </el-form>
                         </template>
                     </el-table-column>
-                    <el-table-column label="研判任务ID" prop="id"></el-table-column>
+                    <el-table-column label="悬赏任务ID" prop="id"></el-table-column>
                     <el-table-column label="简要需求" prop="name"></el-table-column>
                     <el-table-column label="任务金额" prop="token"></el-table-column>
                     <el-table-column label="操作">
@@ -159,7 +159,7 @@
                             <el-button type="text" size="small" class="blueBug" @click="getTaskDetail(scope.row.id)">查看详情</el-button>
                             <template v-if="scope.row.status===1">
                                 <el-button type="text" size="small" class="blueBug" @click="addTaskToken(scope.row)">增加悬赏</el-button>
-                                <el-button type="text" size="small" class="delBut non" @click="deleteHandle(scope.row.id)">删除</el-button>
+                                <el-button type="text" size="small" class="delBut non" @click="deleteTaskInCotask(scope.row.id)">撤销</el-button>
                             </template>
                         </template>
                     </el-table-column>
@@ -207,12 +207,13 @@
         <script src="../../plugins/element-ui/lib/index.js"></script>
         <!-- 引入axios -->
         <script src="../../plugins/axios/axios.min.js"></script>
+        <script src="../../plugins/qs/qs.min.js"></script>
         <script src="../../js/request.js"></script>
         <script src="../../js/validate.js"></script>
         <script src="../../js/index.js"></script>
+
         <script src="../../api/cotask.js"></script>
         <script src="../../api/task.js"></script>
-
         <script>
             new Vue({
                 el: '#cotask-info-app',
@@ -386,7 +387,7 @@
                     },
                     // 取消该情报与协同任务的关联
                     deleteIntelligenceInCotask(id) {
-                        this.$confirm('确认在该协同任务中删除该情报, 是否继续?', '确定删除', {
+                        this.$confirm('确认在该协同任务中解除该情报, 是否继续?', '确定删除', {
                             confirmButtonText: '确定',
                             cancelButtonText: '取消',
                         }).then(() => {
@@ -434,6 +435,30 @@
                             .catch(err => {
                                 this.$message.error('请求出错了：' + err);
                             });
+                    },
+
+                    // 撤销协同任务中的悬赏任务
+                    deleteTaskInCotask(taskId) {
+                        this.$confirm('确认在该协同任务中撤销该悬赏, 是否继续?', '确定删除', {
+                            confirmButtonText: '确定',
+                            cancelButtonText: '取消',
+                        }).then(() => {
+                            console.log(taskId);
+                            const params = [];
+                            params.push(taskId);
+                            deleteTaskByIdsMethod(params)
+                                .then(res => {
+                                    if (res.code === 1) {
+                                        this.$message.success('撤销成功！');
+                                        this.handleQuery();
+                                    } else {
+                                        this.$message.error(res.msg || '操作失败');
+                                    }
+                                })
+                                .catch(err => {
+                                    this.$message.error('请求出错了：' + err);
+                                });
+                        });
                     },
                     goBack() {
                         window.parent.menuHandle(

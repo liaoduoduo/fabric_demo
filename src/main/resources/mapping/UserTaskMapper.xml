@@ -4,7 +4,7 @@
     <select id="selectUserTaskCountInCotasking" parameterType="java.util.List" resultType="java.lang.Integer">
         SELECT count(*) as count
         from user_task
-        where task_id in (SELECT id FROM task where cotasking_id in
+        where user_task.deleted = 0 and task_id in (SELECT id FROM task where cotasking_id in
         <foreach collection="list" item="item" index="index"
                  open="(" close="))" separator=",">
             #{item}
