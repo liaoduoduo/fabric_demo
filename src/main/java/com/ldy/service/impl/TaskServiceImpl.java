@@ -46,6 +46,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements IT
     @Override
     public R<String> saveTaskAndBlockToken(Task task) {
         // 需要判断用户的token值是否足够支付该任务的悬赏，并进行冻结
+
         Token token = tokenMapper.selectTokenValueByUserId(BaseContext.getCurrentId());
         // 首先判断任务设置的悬赏金额是否大于用户当前的可用余额
         int compare = task.getToken().compareTo(token.getCurrentToken());
@@ -62,6 +63,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements IT
         task.setDeleted(0);
         log.info("任务信息-----" + task);
         int save = taskMapper.insert(task);
+
         //当用户的可用余额满足该研判任务的悬赏值时，从可用余额中转移到冻结余额中
         BigDecimal currentToken = token.getCurrentToken().subtract(task.getToken());
         token.setCurrentToken(currentToken);

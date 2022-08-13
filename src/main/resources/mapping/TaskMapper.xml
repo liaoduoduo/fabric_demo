@@ -4,7 +4,7 @@
 
     <select id="getTaskDetailByCotaskId" parameterType="java.lang.Long" resultMap="taskVoWithCategory">
         SELECT t.*,
-               tc.`name` as 'taskCategoryName', dic.`name` as 'decideInfoCategoryName', count(ut.id) AS 'jiedanCount', c.name as 'cotaskName',user.name as "createUser"
+               tc.`name` as 'taskCategoryName', dic.`name` as 'decideInfoCategoryName', count(ut.id) AS 'jiedanCount', c.name as 'cotaskName'
         FROM task t
                  LEFT JOIN user_task ut ON t.id = ut.task_id
                  LEFT JOIN cotasking c on t.cotasking_id = c.id
@@ -22,7 +22,7 @@
     <select id="getAllTaskInfoWithUserPage" resultMap="taskVo">
         SELECT t.*,
         count(ut.id) AS 'jiedanCount', c.name as 'cotaskName', tc.name as 'taskCategoryName', dic.name as
-        'decideInfoCategoryName'
+        'decideInfoCategoryName',user.name as "createUserName"
         FROM task t
         LEFT JOIN user_task ut ON t.id = ut.task_id
         LEFT JOIN cotasking c on t.cotasking_id = c.id
@@ -39,7 +39,7 @@
     </select>
     <resultMap id="taskVo" type="com.ldy.vo.TaskVo">
         <result property="jiedanCount" column="jiedanCount"/>
-        <result property="createUser" column="createUser"/>
+        <result property="createUserName" column="createUserName"/>
         <result property="cotaskName" column="cotaskName"/>
         <result property="taskCategoryName" column="taskCategoryName"/>
         <result property="decideInfoCategoryName" column="decideInfoCategoryName"/>
