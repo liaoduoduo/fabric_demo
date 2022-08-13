@@ -57,29 +57,6 @@ public class TaskController {
         return taskService.saveTaskAndBlockToken(task);
     }
 
-    @ApiOperation("根据协同任务查询对应的悬赏任务")
-    @GetMapping("getTaskByCotaskId/{id}")
-    public R<List<TaskVo>> getTaskByCotaskId(@PathVariable("id") Long id) {
-        return R.success(taskService.getTaskWithCategoryByCotaskId(id));
-    }
-
-    @ApiOperation("获取悬赏任务分页，根据用户做定制,有很大的提升空间，这里为了简便，仅把单位作为策略")
-    @GetMapping("/getRewardTaskPage")
-    public R<Page<Task>> getRewardTaskPage(@RequestParam(value = "page", defaultValue = "1") int page,
-                                           @RequestParam(value = "pageSize", defaultValue = "5") int pageSize,
-                                           @RequestParam("name") String name) {
-        Long userId = BaseContext.getCurrentId();
-        User user = userService.getById(userId);
-        Page<Task> taskPage = new Page<>(page, pageSize);
-        LambdaQueryWrapper<Task> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.like(name != null, Task::getName, name)
-                .ne(Task::getFinished, 1)
-                .eq(Task::getStatus, 1)
-                .or().eq(Task::getPolicy, user.getUnit());
-        taskPage = taskService.page(taskPage, queryWrapper);
-        return R.success(taskPage);
-    }
-
     @ApiOperation("任务撤销,同时需要退还冻结token")
     @DeleteMapping("/deleteTask")
     @Transactional
@@ -108,6 +85,24 @@ public class TaskController {
         return update ? R.success("状态修改成功") : R.error("状态修改失败");
     }
 
+    @ApiOperation("获取悬赏任务分页，根据用户做定制,有很大的提升空间，这里为了简便，仅把单位作为策略")
+    @GetMapping("/getRewardTaskPage")
+    public R<Page<TaskVo>> getRewardTaskPage(@RequestParam(value = "page", defaultValue = "1") int page,
+                                             @RequestParam(value = "pageSize", defaultValue = "5") int pageSize,
+                                             @RequestParam("name") String name) {
+        Page<TaskVo> taskPage = new Page<>(page, pageSize);
+        Long userId = BaseContext.getCurrentId();
+
+        // User user = userService.getById(userId);
+        // LambdaQueryWrapper<Task> queryWrapper = new LambdaQueryWrapper<>();
+        // queryWrapper.like(name != null, Task::getName, name)
+        //         .ne(Task::getFinished, 1)
+        //         .eq(Task::getStatus, 1)
+        //         .or().eq(Task::getPolicy, user.getUnit());
+        // taskPage = taskService.page(taskPage, queryWrapper);
+        return R.success(taskService.getAllTaskInfoWithUserPage(taskPage, name, userId));
+    }
+
     @ApiOperation("悬赏任务常规信息修改")
     @PutMapping("/updateTask")
     public R<String> updateTask(@RequestBody Task task) {
@@ -122,5 +117,11 @@ public class TaskController {
         return R.success(task);
     }
 
+
+    @ApiOperation("根据协同任务查询对应的悬赏任务")
+    @GetMapping("getTaskByCotaskId/{id}")
+    public R<List<TaskVo>> getTaskByCotaskId(@PathVariable("id") Long id) {
+        return R.success(taskService.getTaskDetailByCotaskId(id));
+    }
 }
 

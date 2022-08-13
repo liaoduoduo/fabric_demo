@@ -144,9 +144,6 @@
                                     <span v-if="isInclude(props.row.id)">停用</span>
                                     <span v-else>正常</span>
                                 </el-form-item>
-                                <el-form-item label="领取人数">
-                                    <span>{{ props.row.jiedanCount }}</span>
-                                </el-form-item>
                                 <el-form-item label="是否完成">
                                     <span v-if="props.row.finished === 1">完成</span>
                                     <span v-if="props.row.finished === 0">进行中</span>
@@ -219,58 +216,12 @@
         <script src="../../js/request.js"></script>
         <script src="../../js/validate.js"></script>
         <script src="../../js/index.js"></script>
-
-        <script src="../../api/cotask.js"></script>
         <script src="../../api/task.js"></script>
         <script>
             new Vue({
                 el: '#cotask-info-app',
                 data() {
-                    return {
-                        // 协同任务的id
-                        id: '',
-                        // index: 0,
-                        // 协同任务详细信息
-                        detailInfo: {
-                            id: '',
-                            name: '',
-                            description: '',
-                            createTime: '',
-                            updateTime: '',
-                            status: '',
-                            liAn: '',
-                        },
-                        // cotaskStatus: true,
-                        // 协同任务中情报数据
-                        tableIntelligenceData: [],
-                        // 协同任务中研判任务数据
-                        tableTaskData: [],
-                        // 记录因截止时间已过导致失效的任务主键
-                        uselessArr: [],
-                        // 修改协同任务弹窗
-                        coTaskData: {
-                            title: '添加协同任务',
-                            dialogVisible: false,
-                        },
-                        //  待修改的信息
-                        updateCotaskInfo: {},
-                        // 设置悬赏修改窗口
-                        taskTokenWin: {
-                            title: '增加悬赏',
-                            dialogVisible: false,
-                        },
-                        // 新修改的token值
-                        updateTaskToken: {
-                            id: '',
-                            token: '',
-                            newToken: '',
-                        },
-                        // 悬赏任务上下架信息
-                        updateTaskStatusData: {
-                            ids: [],
-                            newStatus: '',
-                        },
-                    };
+                    return {};
                 },
                 created() {
                     this.id = requestUrlParam('id');
@@ -279,57 +230,10 @@
                 mounted() {},
                 methods: {
                     async init() {
-                        // 获取当前协同任务的详细信息
-                        getCotaskById(this.id).then(res => {
+                        // 获取当前悬赏任务的详细信息
+                        getTaskDetailById(this.id).then(res => {
                             console.log(res);
                             if (String(res.code) === '1') {
-                                this.detailInfo.id = res.data.id;
-                                this.detailInfo.name = res.data.name;
-                                this.detailInfo.description = res.data.description;
-                                this.detailInfo.status = res.data.status;
-                                this.detailInfo.createTime = res.data.createTime;
-                                this.detailInfo.updateTime = res.data.updateTime;
-                                this.detailInfo.liAn = res.data.liAn;
-                                console.log('detailInfo == ' + this.detailInfo);
-                                if (res.data.status === '0') {
-                                    this.cotaskStatus = false;
-                                } else {
-                                    this.cotaskStatus = true;
-                                }
-                            } else {
-                                this.$message.error(res.msg || '操作失败');
-                            }
-                        });
-                        // 获取当前协同任务的情报信息
-                        getIntelligencesInCotask(this.id).then(res => {
-                            if (String(res.code) === '1') {
-                                this.tableIntelligenceData = res.data || [];
-                                console.log(this.tableIntelligenceData);
-                            } else {
-                                this.$message.error(res.msg || '操作失败');
-                            }
-                        });
-                        // 获取当前协同任务的任务信息
-                        getTaskInCotask(this.id).then(res => {
-                            if (String(res.code) === '1') {
-                                this.tableTaskData = res.data || [];
-                                if (res.data != '') {
-                                    for (const key in res.data) {
-                                        var endTime = new Date(this.tableTaskData[key].endTime).getTime();
-                                        var now = new Date().getTime();
-                                        if (endTime < now) {
-                                            // 如果判断为true。则将对应任务的Id告知用户。用于修改
-                                            this.uselessArr.push(this.tableTaskData[key].id);
-                                        }
-                                    }
-                                    if (this.uselessArr != undefined && this.uselessArr.length > 0) {
-                                        this.$message({
-                                            message: '警告哦，研判任务' + this.uselessArr + '过了失效哦！！！，请及时修改',
-                                            type: 'warning',
-                                            duration: 6000,
-                                        });
-                                    }
-                                }
                             } else {
                                 this.$message.error(res.msg || '操作失败');
                             }
@@ -342,34 +246,9 @@
                     isInclude: function (id) {
                         return this.uselessArr.includes(id);
                     },
-                    // 去分配任务界面进行添加任务操作
-                    toAddTaskPage() {
-                        window.parent.menuHandle(
-                            {
-                                id: '7',
-                                url: '/backend/page/task/add.html?id=' + this.id,
-                                name: '添加研判任务',
-                            },
-                            true
-                        );
-                    },
-                    // 去我的情报页面将情报添加到协同任务中
-                    toAddIntelligence() {
-                        window.parent.menuHandle(
-                            {
-                                id: '6',
-                                url: '/backend/page/userIntelligence/list.html',
-                                name: '我的情报',
-                                icon: 'icon-renfangqingbao',
-                            },
-                            true
-                        );
-                    },
+
                     // 关闭弹窗
-                    handleClose: function () {
-                        this.coTaskData.dialogVisible = false;
-                        this.taskTokenWin.dialogVisible = false;
-                    },
+                    handleClose: function () {},
                     // 打开修改协同任务弹窗，并填写信息
                     openUpdateCotask: function () {
                         this.coTaskData.dialogVisible = true;

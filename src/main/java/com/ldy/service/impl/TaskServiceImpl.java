@@ -1,6 +1,7 @@
 package com.ldy.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ldy.common.BaseContext;
 import com.ldy.common.R;
@@ -15,7 +16,9 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -79,8 +82,8 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements IT
     }
 
     @Override
-    public List<TaskVo> getTaskWithCategoryByCotaskId(Long id) {
-        return taskMapper.getTaskWithCategoryByCotaskId(id);
+    public List<TaskVo> getTaskDetailByCotaskId(Long id) {
+        return taskMapper.getTaskDetailByCotaskId(id);
     }
 
     @Override
@@ -184,5 +187,11 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements IT
         tokenLogMapper.insert(tokenLog);
 
         return result > 0 ? R.success("删除成功") : R.error("删除失败");
+    }
+
+    @Override
+    public Page<TaskVo> getAllTaskInfoWithUserPage(Page<TaskVo> taskPage, String name, Long userId) {
+        User user = userMapper.selectById(userId);
+        return taskMapper.getAllTaskInfoWithUserPage(taskPage, name, user.getUnit());
     }
 }
