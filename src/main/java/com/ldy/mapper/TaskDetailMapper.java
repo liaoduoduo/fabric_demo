@@ -2,6 +2,7 @@ package com.ldy.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.ldy.entity.TaskDetail;
+import org.apache.ibatis.annotations.Mapper;
 
 
 /**
@@ -12,6 +13,7 @@ import com.ldy.entity.TaskDetail;
  * @author sunqing
  * @since 2022-07-24
  */
+@Mapper
 public interface TaskDetailMapper extends BaseMapper<TaskDetail> {
 
 }

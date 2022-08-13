@@ -8,6 +8,7 @@ import com.ldy.common.BaseContext;
 import com.ldy.common.R;
 import com.ldy.entity.*;
 import com.ldy.service.*;
+import com.ldy.vo.TaskVo;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,37 +48,17 @@ public class UserTaskController {
     @ApiOperation("接单")
     @PostMapping("/acceptTask/{id}")
     public R<String> acceptTask(@PathVariable Long id) {
-        Long userId = BaseContext.getCurrentId();
-        Task task = taskService.getById(id);
-
-        if (Objects.equals(userId, task.getCreateUser())) {
-            return R.error("添加异常, 不能接自己的单子");
-        }
-
-        UserTask userTask = new UserTask();
-        userTask.setTaskId(id);
-        userTask.setUserId(userId);
-        userTask.setAccepted(0);
-        userTask.setContribution(BigDecimal.valueOf(0));
-        userTask.setSubmitTime(null);
-        userTask.setDeleted(0);
-
-        boolean save = userTaskService.save(userTask);
-        return save ? R.success("成功添加") : R.error("添加异常");
+        return userTaskService.saveUserTask(id);
     }
 
-    @ApiOperation("分页查询我所有的单子")
-    @GetMapping("/getPageMyUserTask")
-    public R<Page<UserTask>> getPageMyUserTask(@RequestParam(value = "page", defaultValue = "1") int page,
+    @ApiOperation("查询当前用户的所有接单")
+    @GetMapping("/getUserTaskByUserId")
+    public R<Page<TaskVo>> getUserTaskByUserId(@RequestParam(value = "page", defaultValue = "1") int page,
                                                @RequestParam(value = "pageSize", defaultValue = "5") int pageSize,
                                                @RequestParam("name") String name) {
-        Page<UserTask> userTaskPage = new Page<>(page, pageSize);
-        LambdaQueryWrapper<UserTask> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(UserTask::getUserId, BaseContext.getCurrentId());
-        // .like(StringUtils.isBlank(name), UserTask::getName, name)
-        queryWrapper.orderByDesc(UserTask::getUpdateTime);
-        userTaskPage = userTaskService.page(userTaskPage, queryWrapper);
-        return R.success(userTaskPage);
+        Page<TaskVo> taskVoPage = new Page<>(page, pageSize);
+        Long userId = BaseContext.getCurrentId();
+        return R.success(userTaskService.getUserTaskByUserId(taskVoPage, name, userId));
     }
 
     @ApiOperation("不想干了，摆烂")
@@ -86,6 +67,15 @@ public class UserTaskController {
         boolean b = userTaskService.removeById(id);
         return b ? R.success("摆烂成功") : R.error("摆烂失败");
     }
+
+    @ApiOperation("填写悬赏任务的答案")
+    @PostMapping("/writeTaskResult")
+    public R<String> writeTaskResult(@RequestParam("id") Long id) {
+
+
+        return null;
+    }
+
 
     @ApiOperation("查询任务领单人员")
     @GetMapping("/getUserTaskById/{id}")

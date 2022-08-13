@@ -92,14 +92,6 @@ public class TaskController {
                                              @RequestParam("name") String name) {
         Page<TaskVo> taskPage = new Page<>(page, pageSize);
         Long userId = BaseContext.getCurrentId();
-
-        // User user = userService.getById(userId);
-        // LambdaQueryWrapper<Task> queryWrapper = new LambdaQueryWrapper<>();
-        // queryWrapper.like(name != null, Task::getName, name)
-        //         .ne(Task::getFinished, 1)
-        //         .eq(Task::getStatus, 1)
-        //         .or().eq(Task::getPolicy, user.getUnit());
-        // taskPage = taskService.page(taskPage, queryWrapper);
         return R.success(taskService.getAllTaskInfoWithUserPage(taskPage, name, userId));
     }
 

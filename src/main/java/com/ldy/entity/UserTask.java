@@ -35,6 +35,9 @@ public class UserTask implements Serializable {
     @ApiModelProperty(value = "用户id")
     private Long userId;
 
+    @ApiModelProperty(value = "答案实体Id")
+    private Long taskDetailId;
+
     @ApiModelProperty(value = "提交时间")
     private LocalDateTime submitTime;
 

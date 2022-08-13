@@ -10,4 +10,34 @@
             #{item}
         </foreach>
     </select>
+    <select id="getUserTaskByUserId" resultMap="taskVo">
+        SELECT
+        t.*,
+        count( ut.id ) AS 'jiedanCount',
+        c.name as 'cotaskName',
+        tc.name as 'taskCategoryName',
+        dic.name as 'decideInfoCategoryName',
+        user.name as 'createUserName'
+        FROM
+        task t
+        LEFT JOIN user_task ut ON t.id = ut.task_id
+        LEFT JOIN cotasking c on t.cotasking_id = c.id
+        LEFT JOIN task_category tc on t.task_category_id = tc.id
+        LEFT JOIN decide_info_category dic on t.decide_info_category_id = dic.id
+        LEFT JOIN user on user.id = t.create_user
+        WHERE
+        1=1
+        <if test="name != null">
+            and t.name like CONCAT('%', #{name}, '%')
+        </if>
+        and t.deleted = 0 and ut.user_id = #{userId}
+        group by t.id
+    </select>
+    <resultMap id="taskVo" type="com.ldy.vo.TaskVo">
+        <result property="jiedanCount" column="jiedanCount"/>
+        <result property="createUserName" column="createUserName"/>
+        <result property="cotaskName" column="cotaskName"/>
+        <result property="taskCategoryName" column="taskCategoryName"/>
+        <result property="decideInfoCategoryName" column="decideInfoCategoryName"/>
+    </resultMap>
 </mapper>
