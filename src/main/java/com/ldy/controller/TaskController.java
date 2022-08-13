@@ -2,6 +2,7 @@ package com.ldy.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ldy.common.BaseContext;
 import com.ldy.common.R;
@@ -49,7 +50,7 @@ public class TaskController {
     @Autowired
     IUserTaskService userTaskService;
 
-    @ApiOperation("根据协同任务新增研判任务")
+    @ApiOperation("根据协同任务新增悬赏任务")
     @PostMapping("/addTask")
     @Transactional
     public R<String> addTask(@RequestBody Task task) {
@@ -83,24 +84,35 @@ public class TaskController {
     @DeleteMapping("/deleteTask")
     @Transactional
     public R<String> deleteTaskById(@RequestBody Long[] ids) {
-        if (ids.length < 1){
+        if (ids.length < 1) {
             return R.error("数据传递异常");
         }
         return taskService.removeTaskByIds(ids);
     }
 
-    @ApiOperation("研判任务常规信息修改")
-    @PutMapping("/updateTask")
-    public R<String> updateTask(@RequestBody Task task) {
-        boolean result = taskService.updateById(task);
-        return result ? R.success("修改成功") : R.error("修改失败");
-    }
-
-    @ApiOperation("研判任务增加悬赏")
+    @ApiOperation("悬赏任务增加悬赏")
     @PutMapping("/updateToken")
     @Transactional
     public R<String> updateToken(@RequestBody TaskDto taskDto) {
         return taskService.updateToken(taskDto);
+    }
+
+    @ApiOperation("悬赏任务上下架,下架不等同于删除，不涉及Token")
+    @PutMapping("/updateStatus")
+    public R<String> updateStatus(@RequestBody TaskDto taskDto) {
+        boolean update;
+        LambdaUpdateWrapper<Task> taskLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
+        taskLambdaUpdateWrapper.set(Task::getStatus, taskDto.getNewStatus());
+        taskLambdaUpdateWrapper.in(Task::getId, taskDto.getIds());
+        update = taskService.update(taskLambdaUpdateWrapper);
+        return update ? R.success("状态修改成功") : R.error("状态修改失败");
+    }
+
+    @ApiOperation("悬赏任务常规信息修改")
+    @PutMapping("/updateTask")
+    public R<String> updateTask(@RequestBody Task task) {
+        boolean result = taskService.updateById(task);
+        return result ? R.success("修改成功") : R.error("修改失败");
     }
 
     @ApiOperation("根据任务id查看任务详情")

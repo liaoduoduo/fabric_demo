@@ -24,12 +24,16 @@ const updateTaskTokenMethod = params => {
 };
 // 撤销悬赏任务
 const deleteTaskByIdsMethod = ids => {
-    // var ids = window.Qs.stringify({ ids: params }, { indices: false });
-    // console.log(ids);
     return $axios({
         url: '/task/deleteTask',
         method: 'delete',
-        // params: params,
         data: ids,
+    });
+};
+const updateTaskStatusMethod = params => {
+    return $axios({
+        url: '/task/updateStatus',
+        method: 'put',
+        data: params,
     });
 };
