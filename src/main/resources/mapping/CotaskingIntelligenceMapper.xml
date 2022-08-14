@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ldy.mapper.CotaskingIntelligenceMapper">
+
+    <select id="getIntelligencesInCotask" parameterType="java.lang.Long" resultMap="cotaskingIntelligenceVo">
+        SELECT ci.id,
+               ci.cotasking_id,
+               ci.intelligence_id,
+               i.`name` AS 'iname', i.description,
+               ic.`name` AS 'icname', i.file_hash,
+               i.token,
+               u.`name` AS 'uname', i.`status`,
+               i.create_time
+        FROM cotasking_intelligence ci
+                 LEFT JOIN intelligence i ON ci.intelligence_id = i.id
+                 LEFT JOIN intelligence_category ic ON ic.id = i.intelligence_category_id
+                 LEFT JOIN `user` u ON i.create_user = u.id
+        WHERE ci.cotasking_id = #{id} and ci.deleted = 0
+    </select>
+    <resultMap id="cotaskingIntelligenceVo" type="com.ldy.vo.CotaskIntelligenceVo">
+        <result property="id" column="id"/>
+        <result property="cotaskingId" column="cotasking_id"/>
+        <result property="intelligenceId" column="intelligence_id"/>
+        <result property="intelligenceName" column="iname"/>
+        <result property="intelligenceDesc" column="description"/>
+        <result property="intelligenceCategoryName" column="icname"/>
+        <result property="fileHash" column="file_hash"/>
+        <result property="token" column="token"/>
+        <result property="status" column="status"/>
+        <result property="username" column="uname"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+    <insert id="addBatchCotaskingIntelligence" parameterType="java.util.List">
+        insert into
+        cotasking_intelligence(id,cotasking_id,intelligence_id,create_time,create_user,update_user,update_time,deleted)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.id},#{item.cotaskingId},#{item.intelligenceId},#{item.createTime},#{item.createUser},#{item.updateUser},#{item.updateTime},#{item.deleted})
+        </foreach>
+    </insert>
+</mapper>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ldy.mapper.TaskMapper">
+
+    <select id="getTaskDetailByCotaskId" parameterType="java.lang.Long" resultMap="taskVoWithCategory">
+        SELECT t.*,
+               tc.`name` as 'taskCategoryName', dic.`name` as 'decideInfoCategoryName', count(ut.id) AS 'jiedanCount', c.name as 'cotaskName'
+        FROM task t
+                 LEFT JOIN user_task ut ON t.id = ut.task_id
+                 LEFT JOIN cotasking c on t.cotasking_id = c.id
+                 LEFT JOIN task_category tc ON t.task_category_id = tc.id
+                 LEFT JOIN decide_info_category dic ON t.decide_info_category_id = dic.id
+                 LEFT JOIN user on user.id = t.create_user
+        WHERE t.cotasking_id = #{id}
+          and t.deleted = 0
+        group by t.id
+    </select>
+    <resultMap id="taskVoWithCategory" type="com.ldy.vo.TaskVo">
+        <result property="taskCategoryName" column="taskCategoryName"/>
+        <result property="decideInfoCategoryName" column="decideInfoCategoryName"/>
+    </resultMap>
+    <select id="getAllTaskInfoWithUserPage" resultMap="taskVo">
+        SELECT t.*,
+        count(ut.id) AS 'jiedanCount', c.name as 'cotaskName', tc.name as 'taskCategoryName', dic.name as
+        'decideInfoCategoryName',user.name as "createUserName"
+        FROM task t
+        LEFT JOIN user_task ut ON t.id = ut.task_id
+        LEFT JOIN cotasking c on t.cotasking_id = c.id
+        LEFT JOIN task_category tc on t.task_category_id = tc.id
+        LEFT JOIN decide_info_category dic on t.decide_info_category_id = dic.id
+        LEFT JOIN user on user.id = t.create_user
+        WHERE 1 = 1
+        <if test="name != null">
+            and t.name like CONCAT('%', #{name}, '%')
+        </if>
+        and t.deleted = 0
+        and t.status = 1
+        and (t.`open` = 1 or (t.`open` = 0 and t.policy = #{unit}))
+        group by t.id
+    </select>
+    <resultMap id="taskVo" type="com.ldy.vo.TaskVo">
+        <result property="jiedanCount" column="jiedanCount"/>
+        <result property="createUserName" column="createUserName"/>
+        <result property="cotaskName" column="cotaskName"/>
+        <result property="taskCategoryName" column="taskCategoryName"/>
+        <result property="decideInfoCategoryName" column="decideInfoCategoryName"/>
+    </resultMap>
+
+</mapper>

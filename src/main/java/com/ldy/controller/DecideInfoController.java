@@ -28,20 +28,12 @@ import java.util.List;
 @RequestMapping("/decide-info")
 public class DecideInfoController {
     @Autowired
-    ITaskService taskService;
-
-    @Autowired
     IDecideInfoService decideInfoService;
 
-    @ApiOperation("根据研判任务获取需要填写的内容")
+    @ApiOperation("根据悬赏任务获取需要填写的内容")
     @GetMapping("/getTaskFieldById/{id}")
-    public R<List<DecideInfo>> getTaskFieldById(@PathVariable Long id) {
-        Task task = taskService.getById(id);
-        Long decideInfoCategoryId = task.getDecideInfoCategoryId();
-        LambdaQueryWrapper<DecideInfo> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(DecideInfo::getDecideInfoCategoryId, decideInfoCategoryId).select(DecideInfo::getName, DecideInfo::getNameZh);
-        List<DecideInfo> list = decideInfoService.list(queryWrapper);
-        return R.success(list);
+    public R<List<String>> getTaskFieldById(@PathVariable Long id) {
+        return R.success(decideInfoService.getTaskDetailFiledByTaskId(id));
     }
 
 

@@ -1,7 +1,10 @@
 package com.ldy.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.ldy.common.R;
 import com.ldy.entity.UserTask;
+import com.ldy.vo.TaskVo;
 
 /**
  * <p>
@@ -13,4 +16,7 @@ import com.ldy.entity.UserTask;
  */
 public interface IUserTaskService extends IService<UserTask> {
 
+    Page<TaskVo> getUserTaskByUserId(Page<TaskVo> taskVoPage, String name, Long userId);
+
+    R<String> saveUserTask(Long id);
 }

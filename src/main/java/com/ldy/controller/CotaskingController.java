@@ -6,11 +6,13 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ldy.common.BaseContext;
 import com.ldy.common.R;
+import com.ldy.dto.CotaskingDto;
 import com.ldy.entity.Cotasking;
 import com.ldy.entity.CotaskingIntelligence;
 import com.ldy.service.ICotaskingIntelligenceService;
 import com.ldy.service.ICotaskingService;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +28,7 @@ import java.util.List;
  * @author sunqing
  * @since 2022-07-24
  */
+@Slf4j
 @RestController
 @RequestMapping("/cotasking")
 public class CotaskingController {
@@ -33,37 +36,16 @@ public class CotaskingController {
     @Autowired
     ICotaskingService cotaskingService;
 
-    @Autowired
-    ICotaskingIntelligenceService cotaskingIntelligenceService;
-
-
     @ApiOperation("用于生成协同任务")
     @PostMapping("/save")
     @Transactional
-    public R<String> saveCotask(@RequestParam(value = "name", required = false) String name,
-                                @RequestParam(value = "description", required = false) String description,
-                                @RequestParam(value = "intelligenceIds", required = false) Long[] intelligenceIds) {
-        if (intelligenceIds.length < 1 || StringUtils.isBlank(name) || StringUtils.isBlank(description)) {
+    public R<String> saveCotask(@RequestBody CotaskingDto cotaskingDto) {
+        log.info(cotaskingDto.toString());
+        if (StringUtils.isBlank(cotaskingDto.getIntelligenceIds()) || StringUtils.isBlank(cotaskingDto.getName())
+                || StringUtils.isBlank(cotaskingDto.getDescription())) {
             return R.error("添加异常");
         }
-        Cotasking cotasking = new Cotasking();
-        cotasking.setName(name);
-        cotasking.setDescription(description);
-        cotasking.setStatus(1);
-        cotasking.setFinished(0);
-        cotasking.setDeleted(0);
-        boolean save = cotaskingService.save(cotasking);
-        Long cotaskingId = cotasking.getId();
-        if (save) {
-            for (Long intelligenceId : intelligenceIds) {
-                CotaskingIntelligence cotaskingIntelligence = new CotaskingIntelligence();
-                cotaskingIntelligence.setCotaskingId(cotaskingId);
-                cotaskingIntelligence.setIntelligenceId(intelligenceId);
-                cotaskingIntelligence.setDeleted(0);
-                cotaskingIntelligenceService.save(cotaskingIntelligence);
-            }
-        }
-        return save ? R.success("成功添加") : R.error("添加异常");
+        return cotaskingService.addCotakAndBindIntelligences(cotaskingDto);
     }
 
     @ApiOperation("用于分页查询，并兼顾模糊查询")
@@ -90,18 +72,6 @@ public class CotaskingController {
         return R.success(cotasking);
     }
 
-    @ApiOperation("逻辑删除协同任务")
-    @DeleteMapping("/delete")
-    public R<String> deleteById(@RequestParam(value = "ids", required = false) Long[] ids) {
-        boolean result = false;
-        if (ids.length == 1) {
-            result = cotaskingService.removeById(ids[0]);
-        }
-        if (ids.length > 1) {
-            result = cotaskingService.removeByIds(Arrays.asList(ids));
-        }
-        return result ? R.success("删除成功") : R.error("删除失败");
-    }
 
     @ApiOperation("修改协同任务的简述与详细描述")
     @PutMapping("/update")
@@ -117,20 +87,38 @@ public class CotaskingController {
         return result ? R.success("修改成功") : R.error("修改失败");
     }
 
-    @ApiOperation("修改协同任务的激活状态")
-    @PutMapping("/updateStatus")
-    public R<String> updateStatus(@RequestBody Cotasking cotasking) {
-        boolean b = cotaskingService.updateById(cotasking);
-        return b ? R.success("修改成功") : R.error("修改失败");
+    @ApiOperation("逻辑删除协同任务,并级联删除其中未被领取的研判任务与解除与情报的关联")
+    @DeleteMapping("/delete")
+    @Transactional
+    public R<String> deleteByIds(@RequestParam(value = "ids", required = false) Long[] ids) {
+        if (ids.length < 1) {
+            return R.error("未选择协同任务数据");
+        }
+        return cotaskingService.removeCotaskByIds(ids);
     }
 
-    @ApiOperation("修改协同任务的完成状态，并设置不可更改--未激活")
-    @PutMapping("/updateFinished/{id}")
-    public R<String> updateFinished(@PathVariable("id") Long id) {
+    @ApiOperation("修改协同任务的激活状态，并级联修改其中所有的研判任务，已被领取不受影响")
+    @PutMapping("/updateStatus")
+    @Transactional
+    public R<String> updateStatus(@RequestBody CotaskingDto cotaskingDto) {
+        String regex = ",";
+        String[] split = cotaskingDto.getIds().split(regex);
+        Long[] ids = new Long[split.length];
+        int count = 0;
+        for (String s : split) {
+            ids[count] = Long.parseLong(s);
+            count++;
+        }
+        return cotaskingService.updateStatus(ids, cotaskingDto.getStatus());
+    }
+
+    @ApiOperation("修改协同任务达到立案标准，并设置不可更改--未激活")
+    @PutMapping("/liAn/{id}")
+    public R<String> liAn(@PathVariable("id") Long id) {
         Cotasking cotasking = new Cotasking();
         cotasking.setId(id);
         cotasking.setStatus(0);
-        cotasking.setFinished(1);
+        cotasking.setLiAn(1);
         boolean b = cotaskingService.updateById(cotasking);
         return b ? R.success("修改成功") : R.error("修改失败");
     }

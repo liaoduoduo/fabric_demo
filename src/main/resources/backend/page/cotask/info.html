@@ -1,247 +1,506 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <!-- 引入样式 -->
-    <link rel="stylesheet" href="../../plugins/element-ui/index.css"/>
-    <link rel="stylesheet" href="../../styles/common.css"/>
-    <link rel="stylesheet" href="../../styles/page.css"/>
-    <style>
-        #food-add-app .uploadImg .el-form-item__label::before {
-            content: '*';
-            color: #F56C6C;
-            margin-right: 4px;
-        }
-    </style>
-    <style>
-        .demo-table-expand {
-            font-size: 0;
-        }
-
-        .demo-table-expand label {
-            width: 90px;
-            color: #99a9bf;
-        }
-
-        .demo-table-expand .el-form-item {
-            margin-right: 0;
-            margin-bottom: 0;
-            width: 50%;
-        }
-    </style>
-</head>
-
-<body>
-<div class="addBrand-container" id="cotask-info-app">
-    <div class="container">
-        <el-form ref="ruleForm" :model="ruleForm" :inline="true" label-width="180px" class="demo-ruleForm">
-            <el-row style="margin-top: 30px">
-                <el-col :span="12">
-                    <el-form-item label="协同任务名：" prop="name" label-with="100px">
-                        <el-input v-model="ruleForm.name" disabled/>
-                    </el-form-item>
-                </el-col>
-            </el-row>
-            <el-row :gutter="0">
-                <el-col :span="12">
-                    <el-form-item label="协同任务完成状态：" v-if="ruleForm.finished=='0'">
-                        <el-input disabled placeholder="进行中"/>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="协同任务完成状态：" v-if="ruleForm.finished=='1'">
-                        <el-input disabled placeholder="已完成"/>
-                    </el-form-item>
-                </el-col>
-            </el-row>
-            <el-row>
-                <el-form-item label="协同任务描述：">
-                    <el-input v-model="ruleForm.description" type="textarea" :rows="3" maxlength="200" disabled/>
-                </el-form-item>
-            </el-row>
-        </el-form>
-        <h3>协同任务中所提供的情报</h3>
-
-        <el-table
-                :data="tableIntelligenceData"
-                style="width: 100%">
-            <el-table-column type="expand">
-                <template slot-scope="props">
-                    <el-form label-position="left" inline class="demo-table-expand">
-                        <el-form-item label="情报名称">
-                            <span>{{ props.row.name }}</span>
-                        </el-form-item>
-                        <el-form-item label="情报描述">
-                            <span>{{ props.row.description }}</span>
-                        </el-form-item>
-                        <el-form-item label="情报散列值">
-                            <span>{{ props.row.fileHash }}</span>
-                        </el-form-item>
-                        <el-form-item label="创建人ID">
-                            <span>{{ props.row.createUser }}</span>
-                        </el-form-item>
-                        <el-form-item label="情报状态">
-                            <span v-if="props.row.status === 1">起售</span>
-                            <span v-if="props.row.status === 0">停售</span>
-                        </el-form-item>
-                    </el-form>
-                </template>
-            </el-table-column>
-            <el-table-column
-                    label="情报ID"
-                    prop="id">
-            </el-table-column>
-            <el-table-column
-                    label="情报名称"
-                    prop="name">
-            </el-table-column>
-            <el-table-column
-                    label="情报价值"
-                    prop="token">
-            </el-table-column>
-            <el-table-column label="操作" align="center">
-                <template slot-scope="scope">
-                    <el-button type="text" size="small" class="delBut non"
-                               @click="deleteHandle('单删', scope.row.id)">
-                        删除
-                    </el-button>
-                </template>
-            </el-table-column>
-        </el-table>
-
-        <h3>协同任务中分配的研判任务</h3>
-        <el-table
-                :data="tableTaskData"
-                style="width: 100%">
-            <el-table-column type="expand">
-                <template slot-scope="props">
-                    <el-form label-position="left" inline class="demo-table-expand">
-                        <el-form-item label="任务主键">
-                            <span>{{ props.row.id }}</span>
-                        </el-form-item>
-                        <el-form-item label="任务分类id">
-                            <span>{{ props.row.taskCategoryId }}</span>
-                        </el-form-item>
-                        <el-form-item label="任务开始时间">
-                            <span>{{ props.row.beginTime }}</span>
-                        </el-form-item>
-                        <el-form-item label="任务结束时间">
-                            <span>{{ props.row.endTime }}</span>
-                        </el-form-item>
-                        <el-form-item label="领取策略">
-                            <span>{{ props.row.policy }}</span>
-                        </el-form-item>
-                        <el-form-item label="是否完成">
-                            <span v-if="props.row.finished === 1">完成</span>
-                            <span v-if="props.row.finished === 0">进行中</span>
-                        </el-form-item>
-                    </el-form>
-                </template>
-            </el-table-column>
-            <el-table-column
-                    label="研判任务ID"
-                    prop="id">
-            </el-table-column>
-            <el-table-column
-                    label="简要需求"
-                    prop="name">
-            </el-table-column>
-            <el-table-column
-                    label="任务金额"
-                    prop="token">
-            </el-table-column>
-            <el-table-column label="操作" align="center">
-                <template slot-scope="scope">
-                    <el-button type="text" size="small" class="blueBug"
-                               @click="addToken(scope.row.id)">
-                        增加悬赏
-                    </el-button>
-                    <el-button type="text" size="small" class="delBut non"
-                               @click="deleteHandle('单删', scope.row.id)">
-                        删除
-                    </el-button>
-                </template>
-            </el-table-column>
-        </el-table>
-    </div>
-</div>
-<!-- 开发环境版本，包含了有帮助的命令行警告 -->
-<script src="../../plugins/vue/vue.js"></script>
-<!-- 引入组件库 -->
-<script src="../../plugins/element-ui/index.js"></script>
-<!-- 引入axios -->
-<script src="../../plugins/axios/axios.min.js"></script>
-<script src="../../js/request.js"></script>
-<script src="../../js/validate.js"></script>
-<script src="../../js/index.js"></script>
-<script src="../../api/cotask.js"></script>
-
-<script>
-    new Vue({
-        el: '#cotask-info-app',
-        data() {
-            return {
-                id: '',
-                index: 0,
-                ruleForm: {},
-                detailInfo: {},
-                tableIntelligenceData: [],
-                tableTaskData: [],
-                selectIntelligences: []
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <!-- 引入样式 -->
+        <link rel="stylesheet" href="../../plugins/element-ui/lib/theme-chalk/index.css" />
+        <link rel="stylesheet" href="../../styles/common.css" />
+        <link rel="stylesheet" href="../../styles/page.css" />
+        <style>
+            #food-add-app .uploadImg .el-form-item__label::before {
+                content: '*';
+                color: #f56c6c;
+                margin-right: 4px;
             }
-        },
-        created() {
-            this.id = requestUrlParam('id')
-            this.init()
-        },
-        mounted() {
-        },
-        methods: {
-            async init() {
-                getCotaskById(this.id).then(res => {
-                    console.log(res)
-                    if (String(res.code) === '1') {
-                        this.ruleForm = {...res.data}
-                        // this.ruleForm.intelligences = res.data.intelligenceNames
-                        // console.log(this.selectIntelligences)
-                    } else {
-                        this.$message.error(res.msg || '操作失败')
-                    }
-                })
-                getIntelligencesInCotask(this.id).then(res => {
-                    if (String(res.code) === '1') {
-                        var arr = [];
-                        for (var key in res.data) {
-                            console.log("load... " + key);
-                            console.log("load... " + res.data[key]);
-                            arr.push(res.data[key]);
+        </style>
+        <style>
+            .demo-table-expand {
+                font-size: 0;
+            }
+
+            .demo-table-expand label {
+                width: 90px;
+                color: #99a9bf;
+            }
+
+            .demo-table-expand .el-form-item {
+                margin-right: 0;
+                margin-bottom: 0;
+                width: 50%;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="addBrand-container" id="cotask-info-app">
+            <div class="container">
+                <template>
+                    <el-descriptions class="margin-top" title="协同任务详情信息" :column="3" colon>
+                        <template slot="extra">
+                            <el-button type="primary" size="mini" @click="openUpdateCotask">修改信息</el-button>
+                        </template>
+                        <el-descriptions-item label="协同任务名称">{{this.detailInfo.name}}</el-descriptions-item>
+                        <el-descriptions-item label="协同任务描述">{{this.detailInfo.description}}</el-descriptions-item>
+
+                        <el-descriptions-item label="激活状态">
+                            <el-tag size="small" label="0" v-if="this.detailInfo.status===0">冻结</el-tag>
+                            <el-tag size="small" type="success" label="1" v-if="this.detailInfo.status===1">激活</el-tag>
+                        </el-descriptions-item>
+
+                        <el-descriptions-item label="创建时间">{{this.detailInfo.createTime}}</el-descriptions-item>
+
+                        <el-descriptions-item label="最新修改时间">{{this.detailInfo.updateTime}}</el-descriptions-item>
+
+                        <el-descriptions-item label="是否达到立案标准">
+                            <el-tag size="small" label="0" v-if="this.detailInfo.liAn=='0'">进行中</el-tag>
+                            <el-tag size="small" type="success" label="1" v-if="this.detailInfo.liAn=='1'">已立案</el-tag>
+                        </el-descriptions-item>
+                    </el-descriptions>
+                </template>
+                <el-row :gutter="24">
+                    <el-col :span="20">
+                        <span><b>协同任务中所提供的情报</b></span>
+                    </el-col>
+                    <el-col :span="4">
+                        <el-button type="primary" size="mini" style="margin-right: 5px" @click="toAddIntelligence()">去添加</el-button>
+                    </el-col>
+                </el-row>
+                <el-table :data="tableIntelligenceData" style="width: 100%" height="300">
+                    <el-table-column type="expand">
+                        <template slot-scope="props">
+                            <el-form label-position="left" inline class="demo-table-expand">
+                                <el-form-item label="情报名称">
+                                    <span>{{ props.row.intelligenceName }}</span>
+                                </el-form-item>
+                                <el-form-item label="情报描述">
+                                    <span>{{ props.row.intelligenceDesc }}</span>
+                                </el-form-item>
+                                <el-form-item label="情报分类">
+                                    <span>{{ props.row.intelligenceCategoryName }}</span>
+                                </el-form-item>
+                                <el-form-item label="情报散列值">
+                                    <span>{{ props.row.fileHash }}</span>
+                                </el-form-item>
+                                <el-form-item label="创建人">
+                                    <span>{{ props.row.username }}</span>
+                                </el-form-item>
+                                <el-form-item label="创建时间" size="normal">
+                                    <span>{{ props.row.createTime }}</span>
+                                </el-form-item>
+                            </el-form>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="情报ID" prop="intelligenceId"></el-table-column>
+                    <el-table-column label="情报名称" prop="intelligenceName"></el-table-column>
+                    <el-table-column label="情报价值" prop="token"></el-table-column>
+                    <el-table-column label="操作">
+                        <template slot-scope="scope">
+                            <el-button type="text" size="small" class="blueBug" @click="toAddIntelligence">查看详情</el-button>
+                            <template v-if="detailInfo.status">
+                                <el-button type="text" size="small" class="delBut non" @click="deleteIntelligenceInCotask(scope.row.id)">删除</el-button>
+                            </template>
+                        </template>
+                    </el-table-column>
+                </el-table>
+
+                <el-row :gutter="24" style="margin-top: 10px">
+                    <el-col :span="20">
+                        <span><b>协同任务中分配的悬赏任务</b></span>
+                    </el-col>
+                    <el-col :span="4">
+                        <el-button type="primary" size="mini" style="margin-right: 5px" @click="toAddTaskPage()">发布任务</el-button>
+                    </el-col>
+                </el-row>
+                <el-table :data="tableTaskData" style="width: 100%" style="margin-top: auto" height="300">
+                    <el-table-column type="expand">
+                        <template slot-scope="props">
+                            <el-form label-position="left" inline class="demo-table-expand">
+                                <el-form-item label="任务主键">
+                                    <span>{{ props.row.id }}</span>
+                                </el-form-item>
+                                <el-form-item label="任务分类">
+                                    <span>{{ props.row.taskCategoryName }}</span>
+                                </el-form-item>
+                                <el-form-item label="信息分类" size="normal">
+                                    <span>{{ props.row.decideInfoCategoryName }}</span>
+                                </el-form-item>
+                                dis
+                                <el-form-item label="开始时间">
+                                    <span>{{ props.row.beginTime }}</span>
+                                </el-form-item>
+                                <el-form-item label="结束时间">
+                                    <span>{{ props.row.endTime }}</span>
+                                </el-form-item>
+
+                                <el-form-item label="领取策略">
+                                    <span v-if="props.row.open===0">领取单位：{{ props.row.policy }}</span>
+                                    <span v-else>全公开</span>
+                                </el-form-item>
+
+                                <el-form-item label="状态">
+                                    <span v-if="isInclude(props.row.id)">停用</span>
+                                    <span v-else>正常</span>
+                                </el-form-item>
+                                <el-form-item label="领取人数">
+                                    <span>{{ props.row.jiedanCount }}</span>
+                                </el-form-item>
+                                <el-form-item label="是否完成">
+                                    <span v-if="props.row.finished === 1">完成</span>
+                                    <span v-if="props.row.finished === 0">进行中</span>
+                                </el-form-item>
+                            </el-form>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="悬赏任务ID" prop="id"></el-table-column>
+                    <el-table-column label="简要需求" prop="name"></el-table-column>
+                    <el-table-column label="任务金额" prop="token"></el-table-column>
+                    <el-table-column label="操作">
+                        <template slot-scope="scope">
+                            <el-button type="text" size="small" class="blueBug" @click="getTaskDetail(scope.row.id)">查看详情</el-button>
+                            <template v-if="detailInfo.status">
+                                <el-button type="text" size="small" class="blueBug" @click="updateTaskStatus(scope.row)">
+                                    {{ updateTaskStatusData.newStatus === 0 ? '上架' : '下架' }}
+                                </el-button>
+                            </template>
+                            <template v-if="scope.row.status === 1">
+                                <el-button type="text" size="small" class="blueBug" @click="addTaskToken(scope.row)">增加悬赏</el-button>
+                                <el-button type="text" size="small" class="delBut non" @click="deleteTaskInCotask(scope.row.id)">撤销</el-button>
+                            </template>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </div>
+
+            <el-dialog :title="coTaskData.title" :visible.sync="coTaskData.dialogVisible" width="30%" :before-close="handleClose">
+                <div>
+                    <el-form ref="updateCotaskInfo" :model="updateCotaskInfo" :inline="true" label-width="180px" class="demo-ruleForm">
+                        <div>
+                            <el-form-item label="协同任务名:" prop="name" label-width="100px">
+                                <el-input v-model="updateCotaskInfo.name" maxlength="20" va />
+                            </el-form-item>
+                            <el-form-item label="任务描述:" prop="name" label-width="100px">
+                                <el-input v-model="updateCotaskInfo.description" type="textarea" :rows="3" placeholder="情报描述, 最长200字" maxlength="200" />
+                            </el-form-item>
+                        </div>
+                    </el-form>
+                </div>
+                <span slot="footer" class="dialog-footer">
+                    <el-button size="medium" @click="submitUpdateCoTask">确 定</el-button>
+                    <el-button size="medium" @click="coTaskData.dialogVisible = false">取消</el-button>
+                </span>
+            </el-dialog>
+
+            <el-dialog :title="taskTokenWin.title" :visible.sync="taskTokenWin.dialogVisible" width="30%" :before-close="handleClose">
+                <div>
+                    <el-form :inline="true" label-width="180px" class="demo-ruleForm">
+                        <div>
+                            <el-form-item label="新任务悬赏Token:" label-width="100px">
+                                <el-input v-model="updateTaskToken.newToken" maxlength="20" />
+                            </el-form-item>
+                        </div>
+                    </el-form>
+                </div>
+                <span slot="footer" class="dialog-footer">
+                    <el-button size="medium" @click="submitTaskTokenUpdate">确 定</el-button>
+                    <el-button size="medium" @click="taskTokenWin.dialogVisible = false">取消</el-button>
+                </span>
+            </el-dialog>
+        </div>
+        <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+        <script src="../../plugins/vue/vue.js"></script>
+        <!-- 引入组件库 -->
+        <script src="../../plugins/element-ui/lib/index.js"></script>
+        <!-- 引入axios -->
+        <script src="../../plugins/axios/axios.min.js"></script>
+        <script src="../../plugins/qs/qs.min.js"></script>
+        <script src="../../js/request.js"></script>
+        <script src="../../js/validate.js"></script>
+        <script src="../../js/index.js"></script>
+
+        <script src="../../api/cotask.js"></script>
+        <script src="../../api/task.js"></script>
+        <script>
+            new Vue({
+                el: '#cotask-info-app',
+                data() {
+                    return {
+                        // 协同任务的id
+                        id: '',
+                        // index: 0,
+                        // 协同任务详细信息
+                        detailInfo: {
+                            id: '',
+                            name: '',
+                            description: '',
+                            createTime: '',
+                            updateTime: '',
+                            status: '',
+                            liAn: '',
+                        },
+                        // cotaskStatus: true,
+                        // 协同任务中情报数据
+                        tableIntelligenceData: [],
+                        // 协同任务中研判任务数据
+                        tableTaskData: [],
+                        // 记录因截止时间已过导致失效的任务主键
+                        uselessArr: [],
+                        // 修改协同任务弹窗
+                        coTaskData: {
+                            title: '添加协同任务',
+                            dialogVisible: false,
+                        },
+                        //  待修改的信息
+                        updateCotaskInfo: {},
+                        // 设置悬赏修改窗口
+                        taskTokenWin: {
+                            title: '增加悬赏',
+                            dialogVisible: false,
+                        },
+                        // 新修改的token值
+                        updateTaskToken: {
+                            id: '',
+                            token: '',
+                            newToken: '',
+                        },
+                        // 悬赏任务上下架信息
+                        updateTaskStatusData: {
+                            ids: [],
+                            newStatus: '',
+                        },
+                    };
+                },
+                created() {
+                    this.id = requestUrlParam('id');
+                    this.init();
+                },
+                mounted() {},
+                methods: {
+                    async init() {
+                        // 获取当前协同任务的详细信息
+                        getCotaskById(this.id).then(res => {
+                            console.log(res);
+                            if (String(res.code) === '1') {
+                                this.detailInfo.id = res.data.id;
+                                this.detailInfo.name = res.data.name;
+                                this.detailInfo.description = res.data.description;
+                                this.detailInfo.status = res.data.status;
+                                this.detailInfo.createTime = res.data.createTime;
+                                this.detailInfo.updateTime = res.data.updateTime;
+                                this.detailInfo.liAn = res.data.liAn;
+                                console.log('detailInfo == ' + this.detailInfo);
+                                if (res.data.status === '0') {
+                                    this.cotaskStatus = false;
+                                } else {
+                                    this.cotaskStatus = true;
+                                }
+                            } else {
+                                this.$message.error(res.msg || '操作失败');
+                            }
+                        });
+                        // 获取当前协同任务的情报信息
+                        getIntelligencesInCotask(this.id).then(res => {
+                            if (String(res.code) === '1') {
+                                this.tableIntelligenceData = res.data || [];
+                                console.log(this.tableIntelligenceData);
+                            } else {
+                                this.$message.error(res.msg || '操作失败');
+                            }
+                        });
+                        // 获取当前协同任务的任务信息
+                        getTaskInCotask(this.id).then(res => {
+                            if (String(res.code) === '1') {
+                                this.tableTaskData = res.data || [];
+                                if (res.data != '') {
+                                    for (const key in res.data) {
+                                        var endTime = new Date(this.tableTaskData[key].endTime).getTime();
+                                        var now = new Date().getTime();
+                                        if (endTime < now) {
+                                            // 如果判断为true。则将对应任务的Id告知用户。用于修改
+                                            this.uselessArr.push(this.tableTaskData[key].id);
+                                        }
+                                    }
+                                    if (this.uselessArr != undefined && this.uselessArr.length > 0) {
+                                        this.$message({
+                                            message: '警告哦，研判任务' + this.uselessArr + '过了失效哦！！！，请及时修改',
+                                            type: 'warning',
+                                            duration: 6000,
+                                        });
+                                    }
+                                }
+                            } else {
+                                this.$message.error(res.msg || '操作失败');
+                            }
+                        });
+                    },
+                    handleQuery() {
+                        this.init();
+                    },
+                    // 用于当前任务是否存在失效任务中
+                    isInclude: function (id) {
+                        return this.uselessArr.includes(id);
+                    },
+                    // 去分配任务界面进行添加任务操作
+                    toAddTaskPage() {
+                        window.parent.menuHandle(
+                            {
+                                id: '7',
+                                url: '/backend/page/task/add.html?id=' + this.id,
+                                name: '添加研判任务',
+                            },
+                            true
+                        );
+                    },
+                    // 去我的情报页面将情报添加到协同任务中
+                    toAddIntelligence() {
+                        window.parent.menuHandle(
+                            {
+                                id: '6',
+                                url: '/backend/page/userIntelligence/list.html',
+                                name: '我的情报',
+                                icon: 'icon-renfangqingbao',
+                            },
+                            true
+                        );
+                    },
+                    // 关闭弹窗
+                    handleClose: function () {
+                        this.coTaskData.dialogVisible = false;
+                        this.taskTokenWin.dialogVisible = false;
+                    },
+                    // 打开修改协同任务弹窗，并填写信息
+                    openUpdateCotask: function () {
+                        this.coTaskData.dialogVisible = true;
+                        this.updateCotaskInfo = this.detailInfo;
+                    },
+                    // 提交协同信息修改
+                    submitUpdateCoTask: function () {
+                        const params = {
+                            ...this.updateCotaskInfo,
+                        };
+                        console.log(params);
+                        updateCotask(params)
+                            .then(res => {
+                                if (res.code === 1) {
+                                    this.$message.success('修改研判任务成功！');
+                                    this.handleQuery();
+                                    this.coTaskData.dialogVisible = false;
+                                } else {
+                                    this.$message.error(res.msg || '操作失败');
+                                    this.coTaskData.dialogVisible = false;
+                                }
+                            })
+                            .catch(err => {
+                                this.$message.error('请求出错了：' + err);
+                            });
+                    },
+                    // 取消该情报与协同任务的关联
+                    deleteIntelligenceInCotask(id) {
+                        this.$confirm('确认在该协同任务中解除该情报, 是否继续?', '确定删除', {
+                            confirmButtonText: '确定',
+                            cancelButtonText: '取消',
+                        }).then(() => {
+                            if (this.detailInfo.status === 0) {
+                                this.$message.error('协同任务未激活或已完成');
+                            }
+                            deleteCotaskIntelligenceById(id)
+                                .then(res => {
+                                    if (res.code === 1) {
+                                        this.$message.success('删除成功！');
+                                        this.handleQuery();
+                                    } else {
+                                        this.$message.error(res.msg || '操作失败');
+                                    }
+                                })
+                                .catch(err => {
+                                    this.$message.error('请求出错了：' + err);
+                                });
+                        });
+                    },
+
+                    // 增加任务悬赏
+                    addTaskToken(task) {
+                        this.taskTokenWin.dialogVisible = true;
+                        this.updateTaskToken.newToken = task.token;
+                        console.log(task);
+                        console.log(this.updateTaskToken.newToken);
+                        this.updateTaskToken.id = task.id;
+                        this.updateTaskToken.token = task.token;
+                    },
+                    submitTaskTokenUpdate() {
+                        this.taskTokenWin.dialogVisible = false;
+                        const params = {
+                            ...this.updateTaskToken,
+                        };
+                        updateTaskTokenMethod(params)
+                            .then(res => {
+                                if (res.code === 1) {
+                                    this.$message.success('修改成功！');
+                                    this.handleQuery();
+                                } else {
+                                    this.$message.error(res.msg || '操作失败');
+                                }
+                            })
+                            .catch(err => {
+                                this.$message.error('请求出错了：' + err);
+                            });
+                    },
+
+                    // 撤销协同任务中的悬赏任务
+                    deleteTaskInCotask(taskId) {
+                        this.$confirm('确认在该协同任务中撤销该悬赏, 是否继续?', '确定删除', {
+                            confirmButtonText: '确定',
+                            cancelButtonText: '取消',
+                        }).then(() => {
+                            console.log(taskId);
+                            const params = [];
+                            params.push(taskId);
+                            deleteTaskByIdsMethod(params)
+                                .then(res => {
+                                    if (res.code === 1) {
+                                        this.$message.success('撤销成功！');
+                                        this.handleQuery();
+                                    } else {
+                                        this.$message.error(res.msg || '操作失败');
+                                    }
+                                })
+                                .catch(err => {
+                                    this.$message.error('请求出错了：' + err);
+                                });
+                        });
+                    },
+                    // 控制协同任务的上下架
+                    updateTaskStatus(task) {
+                        this.updateTaskStatusData.ids.push(task.id);
+                        if (task.status === 0) {
+                            this.updateTaskStatusData.newStatus = 1;
+                        } else {
+                            this.updateTaskStatusData.newStatus = 0;
                         }
-                        console.log(arr);
-                        this.tableIntelligenceData = arr || []
-                    } else {
-                        this.$message.error(res.msg || '操作失败')
-                    }
-                })
-            },
-
-            inputHandle(val, index) {
-                // this.selectFlavor(false,index)
-            },
-
-            goBack() {
-                window.parent.menuHandle({
-                    id: '7',
-                    url: '/backend/page/cotask/list.html',
-                    name: '协同任务'
-                }, false)
-            }
-        }
-    })
-</script>
-</body>
-
+                        console.log(this.updateTaskStatusData);
+                        updateTaskStatusMethod(this.updateTaskStatusData).then(res => {
+                            if (String(res.code) === '1') {
+                                this.$message.success('状态修改成功');
+                                this.handleQuery();
+                            } else {
+                                this.$message.error(res.msg || '操作失败');
+                            }
+                        });
+                    },
+                    goBack() {
+                        window.parent.menuHandle(
+                            {
+                                id: '7',
+                                url: '/backend/page/cotask/list.html',
+                                name: '协同任务',
+                            },
+                            false
+                        );
+                    },
+                },
+            });
+        </script>
+    </body>
 </html>

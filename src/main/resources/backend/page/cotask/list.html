@@ -1,232 +1,225 @@
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <!-- 引入样式 -->
+        <link rel="stylesheet" href="../../plugins/element-ui/index.css" />
+        <link rel="stylesheet" href="../../styles/common.css" />
+        <link rel="stylesheet" href="../../styles/page.css" />
+    </head>
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <!-- 引入样式 -->
-    <link rel="stylesheet" href="../../plugins/element-ui/index.css"/>
-    <link rel="stylesheet" href="../../styles/common.css"/>
-    <link rel="stylesheet" href="../../styles/page.css"/>
-</head>
+    <body>
+        <div class="dashboard-container" id="cotask-app">
+            <div class="container">
+                <div class="tableBar">
+                    <el-input v-model="input" placeholder="请输入协同任务名称" style="width: 250px" clearable @keyup.enter.native="handleQuery">
+                        <i slot="prefix" class="el-input__icon el-icon-search" style="cursor: pointer" @click="init"></i>
+                    </el-input>
+                    <div class="tableLab">
+                        <span class="span-btn delBut non" @click="deleteHandle('批量', null)" title="仅无人认领任务可撤销">批量撤销</span>
+                        <span class="span-btn blueBug non" @click="statusHandle('1')">批量启用</span>
+                        <span style="border: none" class="span-btn delBut non" @click="statusHandle('0')" title="仅无人认领任务可暂时冻结任务">批量停用</span>
+                    </div>
+                </div>
+                <el-table :data="tableData" stripe class="tableBox" @selection-change="handleSelectionChange">
+                    <el-table-column type="selection"></el-table-column>
+                    <el-table-column prop="id" label="协同任务Id" width="160px"></el-table-column>
+                    <el-table-column prop="name" label="任务名称"></el-table-column>
+                    <el-table-column align="center" prop="description" label="任务描述"></el-table-column>
+                    <el-table-column prop="liAn" label="完成情况">
+                        <template slot-scope="scope">
+                            <span style="margin-right: 10px">{{ scope.row.liAn == '0' ? '进行中' : '立案' }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="createTime" label="发布时间"></el-table-column>
+                    <el-table-column prop="updateTime" label="最后操作时间"></el-table-column>
 
-<body>
-<div class="dashboard-container" id="cotask-app">
-    <div class="container">
-        <div class="tableBar">
-            <el-input v-model="input" placeholder="请输入任务名称" style="width: 250px" clearable
-                      @keyup.enter.native="handleQuery">
-                <i slot="prefix" class="el-input__icon el-icon-search" style="cursor: pointer" @click="init"></i>
-            </el-input>
-            <div class="tableLab">
-                    <span class="span-btn delBut non" v-if="user === 'admin'"
-                          @click="deleteHandle('批量', null)">批量删除</span>
-                <span class="span-btn blueBug non" v-if="user === 'admin'" @click="statusHandle('1')">批量启用</span>
-                <span style="border:none;" class="span-btn delBut non" v-if="user === 'admin'"
-                      @click="statusHandle('0')">批量停用</span>
-                <el-button type="primary" @click="addIntelligencetype('add')">
-                    + 发布任务
-                </el-button>
+                    <el-table-column label="操作" align="center">
+                        <template slot-scope="scope">
+                            <el-button type="text" size="small" class="blueBug" @click="goDetail(scope.row.id)">查看详情</el-button>
+                            <el-button type="text" size="small" class="blueBug" @click="addTask(scope.row.id)" v-if="scope.row.status === 1">
+                                分配任务
+                            </el-button>
+                            <el-button type="text" size="small" class="blueBug" @click="statusHandle(scope.row)">
+                                {{ scope.row.status == '0' ? '启用' : '停用' }}
+                            </el-button>
+                            <el-button type="text" size="small" class="delBut non" @click="deleteHandle('单删', scope.row.id)" title="仅无人认领任务可撤销">
+                                撤销
+                            </el-button>
+                            <el-button type="text" size="small" class="blueBug" @click="" disabled>立案</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <el-pagination
+                    class="pageList"
+                    :page-sizes="[10, 20, 30, 40]"
+                    :page-size="pageSize"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="counts"
+                    @size-change="handleSizeChange"
+                    :current-page.sync="page"
+                    @current-change="handleCurrentChange"
+                ></el-pagination>
             </div>
         </div>
-        <el-table :data="tableData" stripe class="tableBox" @selection-change="handleSelectionChange">
-            <el-table-column type="selection"></el-table-column>
-            <el-table-column prop="name" label="任务名称" width="100"></el-table-column>
-            <el-table-column align="center" prop="description" label="任务描述"></el-table-column>
-            <el-table-column prop="finished" label="完成情况" width="100">
-                <template slot-scope="scope">
-                    <span style="margin-right: 10px;">{{ scope.row.finished == '0' ? '进行中' : '已完成' }}</span>
-                </template>
-            </el-table-column>
-            <el-table-column prop="createTime" label="发布时间">
-            </el-table-column>
-            <el-table-column prop="updateTime" label="最后操作时间">
-            </el-table-column>
+        <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+        <script src="../../plugins/vue/vue.js"></script>
+        <!-- 引入组件库 -->
+        <script src="../../plugins/element-ui/index.js"></script>
+        <!-- 引入axios -->
+        <script src="../../plugins/axios/axios.min.js"></script>
+        <script src="../../js/request.js"></script>
+        <script src="../../api/cotask.js"></script>
+        <script>
+            new Vue({
+                el: '#cotask-app',
+                data() {
+                    return {
+                        input: '',
+                        counts: 0,
+                        page: 1,
+                        pageSize: 10,
+                        tableData: [],
+                        cotaskingState: '',
+                        checkList: [],
+                    };
+                },
+                computed: {},
+                created() {
+                    this.init();
+                    this.user = JSON.parse(localStorage.getItem('userInfo')).username;
+                },
+                mounted() {},
+                methods: {
+                    async init() {
+                        const params = {
+                            page: this.page,
+                            pageSize: this.pageSize,
+                            name: this.input ? this.input : undefined,
+                        };
+                        await getCotaskPage(params)
+                            .then(res => {
+                                if (String(res.code) === '1') {
+                                    this.tableData = res.data.records || [];
+                                    this.counts = res.data.total;
+                                }
+                            })
+                            .catch(err => {
+                                this.$message.error('请求出错了：' + err);
+                            });
+                    },
+                    handleQuery() {
+                        this.page = 1;
+                        this.init();
+                    },
+                    // 获取任务详情
+                    goDetail(id) {
+                        window.parent.menuHandle(
+                            {
+                                id: '7',
+                                url: '/backend/page/cotask/info.html?id=' + id,
+                                name: '协同任务详情',
+                            },
+                            true
+                        );
+                    },
+                    // 去添加任务页面
+                    addTask(id) {
+                        window.parent.menuHandle(
+                            {
+                                id: '7',
+                                url: '/backend/page/task/add.html?id=' + id,
+                                name: '添加研判任务',
+                            },
+                            true
+                        );
+                    },
 
-            <el-table-column label="操作" align="center" width="230">
-                <template slot-scope="scope">
-                    <el-button type="text" size="small" class="blueBug" @click="goDetail(scope.row.id)">
-                        查看详情
-                    </el-button>
-                    <el-button type="text" size="small" class="blueBug" @click="addTask(scope.row.id)">
-                        分配任务
-                    </el-button>
-                    <el-button type="text" size="small" class="blueBug" @click="statusHandle(scope.row)">
-                        {{ scope.row.status == '0' ? '启用' : '停用' }}
-                    </el-button>
-                    <el-button type="text" size="small" class="delBut non"
-                               @click="deleteHandle('单删', scope.row.id)">
-                        删除
-                    </el-button>
-                </template>
-            </el-table-column>
-        </el-table>
-        <el-pagination class="pageList" :page-sizes="[10, 20, 30, 40]" :page-size="pageSize"
-                       layout="total, sizes, prev, pager, next, jumper" :total="counts" @size-change="handleSizeChange"
-                       :current-page.sync="page" @current-change="handleCurrentChange"></el-pagination>
-    </div>
-</div>
-<!-- 开发环境版本，包含了有帮助的命令行警告 -->
-<script src="../../plugins/vue/vue.js"></script>
-<!-- 引入组件库 -->
-<script src="../../plugins/element-ui/index.js"></script>
-<!-- 引入axios -->
-<script src="../../plugins/axios/axios.min.js"></script>
-<script src="../../js/request.js"></script>
-<script src="../../api/cotask.js"></script>
-<script>
-    new Vue({
-        el: '#cotask-app',
-        data() {
-            return {
-                input: '',
-                counts: 0,
-                page: 1,
-                pageSize: 10,
-                tableData: [],
-                intelligenceState: '',
-                checkList: [],
-                user: ''
-            }
-        },
-        computed: {},
-        created() {
-            this.init()
-            this.user = JSON.parse(localStorage.getItem('userInfo')).username
-        },
-        mounted() {
-        },
-        methods: {
-            async init() {
-                const params = {
-                    page: this.page,
-                    pageSize: this.pageSize,
-                    name: this.input ? this.input : undefined
-                }
-                await getCotaskPage(params).then(res => {
-                    if (String(res.code) === '1') {
-                        this.tableData = res.data.records || []
-                        this.counts = res.data.total
-                    }
-                }).catch(err => {
-                    this.$message.error('请求出错了：' + err)
-                })
-            },
-            handleQuery() {
-                this.page = 1;
-                this.init();
-            },
-            goDetail(id) {
-                window.parent.menuHandle({
-                    id: '7',
-                    url: '/backend/page/cotask/info.html?id=' + id,
-                    name: '协同任务详情'
-                }, true)
-            },
-            addTask(id){
-                window.parent.menuHandle({
-                    id: '7',
-                    url: '/backend/page/cotask/add.html?id=' + id,
-                    name: '添加研判任务'
-                }, true)
-            },
-            // 添加
-            addIntelligencetype(st) {
-                if (st === 'add') {
-                    window.parent.menuHandle({
-                        id: '4',
-                        url: '/backend/page/intelligence/add.html',
-                        name: '新增情报'
-                    }, true)
-                } else {
-                    window.parent.menuHandle({
-                        id: '4',
-                        url: '/backend/page/intelligence/add.html?id=' + st,
-                        name: '修改情报'
-                    }, true)
-                }
-            },
-
-
-            // 删除
-            deleteHandle(type, id) {
-                if (type === '批量' && id === null) {
-                    if (this.checkList.length === 0) {
-                        return this.$message.error('请选择删除对象')
-                    }
-                }
-                this.$confirm('确认删除该情报, 是否继续?', '确定删除', {
-                    'confirmButtonText': '确定',
-                    'cancelButtonText': '取消',
-                }).then(() => {
-                    deleteById(type === '批量' ? this.checkList.join(',') : id).then(res => {
-                        if (res.code === 1) {
-                            this.$message.success('删除成功！')
-                            this.handleQuery()
-                        } else {
-                            this.$message.error(res.msg || '操作失败')
+                    // 删除
+                    deleteHandle(type, id) {
+                        if (type === '批量' && id === null) {
+                            if (this.checkList.length === 0) {
+                                return this.$message.error('请选择撤销对象');
+                            }
                         }
-                    }).catch(err => {
-                        this.$message.error('请求出错了：' + err)
-                    })
-                })
-            },
+                        this.$confirm('确认撤销该协同任务, 是否继续?', '确定删除', {
+                            confirmButtonText: '确定',
+                            cancelButtonText: '取消',
+                        }).then(() => {
+                            deleteCotaskByIds(type === '批量' ? this.checkList.join(',') : id)
+                                .then(res => {
+                                    if (res.code === 1) {
+                                        this.$message.success('撤销成功！');
+                                        this.handleQuery();
+                                    } else {
+                                        this.$message.error(res.msg || '操作失败');
+                                    }
+                                })
+                                .catch(err => {
+                                    this.$message.error('请求出错了：' + err);
+                                });
+                        });
+                    },
 
-            //状态更改
-            statusHandle(row) {
-                let params = {}
-                if (typeof row === 'string') {
-                    if (this.checkList.length === 0) {
-                        this.$message.error('批量操作，请先勾选操作情报！')
-                        return false
-                    }
-                    params.id = this.checkList.join(',')
-                    params.status = row
-                } else {
-                    params.id = row.id
-                    params.status = row.status ? '0' : '1'
-                }
-                this.intelligenceState = params
-                this.$confirm('确认更改该情报状态?', '提示', {
-                    'confirmButtonText': '确定',
-                    'cancelButtonText': '取消',
-                    'type': 'warning'
-                }).then(() => {
-                    // 起售停售---批量起售停售接口
-                    intelligenceStatusByStatus(this.intelligenceState).then(res => {
-                        if (res.code === 1) {
-                            this.$message.success('情报状态已经更改成功！')
-                            this.handleQuery()
+                    //状态更改
+                    statusHandle(row) {
+                        let params = {};
+                        if (typeof row === 'string') {
+                            if (this.checkList.length === 0) {
+                                this.$message.error('批量操作，请先勾选协同任务！');
+                                return false;
+                            }
+                            params.ids = this.checkList.join(',');
+                            params.status = row;
                         } else {
-                            this.$message.error(res.msg || '操作失败')
+                            params.ids = row.id;
+                            params.status = row.status ? '0' : '1';
                         }
-                    }).catch(err => {
-                        this.$message.error('请求出错了：' + err)
-                    })
-                })
-            },
+                        this.cotaskingState = params;
+                        this.$confirm('确认更改该协同任务状态?', '提示', {
+                            confirmButtonText: '确定',
+                            cancelButtonText: '取消',
+                            type: 'warning',
+                        }).then(() => {
+                            updateCotaskingStatus(this.cotaskingState)
+                                .then(res => {
+                                    if (res.code === 1) {
+                                        this.$message.success('协同任务状态已经更改成功！');
+                                        this.handleQuery();
+                                    } else {
+                                        this.$message.error(res.msg || '操作失败');
+                                    }
+                                })
+                                .catch(err => {
+                                    this.$message.error('请求出错了：' + err);
+                                });
+                            // alert(this.cotaskingState.status);
+                            console.log(this.cotaskingState.id);
+                            console.log(this.cotaskingState.status);
+                        });
+                    },
 
-            // 全部操作
-            handleSelectionChange(val) {
-                let checkArr = []
-                val.forEach((n) => {
-                    checkArr.push(n.id)
-                })
-                this.checkList = checkArr
-            },
-            handleSizeChange(val) {
-                this.pageSize = val
-                this.init()
-            },
-            handleCurrentChange(val) {
-                this.page = val
-                this.init()
-            },
-        }
-    })
-</script>
-</body>
-
+                    // 全部操作
+                    handleSelectionChange(val) {
+                        let checkArr = [];
+                        val.forEach(n => {
+                            checkArr.push(n.id);
+                        });
+                        this.checkList = checkArr;
+                    },
+                    handleSizeChange(val) {
+                        this.pageSize = val;
+                        this.init();
+                    },
+                    handleCurrentChange(val) {
+                        this.page = val;
+                        this.init();
+                    },
+                },
+            });
+        </script>
+    </body>
 </html>

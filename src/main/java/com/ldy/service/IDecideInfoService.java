@@ -3,6 +3,8 @@ package com.ldy.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ldy.entity.DecideInfo;
 
+import java.util.List;
+
 /**
  * <p>
  *  服务类
@@ -13,4 +15,5 @@ import com.ldy.entity.DecideInfo;
  */
 public interface IDecideInfoService extends IService<DecideInfo> {
 
+    List<String> getTaskDetailFiledByTaskId(Long id);
 }
