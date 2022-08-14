@@ -29,4 +29,14 @@ public interface UserTaskMapper extends BaseMapper<UserTask> {
     Integer selectUserTaskCountInCotasking(List<Long> list);
 
     Page<TaskVo> getUserTaskByUserId(Page<TaskVo> taskVoPage, @Param("name") String name, @Param("userId") Long userId);
+
+    /**
+     *根据任务id获取所有与该任务关联的userTask
+     * @param taskId
+     * @return
+     */
+    UserTask getUserTasksByTaskId(Long taskId);
+
+
+
 }

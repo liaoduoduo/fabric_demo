@@ -10,9 +10,11 @@ import com.ldy.entity.*;
 import com.ldy.mapper.*;
 import com.ldy.service.ITaskService;
 import com.ldy.vo.TaskVo;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -30,6 +32,7 @@ import java.util.Map;
  */
 @Service
 @Slf4j
+@SuppressWarnings("all")
 public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements ITaskService {
 
     @Autowired
@@ -196,4 +199,95 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements IT
         User user = userMapper.selectById(userId);
         return taskMapper.getAllTaskInfoWithUserPage(taskPage, name, user.getUnit());
     }
+
+    /**
+     * Token结算，任务完成后，由用户确认并调用该方法完成Token的转移
+     * 该id是提交的任务的id，根据该任务id找到发布者和完成者
+     * @param id
+     */
+    @ApiOperation("任务结算，完成任务发布者与完成者之间的Token转移")
+    @Transactional
+    public R<String> tokenCheckOut(Long id) {
+
+//        Task task = taskMapper.selectById(id);
+//        //获取任务发布者的id
+//        Long createUser = task.getCreateUser();
+
+        //获取该任务的价值
+        System.out.println(taskMapper==null);
+
+        Task task = taskMapper.selectById(id);
+        BigDecimal taskToken = task.getToken();
+
+        if (taskToken==null){
+            return R.error("未找到该任务的完成情况");
+        }
+
+        //获得完成该任务的UserTask映射
+        UserTask userTask = userTaskMapper.getUserTasksByTaskId(id);
+
+        //获得该任务的创建者id和完成者id
+        Long createUserId = userTask.getCreateUser();
+        Long acceptedUserId = userTask.getUserId();
+
+        //获取二者的Token账户
+        User createUser = userMapper.selectById(createUserId);
+        User acceptedUser = userMapper.selectById(acceptedUserId);
+
+        Long createUserTokenId = createUser.getTokenId();
+        Long acceptedUserTokenId = acceptedUser.getTokenId();
+
+        Token acceptedUserToken = tokenMapper.selectById(acceptedUserTokenId);
+
+        Token createUserToken = tokenMapper.selectById(createUserTokenId);
+
+        System.out.println(createUserToken);
+
+        //将创建者的blockedToken转移taskToken数到完成者账户,
+        createUserToken.setBlockToken(createUserToken.getBlockToken().subtract(taskToken));
+        acceptedUserToken.setCurrentToken(acceptedUserToken.getCurrentToken().add(taskToken));
+
+        System.out.println(createUserToken);
+
+//        tokenMapper.updateById(c);
+
+
+        //将其改变更新到数据库
+        int i = tokenMapper.updateById(createUserToken);
+        int i1 = tokenMapper.updateById(acceptedUserToken);
+
+        //将createUser的结算完成记录写入tokenLog
+        TokenLog tokenLog = new TokenLog();
+        tokenLog.setTokenId(createUserToken.getId());
+        tokenLog.setContent("任务结算");
+        tokenLog.setDeleted(0);
+        //创建者的现有token未发生变化
+        tokenLog.setCurrentChange(new BigDecimal(0));
+        //创建者的冻结token会减少
+        tokenLog.setBlockChange(taskToken.negate());
+        tokenLog.setCurrentToken(createUserToken.getCurrentToken());
+        tokenLog.setBlockToken(createUserToken.getBlockToken());
+        tokenLogMapper.insert(tokenLog);
+
+
+
+        //将acceptedUser的结算完成记录写入tokenLog
+        TokenLog tokenLog1 = new TokenLog();
+        tokenLog1.setTokenId(acceptedUser.getId());
+        tokenLog1.setContent("任务结算");
+        tokenLog1.setDeleted(0);
+        //完成者的现有token会增加
+        tokenLog1.setCurrentChange(taskToken);
+        //完成者的冻结token不变
+        tokenLog1.setBlockChange(new BigDecimal(0));
+        tokenLog1.setCurrentToken(acceptedUserToken.getCurrentToken());
+        tokenLog1.setBlockToken(acceptedUserToken.getBlockToken());
+        tokenLogMapper.insert(tokenLog1);
+
+        return (i>0&&i1>0)? R.success("结算成功"):R.error("结算失败");
+
+    }
+
+
+
 }

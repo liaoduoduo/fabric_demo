@@ -28,4 +28,6 @@ public interface ITaskService extends IService<Task> {
     R<String> removeTaskByIds(Long[] ids);
 
     Page<TaskVo> getAllTaskInfoWithUserPage(Page<TaskVo> taskPage, String name, Long userId);
+
+    R<String> tokenCheckOut(Long id);
 }

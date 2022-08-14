@@ -40,4 +40,15 @@
         <result property="taskCategoryName" column="taskCategoryName"/>
         <result property="decideInfoCategoryName" column="decideInfoCategoryName"/>
     </resultMap>
+
+
+
+    <select id="getUserTasksByTaskId" resultType="com.ldy.entity.UserTask">
+        select *
+        from user_task
+        where task_id=#{taskId} and accepted=1
+    </select>
+
+
+
 </mapper>
