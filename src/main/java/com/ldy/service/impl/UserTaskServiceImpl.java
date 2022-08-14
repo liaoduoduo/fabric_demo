@@ -49,19 +49,12 @@ public class UserTaskServiceImpl extends ServiceImpl<UserTaskMapper, UserTask> i
         if (Objects.equals(userId, task.getCreateUser())) {
             return R.error("添加异常, 不能接自己的单子");
         }
-        // 先创建一个答案实体
-        TaskDetail taskDetail = new TaskDetail();
-        taskDetail.setDeleted(0);
-        taskDetailMapper.insert(taskDetail);
-
         UserTask userTask = new UserTask();
         userTask.setTaskId(id);
         userTask.setUserId(userId);
         userTask.setAccepted(0);
         userTask.setContribution(BigDecimal.valueOf(0));
-        userTask.setSubmitTime(null);
         userTask.setDeleted(0);
-        userTask.setTaskDetailId(taskDetail.getId());
         int insert = userTaskMapper.insert(userTask);
         return insert > 0 ? R.success("成功添加") : R.error("添加异常");
     }

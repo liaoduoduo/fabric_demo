@@ -10,6 +10,7 @@ import com.ldy.entity.*;
 import com.ldy.service.*;
 import com.ldy.vo.TaskVo;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -68,13 +69,7 @@ public class UserTaskController {
         return b ? R.success("摆烂成功") : R.error("摆烂失败");
     }
 
-    @ApiOperation("填写悬赏任务的答案")
-    @PostMapping("/writeTaskResult")
-    public R<String> writeTaskResult(@RequestParam("id") Long id) {
 
-
-        return null;
-    }
 
 
     @ApiOperation("查询任务领单人员")

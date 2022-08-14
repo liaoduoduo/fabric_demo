@@ -28,6 +28,7 @@
         LEFT JOIN cotasking c on t.cotasking_id = c.id
         LEFT JOIN task_category tc on t.task_category_id = tc.id
         LEFT JOIN decide_info_category dic on t.decide_info_category_id = dic.id
+        LEFT JOIN user on user.id = t.create_user
         WHERE 1 = 1
         <if test="name != null">
             and t.name like CONCAT('%', #{name}, '%')

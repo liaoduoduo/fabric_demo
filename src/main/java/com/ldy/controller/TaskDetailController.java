@@ -2,6 +2,7 @@ package com.ldy.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.ldy.common.R;
 import com.ldy.entity.TaskDetail;
 import com.ldy.entity.UserTask;
@@ -26,18 +27,13 @@ import java.time.LocalDateTime;
 public class TaskDetailController {
     @Autowired
     ITaskDetailService taskDetailService;
-    @Autowired
-    IUserTaskService userTaskService;
 
-
-    @ApiOperation("开卷")
+    @ApiOperation("开卷--填写答案")
     @PostMapping("/getMoney")
     public R<String> getMoney(@RequestBody TaskDetail taskDetail) {
         taskDetail.setDeleted(0);
+        taskDetail.setSubmitTime(LocalDateTime.now());
         boolean save = taskDetailService.save(taskDetail);
-        UserTask userTask = userTaskService.getById(taskDetail.getUserTaskId());
-        LocalDateTime now = LocalDateTime.now();
-        userTask.setSubmitTime(now);
         return save ? R.success("填写完成") : R.error("添加失败");
     }
 
@@ -50,11 +46,11 @@ public class TaskDetailController {
         return R.success(taskDetail);
     }
 
-    @ApiOperation("修改答案")
+/*    @ApiOperation("修改答案")
     @PutMapping("/updateTaskDetail")
     public R<String> updateTaskDetail(@RequestBody TaskDetail taskDetail) {
         boolean b = taskDetailService.updateById(taskDetail);
         return b ? R.success("修改完成") : R.error("修改失败");
-    }
+    }*/
 }
 

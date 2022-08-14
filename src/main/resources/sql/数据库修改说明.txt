@@ -1,0 +1,6 @@
+针对user_task 与 task_detail表
+    将 user_task 的 task_detail_id、submit_time 删除
+    增加 task_detail 表 user_task_id 字段
+    增加 task_detail 表 submit_time 字段
+针对decide_info
+    将name字段全部转为驼峰命名，为了查询、修改task_detail的信息更加遍历

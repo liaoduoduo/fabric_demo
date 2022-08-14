@@ -28,8 +28,11 @@ public class TaskDetail implements Serializable {
     @ApiModelProperty("主键")
     private Long id;
 
-    @ApiModelProperty("用户接单的记录")
+    @ApiModelProperty("用户接单UserTaskId")
     private Long userTaskId;
+
+    @ApiModelProperty(value = "提交时间")
+    private LocalDateTime submitTime;
 
     @ApiModelProperty(value = "准驾车型")
     @TableField("Quasi_driving_type")

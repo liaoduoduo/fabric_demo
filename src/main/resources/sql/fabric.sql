@@ -11,7 +11,7 @@
  Target Server Version : 50736
  File Encoding         : 65001
 
- Date: 13/08/2022 21:45:37
+ Date: 14/08/2022 09:08:09
 */
 
 SET NAMES utf8mb4;
@@ -147,106 +147,106 @@ CREATE TABLE `decide_info`  (
 -- ----------------------------
 -- Records of decide_info
 -- ----------------------------
-INSERT INTO `decide_info` VALUES (1, 'Quasi_driving_type', '准驾车型', 16, 0.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (2, 'Registration_number', '注册号', 5, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (3, 'Payment_account', '支付账号', 18, 1.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (4, 'Payment_type', '支付类型', 18, 1.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (1, 'QuasiDrivingType', '准驾车型', 16, 0.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (2, 'RegistrationNumber', '注册号', 5, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (3, 'PaymentAccount', '支付账号', 18, 1.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (4, 'PaymentType', '支付类型', 18, 1.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
 INSERT INTO `decide_info` VALUES (5, 'photo', '照片', 17, 0.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (6, 'Account_information', '账号信息', 1, 2.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (7, 'The_reserved_phone', '预留手机', 12, 1, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (8, 'Relationships_with_members_of_society', '与社会成员关系', 7, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (9, 'Relationships_with_family_members', '与家庭成员关系', 15, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (10, 'Valid_term', '有效期限', 16, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (11, 'The_bank_bills', '银行账单', 9, 1, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (12, 'Type_of_bank_card', '银行卡种类', 12, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (13, 'Bank_card_Number', '银行卡卡号', 12, 1, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (14, 'Virtual_identity_type', '虚拟身份类型', 1, 2.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (15, 'How_detailed', '详细程度', 11, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (16, 'Clue_details', '线索详细内容', 11, 2.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (17, 'The_clue_involves', '线索涉及地', 11, 0.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (18, 'Clues_to_the_source', '线索来源', 11, 1, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (6, 'AccountInformation', '账号信息', 1, 2.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (7, 'TheReservedPhone', '预留手机', 12, 1, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (8, 'RelationshipsWithMembersOfSociety', '与社会成员关系', 7, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (9, 'RelationshipsWithFamilyMembers', '与家庭成员关系', 15, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (10, 'ValidTerm', '有效期限', 16, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (11, 'TheBankBills', '银行账单', 9, 1, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (12, 'TypeOfBankCard', '银行卡种类', 12, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (13, 'BankCardNumber', '银行卡卡号', 12, 1, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (14, 'VirtualIdentityType', '虚拟身份类型', 1, 2.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (15, 'HowDetailed', '详细程度', 11, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (16, 'ClueDetails', '线索详细内容', 11, 2.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (17, 'TheClueInvolves', '线索涉及地', 11, 0.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (18, 'CluesToTheSource', '线索来源', 11, 1, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
 INSERT INTO `decide_info` VALUES (19, 'Informant', '线索举报人', 11, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (20, 'Clues_to_the_title', '线索标题', 11, 1, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (21, 'Occupation_of_suspect', '嫌疑人职业', 17, 0.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (22, 'Suspects_pay_for_cell_phone_numbers', '嫌疑人支付手机号码', 18, 1, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (23, 'Name_of_suspect', '嫌疑人姓名', 17, 0.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (24, 'Gender_of_suspect', '嫌疑人性别', 17, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (25, 'Suspect_cell_phone_number', '嫌疑人手机号码', 17, 2.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (26, 'Suspect_id_Number', '嫌疑人身份证号码', 17, 2.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (27, 'Place_of_residence_of_the_suspect', '嫌疑人户籍地', 17, 0.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (28, 'The_address_book', '通讯录', 9, 1, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (29, 'Belongs_to_the_special', '所属专项', 11, 1, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (30, 'Recipient_phone_number', '收件人电话', 3, 0.05, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (31, 'Addressee_address', '收件人地址', 3, 0.05, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (32, 'The_recipient', '收件人', 3, 0.05, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (33, 'Video_data', '视频资料', 9, 1, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (34, 'Whether_the_event_is_real_or_not', '事件是否真实', 2, 1.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (35, 'Drugs_involved', '涉及的毒品', 11, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (36, 'Types_of_drug_related', '涉毒种类', 4, 5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (37, 'Degree_of_suspicion_of_drug_involvement', '涉毒嫌疑度', 10, 5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (38, 'Drug_related_scale', '涉毒规模', 4, 5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (39, 'Drug_related_way', '涉毒方式', 4, 5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (40, 'Types_of_drug_related_crimes', '涉毒犯罪类型', 11, 1, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (41, 'Drug_related_site', '涉毒地点', 4, 5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (42, 'In_the_case_of_information', '涉案信息', 1, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (43, 'Profession_of_social_member', '社会成员职业', 7, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (44, 'The_virtual_identity_of_a_social_member', '社会成员虚拟身份', 7, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (45, 'Name_of_social_member', '社会成员姓名', 7, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (46, 'Gender_of_social_member', '社会成员性别', 7, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (47, 'Cell_phone_number_of_a_social_member', '社会成员手机号码', 7, 0.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (48, 'Social_member_id_card_number', '社会成员身份证号码', 7, 0.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (49, 'Place_of_residence_of_social_member', '社会成员户籍地', 7, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (50, 'To_sign_for_the_time', '签收时间', 3, 0.05, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (20, 'CluesToTheTitle', '线索标题', 11, 1, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (21, 'OccupationOfSuspect', '嫌疑人职业', 17, 0.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (22, 'SuspectsPayForCellPhoneNumbers', '嫌疑人支付手机号码', 18, 1, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (23, 'NameOfSuspect', '嫌疑人姓名', 17, 0.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (24, 'GenderOfSuspect', '嫌疑人性别', 17, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (25, 'SuspectCellPhoneNumber', '嫌疑人手机号码', 17, 2.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (26, 'SuspectIdNumber', '嫌疑人身份证号码', 17, 2.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (27, 'PlaceOfResidenceOfTheSuspect', '嫌疑人户籍地', 17, 0.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (28, 'TheAddressBook', '通讯录', 9, 1, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (29, 'BelongsToTheSpecial', '所属专项', 11, 1, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (30, 'RecipientPhoneNumber', '收件人电话', 3, 0.05, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (31, 'AddresseeAddress', '收件人地址', 3, 0.05, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (32, 'TheRecipient', '收件人', 3, 0.05, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (33, 'VideoData', '视频资料', 9, 1, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (34, 'WhetherTheEventIsRealOrNot', '事件是否真实', 2, 1.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (35, 'DrugsInvolved', '涉及的毒品', 11, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (36, 'TypesOfDrugRelated', '涉毒种类', 4, 5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (37, 'DegreeOfSuspicionOfDrugInvolvement', '涉毒嫌疑度', 10, 5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (38, 'DrugRelatedScale', '涉毒规模', 4, 5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (39, 'DrugRelatedWay', '涉毒方式', 4, 5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (40, 'TypesOfDrugRelatedCrimes', '涉毒犯罪类型', 11, 1, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (41, 'DrugRelatedSite', '涉毒地点', 4, 5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (42, 'InTheCaseOfInformation', '涉案信息', 1, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (43, 'ProfessionOfSocialMember', '社会成员职业', 7, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (44, 'TheVirtualIdentityOfASocialMember', '社会成员虚拟身份', 7, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (45, 'NameOfSocialMember', '社会成员姓名', 7, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (46, 'GenderOfSocialMember', '社会成员性别', 7, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (47, 'CellPhoneNumberOfASocialMember', '社会成员手机号码', 7, 0.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (48, 'SocialMemberIdCardNumber', '社会成员身份证号码', 7, 0.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (49, 'PlaceOfResidenceOfSocialMember', '社会成员户籍地', 7, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (50, 'ToSignForTheTime', '签收时间', 3, 0.05, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
 INSERT INTO `decide_info` VALUES (51, 'brand', '品牌', 13, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (52, 'The_judgment_basis_of_suspicion', '嫌疑度判断依据', 10, 5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (53, 'Basis_of_authenticity_Judgment', '真实性判断依据', 2, 2.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (52, 'TheJudgmentBasisOfSuspicion', '嫌疑度判断依据', 10, 5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (53, 'BasisOfAuthenticityJudgment', '真实性判断依据', 2, 2.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
 INSERT INTO `decide_info` VALUES (54, 'age', '年龄', 17, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
 INSERT INTO `decide_info` VALUES (55, 'national', '民族', 17, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (56, 'A_case_of_time', '立案时间', 6, 0.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (57, 'Filing_decision', '立案决定书', 6, 15, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (58, 'Source_reliability', '来源可靠性', 11, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (59, 'Courier_company', '快递公司', 3, 0.05, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (60, 'Courier_number', '快递单号', 3, 0.05, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (61, 'Name_of_opening_bank', '开户行名称', 12, 0.1, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (62, 'Opening_bank_address', '开户行地址', 12, 0.15, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (63, 'To_live', '居住地', 17, 0.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (64, 'Scope_of_business', '经营范围', 5, 0.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (65, 'The_degree_of_emergency', '紧急程度', 11, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (66, 'Family_member_occupation', '家庭成员职业', 15, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (67, 'Family_member_virtual_identity', '家庭成员虚拟身份', 15, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (68, 'Name_of_family_member', '家庭成员姓名', 15, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (69, 'Gender_of_family_members', '家庭成员性别', 15, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (70, 'Family_member_mobile_phone_number', '家庭成员手机号码', 15, 0.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (71, 'Id_card_number_of_family_member', '家庭成员身份证号码', 15, 0.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (72, 'Place_of_residence_of_a_family_member', '家庭成员户籍地', 15, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (73, 'Return_telephone', '寄件人电话', 3, 0.05, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (74, 'Return_address', '寄件人地址', 3, 0.05, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (75, 'The_sender', '寄件人', 3, 0.05, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (76, 'Motor_vehicle_driving_license_number', '机动车驾驶证号', 16, 1.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (77, 'To_get_the_time', '获取时间', 11, 1, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (78, 'The_activity_time', '活动时间', 8, 0.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (79, 'Activity_trajectory_description', '活动轨迹描述', 8, 0.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (56, 'ACaseOfTime', '立案时间', 6, 0.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (57, 'FilingDecision', '立案决定书', 6, 15, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (58, 'SourceReliability', '来源可靠性', 11, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (59, 'CourierCompany', '快递公司', 3, 0.05, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (60, 'CourierNumber', '快递单号', 3, 0.05, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (61, 'NameOfOpeningBank', '开户行名称', 12, 0.1, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (62, 'OpeningBankAddress', '开户行地址', 12, 0.15, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (63, 'ToLive', '居住地', 17, 0.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (64, 'ScopeOfBusiness', '经营范围', 5, 0.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (65, 'TheDegreeOfEmergency', '紧急程度', 11, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (66, 'FamilyMemberOccupation', '家庭成员职业', 15, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (67, 'FamilyMemberVirtualIdentity', '家庭成员虚拟身份', 15, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (68, 'NameOfFamilyMember', '家庭成员姓名', 15, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (69, 'GenderOfFamilyMembers', '家庭成员性别', 15, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (70, 'FamilyMemberMobilePhoneNumber', '家庭成员手机号码', 15, 0.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (71, 'IdCardNumberOfFamilyMember', '家庭成员身份证号码', 15, 0.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (72, 'PlaceOfResidenceOfAFamilyMember', '家庭成员户籍地', 15, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (73, 'ReturnTelephone', '寄件人电话', 3, 0.05, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (74, 'ReturnAddress', '寄件人地址', 3, 0.05, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (75, 'TheSender', '寄件人', 3, 0.05, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (76, 'MotorVehicleDrivingLicenseNumber', '机动车驾驶证号', 16, 1.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (77, 'ToGetTheTime', '获取时间', 11, 1, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (78, 'TheActivityTime', '活动时间', 8, 0.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (79, 'ActivityTrajectoryDescription', '活动轨迹描述', 8, 0.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
 INSERT INTO `decide_info` VALUES (80, 'billed', '话单', 9, 1, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (81, 'Check_the_time', '核查时间', 2, 1, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (82, 'Landline_number', '固话号码', 17, 1, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (83, 'Location_of_property', '房产所在地', 14, 1, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (84, 'Real_Estate_Information', '房产基本情况', 14, 1, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (85, 'Property_number', '房产编号', 14, 0.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (86, 'Trafficking_way', '贩运方式', 11, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (87, 'A_time', '发出时间', 3, 0.05, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (88, 'Drug_flow', '毒品流向', 11, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (89, 'Name_of_the_entity', '单位名称', 5, 1, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (90, 'The_unit_address', '单位地址', 5, 0.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (91, 'The_disposal_of_information', '处置信息', 1, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (92, 'Initial_claim_time', '初次申领时间', 16, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (93, 'Set_up_the_date', '成立日期', 5, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (94, 'License_plate_number', '车牌号', 13, 1.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (95, 'Vehicle_color', '车辆颜色', 13, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (96, 'Vehicle_type', '车辆类型', 13, 0.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (97, 'Seized_information', '查获信息', 1, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (98, 'Name_of_the_case', '案件名称', 6, 1, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (99, 'The_case_level', '案件等级', 11, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
-INSERT INTO `decide_info` VALUES (100, 'The_case_number', '案件编号', 6, 1, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (81, 'CheckTheTime', '核查时间', 2, 1, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (82, 'LandlineNumber', '固话号码', 17, 1, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (83, 'LocationOfProperty', '房产所在地', 14, 1, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (84, 'RealEstateInformation', '房产基本情况', 14, 1, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (85, 'PropertyNumber', '房产编号', 14, 0.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (86, 'TraffickingWay', '贩运方式', 11, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (87, 'ATime', '发出时间', 3, 0.05, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (88, 'DrugFlow', '毒品流向', 11, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (89, 'NameOfTheEntity', '单位名称', 5, 1, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (90, 'TheUnitAddress', '单位地址', 5, 0.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (91, 'TheDisposalOfInformation', '处置信息', 1, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (92, 'InitialClaimTime', '初次申领时间', 16, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (93, 'SetUpTheDate', '成立日期', 5, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (94, 'LicensePlateNumber', '车牌号', 13, 1.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (95, 'VehicleColor', '车辆颜色', 13, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (96, 'VehicleType', '车辆类型', 13, 0.5, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (97, 'SeizedInformation', '查获信息', 1, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (98, 'NameOfTheCase', '案件名称', 6, 1, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (99, 'TheCaseLevel', '案件等级', 11, 0.25, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
+INSERT INTO `decide_info` VALUES (100, 'TheCaseNumber', '案件编号', 6, 1, '2022-07-31 17:10:55', 1, 1, '2022-07-31 17:10:55', 0);
 
 -- ----------------------------
 -- Table structure for decide_info_category
@@ -402,6 +402,7 @@ INSERT INTO `task` VALUES (1558236002764521474, 'sdfsa ', 1557553106034642946, 1
 INSERT INTO `task` VALUES (1558396378193854466, '账单', 1557553106034642946, 2, 9, '2022-08-12 12:00:00', '2022-08-27 12:00:00', 0.01, 0, 1, '湖北工业大学', '2022-08-13 18:13:45', '2022-08-13 18:13:45', 1554312923220602882, 1554312923220602882, 0, '', 0);
 INSERT INTO `task` VALUES (1558396610059173889, '物流', 1557553106034642946, 2, 3, '2022-08-13 12:00:00', '2022-08-26 12:00:00', 0.02, 0, 1, '广东省禁毒厅', '2022-08-13 18:14:40', '2022-08-13 18:14:40', 1554312923220602882, 1554312923220602882, 0, '', 0);
 INSERT INTO `task` VALUES (1558397122120777729, 'test', 1558396881938153473, 3, 6, '2022-08-03 12:00:00', '2022-09-20 12:00:00', 0.05, 1, 0, NULL, '2022-08-13 18:16:42', '2022-08-13 18:16:54', 1554312923220602882, 1554312923220602882, 0, '', 0);
+INSERT INTO `task` VALUES (1558455084403159042, 'dfsd', 1557553106034642946, 3, 6, '2022-08-18 12:00:00', '2022-09-21 12:00:00', 0.50, 1, 1, NULL, '2022-08-13 22:07:01', '2022-08-13 22:07:01', 1554312923220602882, 1554312923220602882, 0, '', 0);
 
 -- ----------------------------
 -- Table structure for task_category
@@ -532,19 +533,23 @@ CREATE TABLE `task_detail`  (
   `Name_of_the_case` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '案件名称',
   `The_case_level` varchar(128) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '案件等级',
   `The_case_number` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '案件编号',
+  `user_task_id` bigint(20) NOT NULL COMMENT 'userTask的主角',
+  `submit_time` datetime(0) NOT NULL COMMENT '提交时间',
   `create_time` datetime(0) NOT NULL COMMENT '创建时间',
   `update_time` datetime(0) NOT NULL COMMENT '更新时间',
   `create_user` bigint(20) NOT NULL COMMENT '创建人',
   `update_user` bigint(20) NOT NULL COMMENT '修改人',
   `deleted` int(11) NOT NULL DEFAULT 0 COMMENT '逻辑删除',
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `id`(`id`) USING BTREE
+  INDEX `id`(`id`) USING BTREE,
+  INDEX `user_task_id`(`user_task_id`) USING BTREE,
+  CONSTRAINT `task_detail_ibfk_1` FOREIGN KEY (`user_task_id`) REFERENCES `user_task` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of task_detail
 -- ----------------------------
-INSERT INTO `task_detail` VALUES (1558448876887801858, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2022-08-13 21:42:21', '2022-08-13 21:42:21', 1554767522597810178, 1554767522597810178, 0);
+INSERT INTO `task_detail` VALUES (1558607591959957505, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2022年8月3日', '上午五点起床，六点吃早饭，七点睡觉，十一点订外卖，下午两点睡觉，晚上八点某某酒吧与张三碰面', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1558607184831451137, '2022-08-14 08:13:02', '2022-08-14 08:13:02', '2022-08-14 08:13:02', 1554767522597810178, 1554767522597810178, 0);
 
 -- ----------------------------
 -- Table structure for token
@@ -568,7 +573,7 @@ CREATE TABLE `token`  (
 -- Records of token
 -- ----------------------------
 INSERT INTO `token` VALUES (1, 10022.00, 0.20, '123456', 1, '2022-07-24 22:05:00', '2022-08-03 17:53:02', 1, 1, 0);
-INSERT INTO `token` VALUES (1554313285411336194, 11220.82, 90.18, '123456', 1, '2022-08-02 11:49:00', '2022-08-13 18:16:42', 1, 1554312923220602882, 0);
+INSERT INTO `token` VALUES (1554313285411336194, 11220.32, 90.68, '123456', 1, '2022-08-02 11:49:00', '2022-08-13 22:07:01', 1, 1554312923220602882, 0);
 INSERT INTO `token` VALUES (1554768275022409729, 997.23, 0.00, '123456', 1, '2022-08-03 17:56:58', '2022-08-03 17:59:18', 1, 1, 0);
 
 -- ----------------------------
@@ -638,6 +643,7 @@ INSERT INTO `token_log` VALUES (1558236051909181442, 1554313285411336194, 0.50, 
 INSERT INTO `token_log` VALUES (1558396378193854467, 1554313285411336194, -0.01, 0.01, 11220.89, 90.11, '新增悬赏任务1558396378193854466', '2022-08-13 18:13:45', '2022-08-13 18:13:45', 1554312923220602882, 1554312923220602882, 0);
 INSERT INTO `token_log` VALUES (1558396610059173890, 1554313285411336194, -0.02, 0.02, 11220.87, 90.13, '新增悬赏任务1558396610059173889', '2022-08-13 18:14:40', '2022-08-13 18:14:40', 1554312923220602882, 1554312923220602882, 0);
 INSERT INTO `token_log` VALUES (1558397122120777730, 1554313285411336194, -0.05, 0.05, 11220.82, 90.18, '新增悬赏任务1558397122120777729', '2022-08-13 18:16:42', '2022-08-13 18:16:42', 1554312923220602882, 1554312923220602882, 0);
+INSERT INTO `token_log` VALUES (1558455084445102082, 1554313285411336194, -0.50, 0.50, 11220.32, 90.68, '新增悬赏任务1558455084403159042', '2022-08-13 22:07:01', '2022-08-13 22:07:01', 1554312923220602882, 1554312923220602882, 0);
 
 -- ----------------------------
 -- Table structure for user
@@ -711,7 +717,6 @@ CREATE TABLE `user_task`  (
   `task_id` bigint(20) NOT NULL COMMENT '研判任务id',
   `user_id` bigint(20) NOT NULL COMMENT '用户id',
   `task_detail_id` bigint(20) NULL DEFAULT NULL COMMENT '任务详情id',
-  `submit_time` datetime(0) NULL DEFAULT NULL COMMENT '提交时间',
   `accepted` int(11) NOT NULL COMMENT '是否被接受',
   `contribution` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '贡献度，每一个任务',
   `create_time` datetime(0) NOT NULL COMMENT '创建时间',
@@ -731,6 +736,7 @@ CREATE TABLE `user_task`  (
 -- ----------------------------
 -- Records of user_task
 -- ----------------------------
-INSERT INTO `user_task` VALUES (1558448876912967682, 1556277737361022978, 1554767522597810178, 1558448876887801858, NULL, 0, '0', '2022-08-13 21:42:22', '2022-08-13 21:42:22', 1554767522597810178, 1554767522597810178, 0);
+INSERT INTO `user_task` VALUES (1558604837187227649, 1556546706768674817, 1554767522597810178, NULL, 0, '0', '2022-08-14 08:02:05', '2022-08-14 08:02:05', 1554767522597810178, 1554767522597810178, 0);
+INSERT INTO `user_task` VALUES (1558607184831451137, 1556275928202477569, 1554767522597810178, NULL, 0, '0', '2022-08-14 08:11:25', '2022-08-14 08:11:25', 1554767522597810178, 1554767522597810178, 0);
 
 SET FOREIGN_KEY_CHECKS = 1;
