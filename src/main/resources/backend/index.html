@@ -179,6 +179,11 @@
                     };
                 },
                 computed: {},
+                watch: {
+                    menuActived(newVal, oldVal) {
+                        this.defAct = newVal;
+                    }
+                },
                 created() {
                     const userInfo = window.localStorage.getItem('userInfo');
                     if (userInfo) {
