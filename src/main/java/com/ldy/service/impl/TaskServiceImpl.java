@@ -47,6 +47,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements IT
     UserTaskMapper userTaskMapper;
 
     @Override
+    @Transactional
     public R<String> saveTaskAndBlockToken(Task task) {
         // 需要判断用户的token值是否足够支付该任务的悬赏，并进行冻结
 
@@ -92,6 +93,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements IT
     }
 
     @Override
+    @Transactional
     public R<String> updateToken(TaskDto taskDto) {
         Long userId = BaseContext.getCurrentId();
         // 1. 查询当前用户所拥有的余额
@@ -151,6 +153,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements IT
     }
 
     @Override
+    @Transactional
     public R<String> removeTaskByIds(Long[] ids) {
         // 1. 首先判断该悬赏任务是否被人接单
         LambdaQueryWrapper<UserTask> userTaskLambdaQueryWrapper = new LambdaQueryWrapper<>();

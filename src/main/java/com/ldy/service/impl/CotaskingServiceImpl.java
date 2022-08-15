@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.LifecycleState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -45,6 +46,7 @@ public class CotaskingServiceImpl extends ServiceImpl<CotaskingMapper, Cotasking
     TokenLogMapper tokenLogMapper;
 
     @Override
+    @Transactional
     public R<String> addCotakAndBindIntelligences(CotaskingDto cotaskingDto) {
         Cotasking cotasking = new Cotasking();
         cotasking.setName(cotaskingDto.getName());
@@ -75,6 +77,7 @@ public class CotaskingServiceImpl extends ServiceImpl<CotaskingMapper, Cotasking
     }
 
     @Override
+    @Transactional
     public R<String> removeCotaskByIds(Long[] ids) {
         // 查询协同任务中是否存在被人接单的研判任务
         Integer integer = userTaskMapper.selectUserTaskCountInCotasking(Arrays.asList(ids));
@@ -126,6 +129,7 @@ public class CotaskingServiceImpl extends ServiceImpl<CotaskingMapper, Cotasking
     }
 
     @Override
+    @Transactional
     public R<String> updateStatus(Long[] ids, Integer status) {
         // 1. 设置研判任务的状态
         LambdaQueryWrapper<Cotasking> lambdaQueryWrapper = new LambdaQueryWrapper<>();
