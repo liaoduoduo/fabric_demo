@@ -23,6 +23,7 @@
 
       <el-table-column
         label="可用金额变更数目"
+        width="150"
       >
         <template slot-scope="scope">
           <span>{{ scope.row.currentChange > 0 ? '+'+scope.row.currentChange : scope.row.currentChange }}</span>
@@ -32,6 +33,7 @@
       <el-table-column
         prop="blockChange"
         label="冻结金额变更数目"
+        width="150"
       >
         <template slot-scope="scope">
           <span>{{ scope.row.blockChange > 0 ? '+'+scope.row.blockChange : scope.row.blockChange }}</span>
@@ -41,17 +43,20 @@
       <el-table-column
         prop="currentToken"
         label="剩余可用金额"
+        width="150"
       ></el-table-column>
 
       <el-table-column
         prop="blockToken"
         label="剩余冻结金额"
+        width="150"
       >
       </el-table-column>
 
       <el-table-column
         prop="content"
         label="变更原因"
+        width="400"
       >
       </el-table-column>
 
@@ -128,7 +133,15 @@
       handleQuery() {
         this.page = 1;
         this.init();
-      }
+      },
+      handleSizeChange(val) {
+        this.pageSize = val
+        this.init()
+      },
+      handleCurrentChange(val) {
+        this.page = val
+        this.init()
+      },
     }
   })
 </script>
