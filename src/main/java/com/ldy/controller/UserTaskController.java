@@ -16,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -52,7 +54,7 @@ public class UserTaskController {
         return userTaskService.saveUserTask(id);
     }
 
-    @ApiOperation("查询当前用户的所有接单")
+    @ApiOperation("分页查询当前用户的所有接单")
     @GetMapping("/getUserTaskByUserId")
     public R<Page<TaskVo>> getUserTaskByUserId(@RequestParam(value = "page", defaultValue = "1") int page,
                                                @RequestParam(value = "pageSize", defaultValue = "5") int pageSize,
@@ -61,6 +63,22 @@ public class UserTaskController {
         Long userId = BaseContext.getCurrentId();
         return R.success(userTaskService.getUserTaskByUserId(taskVoPage, name, userId));
     }
+
+    @ApiOperation("为了在悬赏任务大厅判断那些任务被当前用户接单")
+    @GetMapping("/getAllUserTaskByUserId")
+    public R<List<Long>> getAllUserTaskByUserId(){
+        Long userId = BaseContext.getCurrentId();
+        LambdaQueryWrapper<UserTask> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.select(UserTask::getTaskId).eq(UserTask::getUserId,userId);
+        List<UserTask> list = userTaskService.list(queryWrapper);
+        List<Long> taskIdsWithUser = new ArrayList<>();
+        for (UserTask userTask : list) {
+            taskIdsWithUser.add(userTask.getTaskId());
+        }
+        return R.success(taskIdsWithUser);
+    }
+
+
 
     @ApiOperation("不想干了，摆烂")
     @DeleteMapping("/deleteUserTaskById/{id}")
