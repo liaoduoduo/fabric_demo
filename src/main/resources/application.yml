@@ -16,7 +16,7 @@ fabric:
   # 链码名字
   contractName: basic
 server:
-  port: 8080
+  port: 8081
 spring:
   application:
     name: fabric
