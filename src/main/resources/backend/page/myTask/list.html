@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../plugins/element-ui/index.css" />
+    <link rel="stylesheet" href="../../styles/common.css" />
+    <link rel="stylesheet" href="../../styles/page.css" />
+</head>
+<body>
+<div class="dashboard-container" id='myTask-app'>
+    <div class="container">
+        <div class="tableBar">
+            <el-input
+                    v-model="input"
+                    placeholder="请输入任务名称"
+                    style="width: 250px"
+                    clearable
+                    @keyup.enter.native="handleQuery"
+            >
+                <i
+                        slot="prefix"
+                        class="el-input__icon el-icon-search"
+                        style="cursor: pointer"
+                        @click="init"
+                ></i>
+            </el-input>
+            <!--        <div class="tableLab">-->
+            <!--            <span class="span-btn blueBug non" @click="statusHandle('1')">批量承接任务</span>-->
+            <!--        </div>-->
+        </div>
+
+        <el-table
+                :data="tableData"
+                stripe
+                class="tableBox"
+                @selection-change="handleSelectionChange"
+        >
+            <el-table-column fixed label="序号" width="50" align="center">
+
+                <template scope="scope">
+                    <span>{{scope.$index + 1}}</span>
+                </template>
+            </el-table-column>
+            <el-table-column prop='name' label='任务名称'></el-table-column>
+            <el-table-column prop='token' label='任务token'></el-table-column>
+            <el-table-column prop='beginTime' label='任务开始时间'></el-table-column>
+            <el-table-column prop='endTime' label='任务截止时间'></el-table-column>
+<!--            <el-table-column prop='createTime' label='承接任务时间'></el-table-column>-->
+            <el-table-column
+                    label="操作"
+                    width="160"
+                    align="center"
+            >
+                <template slot-scope="scope">
+                    <el-button
+                            type="text"
+                            size="small"
+                            class="blueBug"
+                            @click="taskInfo(scope.row.id)"
+                    >
+                        研判详情
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+        <el-pagination
+                class="pageList"
+                :page-sizes="[10, 20, 30, 40]"
+                :page-size="pageSize"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="counts"
+                @size-change="handleSizeChange"
+                :current-page.sync="page"
+                @current-change="handleCurrentChange"
+        ></el-pagination>
+    </div>
+</div>
+</body>
+</html>
+<!-- 开发环境版本，包含了有帮助的命令行警告 -->
+<script src="../../plugins/vue/vue.js"></script>
+<!-- 引入组件库 -->
+<script src="../../plugins/element-ui/index.js"></script>
+<!-- 引入axios -->
+<script src="../../plugins/axios/axios.min.js"></script>
+<script src="../../js/request.js"></script>
+<script src="../../api/task.js"></script>
+<script>
+    new Vue({
+        el:"#myTask-app",
+        data(){
+            return{
+                input: '',
+                page: 1,
+                pageSize: 10,
+                counts: 0,
+                checkList: [],
+                dishState : '',
+                tableData:[],
+            }
+        },
+        computed: {},
+        created() {
+          this.init()
+        },
+        mounted() {
+        },
+        methods:{
+          async init () {
+            const params = {
+              page: this.page,
+              pageSize: this.pageSize,
+              name: this.input ? this.input : ''
+            }
+            await getAcceptedTaskPage(params).then(res => {
+              if (String(res.code) === '1') {
+                console.log(res.data.records);
+                this.tableData = res.data.records || []
+                this.counts = res.data.total
+              }
+            }).catch(err => {
+              this.$message.error('请求出错了：' + err)
+            })
+          },
+          getImage (image) {
+            return `/common/download?name=${image}`
+          },
+          handleQuery() {
+            this.page = 1;
+            this.init();
+          },
+          taskInfo(id){
+            window.parent.menuHandle({
+            id: '10',
+            url: '/backend/page/myTask/info.html?id=' + id,
+            name: '录入研判信息'
+            }, true);
+          },
+
+          // 全部操作
+          handleSelectionChange (val){
+            let checkArr = []
+            val.forEach((n) => {
+              checkArr.push(n.id)
+            })
+            this.checkList = checkArr
+          },
+          handleSizeChange (val) {
+            this.pageSize = val
+            this.init()
+          },
+          handleCurrentChange (val) {
+            this.page = val
+            this.init()
+          }
+        }
+
+    })
+</script>

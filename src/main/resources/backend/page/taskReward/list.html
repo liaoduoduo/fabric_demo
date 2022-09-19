@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../plugins/element-ui/index.css" />
+    <link rel="stylesheet" href="../../styles/common.css" />
+    <link rel="stylesheet" href="../../styles/page.css" />
+</head>
+<body>
+<div class="dashboard-container" id='reward-app'>
+  <div class="container">
+    <div class="tableBar">
+        <el-input
+                v-model="input"
+                placeholder="请输入任务名称"
+                style="width: 250px"
+                clearable
+                @keyup.enter.native="handleQuery"
+        >
+        <i
+                slot="prefix"
+                class="el-input__icon el-icon-search"
+                style="cursor: pointer"
+                @click="init"
+        ></i>
+        </el-input>
+<!--        <div class="tableLab">-->
+<!--            <span class="span-btn blueBug non" @click="statusHandle('1')">批量承接任务</span>-->
+<!--        </div>-->
+    </div>
+
+    <el-table
+       :data="tableData"
+       stripe
+       class="tableBox"
+       @selection-change="handleSelectionChange"
+    >
+        <el-table-column fixed label="序号" width="50" align="center">
+
+            <template scope="scope">
+                <span>{{scope.$index + 1}}</span>
+            </template>
+        </el-table-column>
+        <el-table-column prop='name' label='任务名称'>
+            <template slot-scope='scope'>
+                <el-popover trigger='hover' placement='right' width="400" content='马在能量利用率方面其实是落后的动物，自然的马差点要被牛羊淘汰掉，是人类的战争需求延续了这个物种。它没有反刍功能，消化植物的能力差，所以一天吃草时间最长能有11个小时，晚上都得吃草，所以才会有“马无夜草不肥”的俗语。骑兵虽然冲锋快，但长时间的行军速度还是比不过步兵。'>
+<!--                    <p>姓名：{{scope.row.name}}</p>-->
+<!--                    <p>住址：{{scope.row.address}}</p>-->
+                    <div slot='reference' class='name-wrapper'>
+                        <el-tag size='medium'>{{scope.row.name}}</el-tag>
+                    </div>
+                </el-popover>
+            </template>
+        </el-table-column>
+        <el-table-column prop='token' label='任务token'></el-table-column>
+        <el-table-column prop='beginTime' label='任务开始时间'></el-table-column>
+        <el-table-column prop='endTime' label='任务截止时间'></el-table-column>
+        <el-table-column width="160" align="center" label='操作'>
+            <template slot-scope='scope'>
+                <el-button
+                        type="primary"
+                        class="blueBug"
+                        @click="acceptRewardTask(scope.row.id, scope.$index, tableData)"
+                >
+                    承接任务
+                </el-button>
+            </template>
+        </el-table-column>
+    </el-table>
+    <el-pagination
+       class="pageList"
+       :page-sizes="[10, 20, 30, 40]"
+       :page-size="pageSize"
+       layout="total, sizes, prev, pager, next, jumper"
+       :total="counts"
+       @size-change="handleSizeChange"
+       :current-page.sync="page"
+       @current-change="handleCurrentChange"
+    ></el-pagination>
+  </div>
+</div>
+</body>
+</html>
+<!-- 开发环境版本，包含了有帮助的命令行警告 -->
+<script src="../../plugins/vue/vue.js"></script>
+<!-- 引入组件库 -->
+<script src="../../plugins/element-ui/index.js"></script>
+<!-- 引入axios -->
+<script src="../../plugins/axios/axios.min.js"></script>
+<script src="../../js/request.js"></script>
+<script src="../../api/task.js"></script>
+<script>
+    new Vue({
+        el:"#reward-app",
+        data(){
+            return{
+                input: '',
+                page: 1,
+                pageSize: 10,
+                counts: 0,
+                checkList: [],
+                dishState : '',
+                tableData:[
+                //{name:"调查嫌犯",token:1,beginTime:"2022-1-1",endTime:"2022-3-3"},
+                //{name:"击杀毒枭",token:1,beginTime:"2022-3-1",endTime:"2022-4-3"}
+                ],
+            }
+        },
+        computed: {},
+        created() {
+          this.init()
+        },
+        mounted() {
+        },
+        methods:{
+          async init () {
+            const params = {
+              page: this.page,
+              pageSize: this.pageSize,
+              name: this.input ? this.input : ''
+            }
+            await getRewardTaskPage(params).then(res => {
+              if (String(res.code) === '1') {
+                console.log(res.data.records);
+                this.tableData = res.data.records || []
+                this.counts = res.data.total
+              }
+            }).catch(err => {
+              this.$message.error('请求出错了：' + err)
+            })
+          },
+          getImage (image) {
+            return `/common/download?name=${image}`
+          },
+          handleQuery() {
+            this.page = 1;
+            this.init();
+          },
+          buttonStatus(index,rows){
+            rows.splice(index,1);
+          },
+
+          //承接悬赏中的研判任务
+          acceptRewardTask(id,index,rows)
+          {
+            this.$confirm('确认承接该研判任务, 是否继续?', '确定承接', {
+              'confirmButtonText': '确定',
+              'cancelButtonText': '取消',
+            }).then(() => {
+              RewardTaskAcceptToList(id).then(res => {
+                if (res.code === 1) {
+                  this.$message.success('承接成功！')
+                  //this.handleQuery()
+                  this.buttonStatus(index,rows)
+                } else {
+                  this.$message.error(res.msg || '操作失败')
+                }
+              }).catch(err => {
+                this.$message.error('请求出错了：' + err)
+              })
+            })
+          },
+          // 全部操作
+          handleSelectionChange (val){
+            let checkArr = []
+            val.forEach((n) => {
+              checkArr.push(n.id)
+            })
+            this.checkList = checkArr
+          },
+          handleSizeChange (val) {
+            this.pageSize = val
+            this.init()
+          },
+          handleCurrentChange (val) {
+            this.page = val
+            this.init()
+          }
+        }
+
+    })
+</script>

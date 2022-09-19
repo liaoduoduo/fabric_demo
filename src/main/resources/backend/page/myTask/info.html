@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <!-- 引入样式 -->
+  <link rel="stylesheet" href="../../plugins/element-ui/index.css" />
+  <link rel="stylesheet" href="../../styles/common.css" />
+  <link rel="stylesheet" href="../../styles/page.css" />
+</head>
+
+<body>
+  <div class="addBrand-container" id="taskInfo-Fill-app">
+    <div class="container">
+
+      <el-form ref="ruleForm" :model="ruleForm" :inline="false" label-width="180px" class="demo-ruleForm">
+<!--        <el-form-item prop="cotaskingId"></el-form-item>-->
+        <el-form-item v-for="item in this.test" :label="item" >
+          <el-input v-model="ruleForm.name" placeholder="请输入信息" maxlength="20" />
+        </el-form-item>
+
+        <div class="subBox address">
+          <el-form-item>
+            <el-button @click="goBack()">取消</el-button>
+            <el-button type="primary" @click="submitData('ruleForm', false)">上传</el-button>
+          </el-form-item>
+        </div>
+
+      </el-form>
+
+    </div>
+  </div>
+  <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+  <script src="../../plugins/vue/vue.js"></script>
+  <!-- 引入组件库 -->
+  <script src="../../plugins/element-ui/index.js"></script>
+  <!-- 引入axios -->
+  <script src="../../plugins/axios/axios.min.js"></script>
+  <script src="../../js/index.js"></script>
+  <script src="../../js/request.js"></script>
+  <script src="../../api/task.js"></script>
+  <script>
+    new Vue({
+      el: '#taskInfo-Fill-app',
+      data() {
+        return {
+          id: '',
+          content_en: [],
+          content_zh: [],
+          test: ["社会成员职业","社会成员户籍地","社会成员手机号码", "社会成员身份证号码", "与社会成员关系", "社会成员虚拟身份", "社会成员姓名", "社会成员性别"],
+           ruleForm: {
+             cotaskingId: '',
+             taskCategoryId: '',
+             decideInfoCategoryId: '',
+             beginTime: '',
+             endTime: '',
+             open: '1',
+           },
+        }
+      },
+      computed: {},
+      created() {
+        //取得任务ID
+        this.id = requestUrlParam('id')
+        this.init()
+      },
+      mounted() {},
+      methods: {
+        async init() {
+          getRewardTaskContent(this.id).then(res => {
+            if (String(res.code) === '1') {
+              // 返回所有应填的字段名称
+              var i = 0
+              for (const key in res.data) {
+                this.content_en[i] = key
+                this.content_zh[i] = res.data[key]
+                i = i + 1
+                //console.log(this.content_zh[i])
+              }
+              console.log(this.content_zh)
+            }
+          }).catch(err => {
+            this.$message.error('请求出错了：' + err)
+          });
+        },
+        submitData(formName, st) {
+
+        },
+        goBack() {
+          window.parent.menuHandle(
+            {
+              id: '10',
+              url: '/backend/page/myTask/list.html',
+              name: '我的任务',
+            },
+              false
+          );
+        },
+      }
+    })
+  </script>
+</body>
+
+</html>
